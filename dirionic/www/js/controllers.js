@@ -23,7 +23,6 @@ angular.module('starter.controllers', [])
 .controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", function($scope, $stateParams, ArticleSvc) {
     $scope.article = null;
     $scope.$on("article", function(_, data) {
-        console.log("loading article");
         $scope.article = {
             id: data.id,
             title: data.title,
@@ -33,6 +32,64 @@ angular.module('starter.controllers', [])
     });
     
     ArticleSvc.loadArticle($stateParams.id);
+}])
+
+.controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", function($scope, $ionicLoading, VideoListSvc) {
+    $ionicLoading.show({template: "Loading videos..."});
+
+    $scope.videos = [];
+    $scope.$on("videolist", function(_, data) {
+
+        data.forEach(function(video) {
+            $scope.videos.push({
+                //json data
+            });
+        });
+        
+        $ionicLoading.hide();
+    });
+    
+    VideoListSvc.loadVideos();
+}])
+
+.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", function($scope, $stateParams, VideoSvc) {
+    $scope.video = null;
+    $scope.$on("video", function(_, data) {
+        $scope.video = {
+            //json data
+        };
+    });
+    
+    VideoSvc.loadVideo($stateParams.id);
+}])
+
+.controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
+    $ionicLoading.show({template: "Loading videos..."});
+
+    $scope.resources = [];
+    $scope.$on("resourcelist", function(_, data) {
+
+        data.forEach(function(resource) {
+            $scope.resources.push({
+                //json data
+            });
+        });
+        
+        $ionicLoading.hide();
+    });
+    
+    ResourceListSvc.loadResources();
+}])
+
+.controller("ResourceCtrl", ["$scope", "$stateParams", "ResourceSvc", function($scope, $stateParams, ResourceSvc) {
+    $scope.resource = null;
+    $scope.$on("resource", function(_, data) {
+        $scope.resource = {
+            //json data
+        };
+    });
+    
+    ResourceSvc.loadResource($stateParams.id);
 }])
 
 .controller("UserListCtrl", ["$scope", "$ionicLoading", "UserListSvc", function($scope, $ionicLoading, UserListSvc) {
@@ -53,17 +110,3 @@ angular.module('starter.controllers', [])
     
     UserListSvc.loadUsers();
 }]);
-/*
-.controller("ItemCtrl", ["$scope", "$stateParams", "ItemSvc", function($scope, $stateParams, ItemSvc) {
-    $scope.item = null;
-    $scope.$on("item", function(_, data) {
-        console.log("loading item");
-        $scope.item = {
-            item_name: data.item_name,
-            item_desc: data.item_desc
-        };
-        console.log(data.item_name);
-    });
-    
-    ItemSvc.loadItem($stateParams.id);
-}]);*/
