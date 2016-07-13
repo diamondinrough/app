@@ -66,7 +66,7 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=500, null=True)
-    image = models.ImageField(upload_to='articleimages/', default='articleimages/noimage.gif')
+    image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.gif')
     views = models.IntegerField(default=0)
 
     tags = models.ManyToManyField(Tag, blank=False, related_name='articletag')
@@ -85,7 +85,7 @@ class ArticleLink(models.Model):
     title = models.CharField(max_length=200)
     link = models.URLField(max_length=200)
     summary = models.CharField(max_length=500, null=True)
-    image = models.ImageField(upload_to='articles/images/', default='articleimages/noimage.gif')
+    image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.gif')
     views = models.IntegerField(default=0)
 
     tags = models.ManyToManyField(Tag, blank=False, related_name='articlelinktag')

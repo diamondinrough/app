@@ -1,12 +1,18 @@
+var site = "http://localhost/"
+
 angular.module('starter.services', [])
 
-.service("ArticleListSvc", ["$http", "$rootScope", function($http, $rootScope) {
+.service("ArticleListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
+
     this.loadArticles = function() {
         console.log("getting article list json");
         
         $http.get("http://localhost/api/app/articles/?format=json")
-        .success(function(result) {
-            $rootScope.$broadcast("articlelist", result);
+        .success(function(data) {
+            $rootScope.$broadcast("articlelist", data);
+        })
+        .error(function() {
+            $ionicLoading.hide();
         });
     }
 }])
@@ -16,8 +22,8 @@ angular.module('starter.services', [])
         console.log("getting article json");
         
         $http.get("http://localhost/api/app/articles/" + id + "/?format=json")
-        .success(function(result) {
-            $rootScope.$broadcast("article", result);
+        .success(function(data) {
+            $rootScope.$broadcast("article", data);
         });
     }
 }])
@@ -27,19 +33,8 @@ angular.module('starter.services', [])
         console.log("getting list json");
         
         $http.get("http://localhost/api/app/users/?format=json")
-        .success(function(result) {
-            $rootScope.$broadcast("userlist", result);
+        .success(function(data) {
+            $rootScope.$broadcast("userlist", data);
         });
     }
 }]);
-/*
-.service("ItemSvc", ["$http", "$rootScope", function($http, $rootScope) {
-    this.loadItem = function(id) {
-        console.log("getting item json");
-        
-        $http.get("http://localhost/api/testapp/items/" + id + "/?format=json")
-        .success(function(result) {
-            $rootScope.$broadcast("item", result);
-        });
-    }
-}]);*/
