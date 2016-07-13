@@ -1,13 +1,12 @@
-var site = "http://localhost/"
+var site = "http://54.152.36.188/"
 
 angular.module('starter.services', [])
 
 .service("ArticleListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-
     this.loadArticles = function() {
         console.log("getting article list json");
         
-        $http.get("http://localhost/api/app/articles/?format=json")
+        $http.get("http://54.152.36.188/api/app/articles/?format=json")
         .success(function(data) {
             $rootScope.$broadcast("articlelist", data);
         })
@@ -21,7 +20,7 @@ angular.module('starter.services', [])
     this.loadArticle = function(id) {
         console.log("getting article json");
         
-        $http.get("http://localhost/api/app/articles/" + id + "/?format=json")
+        $http.get("http://54.152.36.188/api/app/articles/" + id + "/?format=json")
         .success(function(data) {
             $rootScope.$broadcast("article", data);
         });
@@ -32,7 +31,7 @@ angular.module('starter.services', [])
     this.loadUsers = function() {
         console.log("getting list json");
         
-        $http.get("http://localhost/api/app/users/?format=json")
+        $http.get("http://54.152.36.188/api/app/users/?format=json")
         .success(function(data) {
             $rootScope.$broadcast("userlist", data);
         });
