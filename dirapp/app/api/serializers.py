@@ -14,11 +14,11 @@ class ArticleSerializer(ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'content', 'author', 'image', 'tag', 'dt_created', 'dt_updated')
+        fields = ('id', 'title', 'content', 'author', 'image', 'tags', 'dt_created', 'dt_updated')
 
 class ArticleLinkSerializer(ModelSerializer):
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
         model = ArticleLink
-        fields = ('id', 'title', 'link', 'poster', 'tag', 'dt_created')
+        fields = ('id', 'title', 'link', 'poster', 'tags', 'dt_created')

@@ -2,12 +2,11 @@ angular.module('starter.controllers', [])
 
 .controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", function($scope, $ionicLoading, ArticleListSvc) {
     $ionicLoading.show({template: "Loading articles..."});
-    
+
     $scope.articles = [];
-    $scope.$on("articlelist", function(_, result) {
-        //console.log("loading users");
-        
-        result.forEach(function(article) {
+    $scope.$on("articlelist", function(_, data) {
+
+        data.forEach(function(article) {
             $scope.articles.push({
                 id: article.id,
                 title: article.title,
@@ -23,13 +22,13 @@ angular.module('starter.controllers', [])
 
 .controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", function($scope, $stateParams, ArticleSvc) {
     $scope.article = null;
-    $scope.$on("article", function(_, result) {
+    $scope.$on("article", function(_, data) {
         console.log("loading article");
         $scope.article = {
-            id: result.id,
-            title: result.title,
-            content: result.content,
-            image: result.image
+            id: data.id,
+            title: data.title,
+            content: data.content,
+            image: data.image
         };
     });
     
@@ -40,10 +39,9 @@ angular.module('starter.controllers', [])
     $ionicLoading.show({template: "Loading users..."});
     
     $scope.users = [];
-    $scope.$on("userlist", function(_, result) {
-        //console.log("loading users");
+    $scope.$on("userlist", function(_, data) {
         
-        result.forEach(function(user) {
+        data.forEach(function(user) {
             $scope.users.push({
                 id: user.id,
                 username: user.username
@@ -58,13 +56,13 @@ angular.module('starter.controllers', [])
 /*
 .controller("ItemCtrl", ["$scope", "$stateParams", "ItemSvc", function($scope, $stateParams, ItemSvc) {
     $scope.item = null;
-    $scope.$on("item", function(_, result) {
+    $scope.$on("item", function(_, data) {
         console.log("loading item");
         $scope.item = {
-            item_name: result.item_name,
-            item_desc: result.item_desc
+            item_name: data.item_name,
+            item_desc: data.item_desc
         };
-        console.log(result.item_name);
+        console.log(data.item_name);
     });
     
     ItemSvc.loadItem($stateParams.id);
