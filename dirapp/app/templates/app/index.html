@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <ul>
+    {% for item in items %}
+      <li>
+        {% if item.type == 'Article' %}
+          <p>Article</p>
+          <p>Title: {{item.title}}</p>
+          <p>Author: {{item.author}}</p>
+          <a href='../articles/{{item.id}}'>Article Link</a>
+        {% elif item.type == 'Video' %}
+          <p>Video</p>
+          <p>Title: {{item.title}}</p>
+          <p>Poster: {{item.poster}}</p>
+          <a href='{{item.videofileURL}}'>Video Link</a>
+        {% elif item.type == 'Resource' %}
+          <p>Resource</p>
+          <p>Title: {{item.title}}</p>
+          <p>Poster: {{item.poster}}</p>
+          <a href='{{item.resourcefileURL}}'>Resource Link</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</html>

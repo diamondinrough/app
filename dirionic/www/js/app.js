@@ -59,6 +59,55 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         controller: 'ArticleCtrl'
       }
     }
+  })
+
+  .state('app.videolist', {
+    url: '/videos',
+    views: {
+      'videos': {
+        templateUrl: 'templates/videolist.html',
+        controller: 'VideoListCtrl'
+      }
+    }
+  })
+
+  .state('app.video', {
+    url: '/videos/:id',
+    views: {
+      'videos': {
+        templateUrl: 'templates/video.html',
+        controller: 'VideoCtrl'
+      }
+    }
+  })
+
+  .state('app.resourcelist', {
+    url: '/resources',
+    views: {
+      'resources': {
+        templateUrl: 'templates/resourcelist.html',
+        controller: 'ResourceListCtrl'
+      }
+    }
+  })
+
+  .state('app.resource', {
+    url: '/resources/:id',
+    views: {
+      'resources': {
+        templateUrl: 'templates/resource.html',
+        controller: 'ResourceCtrl'
+      }
+    }
+  })
+
+  .state('app.help', {
+    url: '/help',
+    views: {
+      'help': {
+        templateUrl: 'templates/help.html'
+      }
+    }
   });
 
   $urlRouterProvider.otherwise('/app/index');
