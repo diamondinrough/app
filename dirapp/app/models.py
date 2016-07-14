@@ -101,7 +101,7 @@ class Video(models.Model):
     poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='uservideos')
     
     title = models.CharField(max_length=200)
-    videolink = models.CharField(max_length=500)
+    videolink = models.CharField(max_length=500, default='fillerlink')
     summary = models.CharField(max_length=500, null=True)
     speaker = models.CharField(max_length=50, null=True)
     views = models.IntegerField(default=0)
