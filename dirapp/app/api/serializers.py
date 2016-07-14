@@ -46,7 +46,6 @@ class VideoSerializer(ModelSerializer):
     class Meta:
         model = Video
         fields = ('id', 'title', 'videofile', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
-        lookup_field = 'id'
 
 class ResourceSerializer(ModelSerializer):
     poster = UserSerializer()
