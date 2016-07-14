@@ -2,6 +2,19 @@ var site = "http://localhost/"
 
 angular.module('starter.services', [])
 
+.service("IndexSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
+    this.loadIndex = function() {
+        
+        $http.get(site + "api/app/index/?format=json")
+        .success(function(data) {
+            $rootScope.$broadcast("index", data);
+        })
+        .error(function() {
+            $ionicLoading.hide();
+        });
+    }
+}])
+
 .service("ArticleListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadArticles = function() {
         

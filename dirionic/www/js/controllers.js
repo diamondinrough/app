@@ -1,4 +1,66 @@
+function getname(author) {
+    return author.first_name + " " + author.last_name;
+}
+
 angular.module('starter.controllers', [])
+
+.controller("IndexCtrl", ["$scope", "$ionicLoading", "IndexSvc", function($scope, $ionicLoading, IndexSvc) {
+    $ionicLoading.show({template: "Loading index..."});
+
+    $scope.itemlist = [];
+    $scope.$on("index", function(_, data) {
+        data.forEach(function(item) {
+            var type = item.type;
+            console.log(type);
+            if (type == "article") {
+                $scope.itemlist.push({
+                    type: type,
+                    id: item.id,
+                    title: item.title,
+                    content: item.content,
+                    summary: item.summary,
+                    author: getname(item.author),
+                    views: item.views,
+                    tags: item.tags,
+                    dt_created: item.dt_created,
+                    dt_updated: item.dt_updated
+                });
+            } else if (type == "video") {
+                $scope.itemlist.push({
+                    type: type,
+                    id: item.id,
+                    title: item.title,
+                    // videos changed to urls rather than upload, waiting for database change
+                    summary: item.summary,
+                    speaker: item.speaker,
+                    poster: getname(item.author),
+                    views: item.views,
+                    tags: item.tags,
+                    dt_created: item.dt_created
+                });
+            } else if (type == "resource") {
+                $scope.itemlist.push({
+                    type: type,
+                    id: item.id,
+                    title: item.title,
+                    resourcefile: item.resourcefile,
+                    summary: item.summary,
+                    poster: getname(item.poster),
+                    views: item.views,
+                    downloads: item.downloads,
+                    tags: item.tags,
+                    dt_created: item.dt_created
+                });
+            } else {
+                console.log("ERROR: Unknown type: " + type);
+            }
+        });
+
+        $ionicLoading.hide();
+   });
+    
+    IndexSvc.loadIndex();
+}])
 
 .controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", function($scope, $ionicLoading, ArticleListSvc) {
     $ionicLoading.show({template: "Loading articles..."});
