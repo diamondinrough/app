@@ -36,7 +36,7 @@ class VideoListSerializer(ModelSerializer):
 
     class Meta:
         model = Video
-        fields = ('id', 'title', 'videofile', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
+        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
 
 class VideoSerializer(ModelSerializer):
     poster = UserSerializer()
@@ -45,7 +45,7 @@ class VideoSerializer(ModelSerializer):
 
     class Meta:
         model = Video
-        fields = ('id', 'title', 'videofile', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
+        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
 
 class ResourceSerializer(ModelSerializer):
     poster = UserSerializer()
