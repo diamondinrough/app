@@ -37,6 +37,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     views: {
       'index': {
         templateUrl: 'templates/index.html',
+        controller: 'IndexCtrl'
       }
     }
   })

@@ -5,11 +5,16 @@ from ..models import *
 
 
 class UserSerializer(ModelSerializer):
+    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    dt_updated = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    
     class Meta:
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'dt_created', 'dt_updated')
 
 class ArticleSerializer(ModelSerializer):
+    author = UserSerializer()
+
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
     dt_updated = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
@@ -25,6 +30,8 @@ class ArticleLinkSerializer(ModelSerializer):
         fields = ('id', 'title', 'link', 'summary', 'poster', 'image', 'views', 'tags', 'dt_created')
 
 class VideoSerializer(ModelSerializer):
+    poster = UserSerializer()
+
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
@@ -32,6 +39,8 @@ class VideoSerializer(ModelSerializer):
         fields = ('id', 'title', 'videofile', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
 
 class ResourceSerializer(ModelSerializer):
+    poster = UserSerializer()
+
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
