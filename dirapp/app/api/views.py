@@ -56,6 +56,7 @@ class VideoListView(ListAPIView):
 class VideoView(RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    lookup_field = 'id'
 
 
 class ResourceListView(ListAPIView):
