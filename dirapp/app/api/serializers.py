@@ -29,6 +29,15 @@ class ArticleLinkSerializer(ModelSerializer):
         model = ArticleLink
         fields = ('id', 'title', 'link', 'summary', 'poster', 'image', 'views', 'tags', 'dt_created')
 
+class VideoListSerializer(ModelSerializer):
+    poster = UserSerializer()
+
+    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+
+    class Meta:
+        model = Video
+        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
+
 class VideoSerializer(ModelSerializer):
     poster = UserSerializer()
 
@@ -36,7 +45,7 @@ class VideoSerializer(ModelSerializer):
 
     class Meta:
         model = Video
-        fields = ('id', 'title', 'videofile', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
+        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
 
 class ResourceSerializer(ModelSerializer):
     poster = UserSerializer()
