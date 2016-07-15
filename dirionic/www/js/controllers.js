@@ -72,7 +72,13 @@ angular.module('starter.controllers', [])
             $scope.articles.push({
                 id: article.id,
                 title: article.title,
-                content: article.content
+                content: article.content,
+                summary: article.summary,
+                author: getname(article.author),
+                views: article.views,
+                tags: article.tags,
+                dt_created: article.dt_created,
+                dt_updated: article.dt_updated
             });
         });
         
@@ -89,7 +95,12 @@ angular.module('starter.controllers', [])
             id: data.id,
             title: data.title,
             content: data.content,
-            image: data.image
+            summary: data.summary,
+            author: getname(data.author),
+            views: data.views,
+            tags: data.tags,
+            dt_created: data.dt_created,
+            dt_updated: data.dt_updated
         };
     });
     
