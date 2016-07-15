@@ -82,7 +82,8 @@ angular.module('starter.controllers', [])
                 dt_updated: article.dt_updated
             });
         });
-        
+
+
         $ionicLoading.hide();
     });
     
@@ -97,7 +98,7 @@ angular.module('starter.controllers', [])
             title: data.title,
             content: data.content,
             summary: data.summary,
-            image: article.image.url,
+            image: data.image,
             author: getname(data.author),
             views: data.views,
             tags: data.tags,
