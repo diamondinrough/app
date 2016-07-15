@@ -50,7 +50,7 @@ class ArticleView(RetrieveAPIView):
 
 class VideoListView(ListAPIView):
     queryset = Video.objects.all()
-    serializer_class = VideoSerializer
+    serializer_class = VideoListSerializer
 
 
 class VideoView(RetrieveAPIView):
