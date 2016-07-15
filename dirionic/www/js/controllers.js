@@ -74,7 +74,7 @@ angular.module('starter.controllers', [])
                 title: article.title,
                 content: article.content,
                 summary: article.summary,
-                image: article.image.url,
+                image: article.image,
                 author: getname(article.author),
                 views: article.views,
                 tags: article.tags,
