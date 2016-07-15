@@ -1,4 +1,4 @@
-var site = "http://localhost/"
+var site = "http://54.152.36.188/"
 
 angular.module('starter.services', [])
 
