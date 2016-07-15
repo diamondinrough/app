@@ -19,6 +19,7 @@ angular.module('starter.controllers', [])
                     title: item.title,
                     content: item.content,
                     summary: item.summary,
+                    image: item.image,
                     author: getname(item.author),
                     views: item.views,
                     tags: item.tags,
@@ -33,7 +34,7 @@ angular.module('starter.controllers', [])
                     // videos changed to urls rather than upload, waiting for database change
                     summary: item.summary,
                     speaker: item.speaker,
-                    poster: getname(item.author),
+                    poster: getname(item.poster),
                     views: item.views,
                     tags: item.tags,
                     dt_created: item.dt_created
@@ -82,7 +83,6 @@ angular.module('starter.controllers', [])
                 dt_updated: article.dt_updated
             });
         });
-
 
         $ionicLoading.hide();
     });

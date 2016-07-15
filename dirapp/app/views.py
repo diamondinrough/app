@@ -26,8 +26,8 @@ def index(request):
             data['content'] = item.content
             data['author'] = item.author.username
         elif itemtype == 'Video':
-            data['videofileURL'] = item.videofile.url
-            data['poster'] = item.author.username
+            data['videolink'] = item.videolink
+            data['poster'] = item.poster.username
         else:
             data['resourcefileURL'] = item.resourcefile.url
             data['poster'] = item.poster.username
