@@ -53,7 +53,7 @@ class ResourceSerializer(ModelSerializer):
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
-        model = Resource
+        model = Help
         fields = ('id', 'title', 'resourcefile', 'filetype', 'summary', 'poster', 'views', 'downloads', 'tags', 'dt_created')
         
 class HelpSerializer(ModelSerializer):
@@ -62,5 +62,5 @@ class HelpSerializer(ModelSerializer):
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
-        model = Resource
+        model = Help
         fields = ('id', 'poster', 'title', 'question', 'tags', 'dt_created')
