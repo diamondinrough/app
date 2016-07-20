@@ -132,3 +132,16 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.title
+
+class Help(models.Model):
+    id = models.AutoField(primary_key=True)
+    poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='helpresources')
+    header = models.CharField(max_length=100)
+    question = models.CharField(max_length=500)
+    
+    tags = models.ManyToManyField(Tag, blank=False, related_name='helptag')
+    
+    dt_created = models.DateTimeField(auto_now_add=True, editable=False)
+
+    def __str__(self):
+        return self.title
