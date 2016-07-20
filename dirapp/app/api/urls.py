@@ -14,4 +14,6 @@ urlpatterns = [
     url(r'^app/videos/', views.VideoListView.as_view(), name='apivideolistview'),
     url(r'^app/resources/(?P<id>[0-9]+)/', views.ResourceView.as_view(), name='apiresourceview'),
     url(r'^app/resources/', views.ResourceListView.as_view(), name='apiresourcelistview'),
+    url(r'^app/help/(?P<id>[0-9]+)/', views.HelpView.as_view(), name='apihelpview'),
+    url(r'^app/help/', views.HelpListView.as_view(), name='apihelplistview'),
 ]
