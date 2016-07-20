@@ -68,3 +68,13 @@ class ResourceView(RetrieveAPIView):
     queryset = Resource.objects.all()
     serializer_class = ResourceSerializer
     lookup_field = 'id'
+
+class HelpListView(ListAPIView):
+    queryset = Help.objects.all()
+    serializer_class = HelpSerializer
+
+
+class HelpView(RetrieveAPIView):
+    queryset = Help.objects.all()
+    serializer_class = HelpSerializer
+    lookup_field = 'id'
