@@ -63,4 +63,4 @@ class HelpSerializer(ModelSerializer):
 
     class Meta:
         model = Resource
-        fields = ('id', 'poster', 'header', 'question', 'tags', 'dt_created')
+        fields = ('id', 'poster', 'title', 'question', 'tags', 'dt_created')
