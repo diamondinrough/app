@@ -136,7 +136,7 @@ class Resource(models.Model):
 class Help(models.Model):
     id = models.AutoField(primary_key=True)
     poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='helpresources')
-    header = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
     question = models.CharField(max_length=500)
     
     tags = models.ManyToManyField(Tag, blank=False, related_name='helptag')
