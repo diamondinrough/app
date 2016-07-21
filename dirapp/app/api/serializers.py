@@ -63,4 +63,9 @@ class HelpSerializer(ModelSerializer):
 
     class Meta:
         model = Help
-        fields = ('id', 'poster', 'title', 'question', 'tags', 'dt_created')
+        fields = ('id', 'poster', 'question', 'detail', 'tags', 'dt_created')
+        
+class FeedbackSerializer(ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ('id', 'comments', 'contactinfo', 'name')
