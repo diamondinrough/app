@@ -69,3 +69,8 @@ class FeedbackSerializer(ModelSerializer):
     class Meta:
         model = Feedback
         fields = ('id', 'comments', 'contactinfo', 'name')
+
+class HeadOfInfoSerializer(ModelSerializer):
+    class Meta:
+        model = HeadOfInfo
+        fields = ('id', 'position', 'name', 'wechat', 'email')
