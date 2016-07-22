@@ -154,3 +154,11 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.name + ' feedback'
+
+class HeadOfInfo(models.Model):
+    id = models.AutoField(primary_key=True)
+    position = models.CharField(max_length=50)
+
+    name = models.CharField(max_length=50)
+    wechat = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
