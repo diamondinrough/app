@@ -53,5 +53,19 @@ class ResourceSerializer(ModelSerializer):
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
-        model = Resource
+        model = Help
         fields = ('id', 'title', 'resourcefile', 'filetype', 'summary', 'poster', 'views', 'downloads', 'tags', 'dt_created')
+        
+class HelpSerializer(ModelSerializer):
+    poster = UserSerializer()
+    
+    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+
+    class Meta:
+        model = Help
+        fields = ('id', 'poster', 'question', 'detail', 'tags', 'dt_created')
+        
+class FeedbackSerializer(ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ('id', 'comments', 'contactinfo', 'name')
