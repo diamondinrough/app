@@ -10,7 +10,7 @@ class UserSerializer(ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'picture', 'dt_created', 'dt_updated')
+        fields = ('id', 'username', 'first_name', 'last_name', 'image', 'dt_created', 'dt_updated')
 
 class ArticleSerializer(ModelSerializer):
     author = UserSerializer()
