@@ -89,7 +89,7 @@ class FeedbackView(RetrieveAPIView):
     serializer_class = FeedbackSerializer
     lookup_field = 'id'
 
-class HeadOfInfoView(ListAPIView):
+class HeadOfInfoListView(ListAPIView):
     queryset = HeadOfInfo.objects.all()
     serializer_class = HeadOfInfoSerializer
     lookup_field = 'person'
