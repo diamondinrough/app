@@ -157,7 +157,7 @@ class Feedback(models.Model):
         return self.name + ' feedback'
 
 class HeadOfInfo(models.Model):
-    id = models.ForeignKey(User)
+    person_id = models.ForeignKey(User)
     position = models.CharField(max_length=50)
     picture = models.ForeignKey(User)
     name = models.CharField(max_length=50)
