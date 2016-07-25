@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^app/feedback/(?P<id>[0-9]+)/', views.FeedbackView.as_view(), name='apifeedbackview'),
     url(r'^app/feedback/', views.FeedbackListView.as_view(), name='apifeedbacklistview'),
     url(r'^app/headofinfo/(?P<person>\w+)/', views.HeadOfInfoView.as_view(), name='headofinfoview'),
+    url(r'^app/headofinfo/', views.HeadOfInfoListView.as_view(), name='headofinfolistview'),
 ]
