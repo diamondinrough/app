@@ -10,7 +10,7 @@ class UserSerializer(ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'dt_created', 'dt_updated')
+        fields = ('id', 'username', 'first_name', 'last_name', 'picture', 'dt_created', 'dt_updated')
 
 class ArticleSerializer(ModelSerializer):
     author = UserSerializer()
@@ -73,4 +73,4 @@ class FeedbackSerializer(ModelSerializer):
 class HeadOfInfoSerializer(ModelSerializer):
     class Meta:
         model = HeadOfInfo
-        fields = ('id', 'position', 'name', 'wechat', 'email')
+        fields = ('person_id', 'position', 'name', 'wechat', 'email')
