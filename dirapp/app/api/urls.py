@@ -18,5 +18,5 @@ urlpatterns = [
     url(r'^app/help/', views.HelpListView.as_view(), name='apihelplistview'),
     url(r'^app/feedback/(?P<id>[0-9]+)/', views.FeedbackView.as_view(), name='apifeedbackview'),
     url(r'^app/feedback/', views.FeedbackListView.as_view(), name='apifeedbacklistview'),
-    url(r'^app/headofinfo/(?P<id>[0-9]+)/', views.HeadOfInfoView.as_view(), name='headofinfoview'),
+    url(r'^app/headofinfo/(?P<username>\w+)/', views.HeadOfInfoView.as_view(), name='headofinfoview'),
 ]
