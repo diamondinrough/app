@@ -132,22 +132,3 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class HelpQuestion(models.Model):
-    id = models.AutoField(primary_key=True)
-    question = models.CharField(max_length=200)
-    detail = models.TextField()
-
-    def __str__(self):
-        return self.question
-
-
-class Feedback(models.Model):
-    id = models.AutoField(primary_key=True)
-    comments = models.TextField()
-    contactinfo = models.CharField(max_length=200)
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name + ' feedback'
