@@ -12,6 +12,7 @@ class UserSerializer(ModelSerializer):
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'dt_created', 'dt_updated')
 
+
 class ArticleSerializer(ModelSerializer):
     author = UserSerializer()
 
@@ -22,6 +23,7 @@ class ArticleSerializer(ModelSerializer):
         model = Article
         fields = ('id', 'title', 'content', 'summary', 'author', 'image', 'views', 'tags', 'dt_created', 'dt_updated')
 
+
 class ArticleLinkSerializer(ModelSerializer):
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
@@ -29,14 +31,6 @@ class ArticleLinkSerializer(ModelSerializer):
         model = ArticleLink
         fields = ('id', 'title', 'link', 'summary', 'poster', 'image', 'views', 'tags', 'dt_created')
 
-class VideoListSerializer(ModelSerializer):
-    poster = UserSerializer()
-
-    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
-
-    class Meta:
-        model = Video
-        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
 
 class VideoSerializer(ModelSerializer):
     poster = UserSerializer()
@@ -47,15 +41,17 @@ class VideoSerializer(ModelSerializer):
         model = Video
         fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
 
+
 class ResourceSerializer(ModelSerializer):
     poster = UserSerializer()
 
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
-        model = Help
+        model = Resource
         fields = ('id', 'title', 'resourcefile', 'filetype', 'summary', 'poster', 'views', 'downloads', 'tags', 'dt_created')
         
+
 class HelpSerializer(ModelSerializer):
     poster = UserSerializer()
     
@@ -65,6 +61,7 @@ class HelpSerializer(ModelSerializer):
         model = Help
         fields = ('id', 'poster', 'question', 'detail', 'tags', 'dt_created')
         
+
 class FeedbackSerializer(ModelSerializer):
     class Meta:
         model = Feedback

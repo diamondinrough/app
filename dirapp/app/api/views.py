@@ -50,7 +50,7 @@ class ArticleView(RetrieveAPIView):
 
 class VideoListView(ListAPIView):
     queryset = Video.objects.all()
-    serializer_class = VideoListSerializer
+    serializer_class = VideoSerializer
 
 
 class VideoView(RetrieveAPIView):
@@ -69,6 +69,7 @@ class ResourceView(RetrieveAPIView):
     serializer_class = ResourceSerializer
     lookup_field = 'id'
 
+
 class HelpListView(ListAPIView):
     queryset = Help.objects.all()
     serializer_class = HelpSerializer
@@ -79,13 +80,13 @@ class HelpView(RetrieveAPIView):
     serializer_class = HelpSerializer
     lookup_field = 'id'
 
+
 class FeedbackListView(ListAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    lookup_field = 'id'
     
+
 class FeedbackView(RetrieveAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
     lookup_field = 'id'
-
