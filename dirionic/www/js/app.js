@@ -23,7 +23,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $stateProvider
 
   .state('app', {
@@ -112,4 +112,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 
   $urlRouterProvider.otherwise('/app/index');
+
+  $ionicConfigProvider.tabs.position('bottom');
 });
