@@ -12,3 +12,6 @@ admin.site.register(Article)
 admin.site.register(ArticleLink)
 admin.site.register(Video)
 admin.site.register(Resource)
+admin.site.register(Help)
+admin.site.register(Feedback)
+
