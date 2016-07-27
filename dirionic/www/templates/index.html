@@ -1,81 +1,161 @@
 <ion-view view-title="Index">
   <style>
-	.video-container{
-position:relative;
-padding-bottom:56.25%;
-padding-top:30px;
-height:0;
-overflow:hidden;
-}
-.video-container iframe, .video-container object,.video-container embed{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:90%;
-}
-</style>
-    <ion-content>
-	
-        <ion-item-group>
-            <ion-item>
-                <ion-slide-box auto-play="true"show-pager="false"does-continue="true">
-		<ion-slide>
-			<img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273"style="max-width:100%;max-height:100%;">
-		</ion-slide>
-<ion-slide>
-		<img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273"style="max-width:100%;max-height:100%;">	
-		</ion-slide>
-<ion-slide>
-		<img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273" style="max-width:100%;max-height:100%;">	
-		</ion-slide>
-	</ion-slide-box>
-                        </ion-item>
-                        <ion-item>
-			<div class="row">
-			 <div class="col">Unknown Tag List</div>
-<div class="col"style="text-align:right">Test Text <i class="icon ion-ios-chevron-right"></i></div>
-</div>
-<div class="row">Information Text Here
-</div>
-<div class="row">
-			 <div class="col"><p>2016-5-24</p></div>
-<div class="col"style="text-align:right"><ion-icon name="ios-eye"></ion-icon>38923</div>
-</div>
-
-<div class="video-container">
-<iframe src="https://www.youtube.com/embed/tW0JlWVWJMc" frameborder="0" allowfullscreen></iframe>
-
-</div>
-<div class="row">
-<p>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan nunc ut pharetra gravida. Sed lacinia sagittis hendrerit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
-</p>
-</div>
-</ion-item>
-                  
-                                            <ion-item>
-			<div class="row">
-			 <div class="col">Unknown Tag List</div>
-<div class="col"style="text-align:right">Test Text <i class="icon ion-ios-chevron-right"></i></div>
-</div>
-<div class="row">Information Text Here
-</div>
-<div class="row">
-			 <div class="col"><p>2016-5-24</p></div>
-<div class="col"style="text-align:right"><ion-icon name="ios-eye"></ion-icon>38923</div>
-</div>
-
-<div class="video-container">
-<iframe src="https://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allowfullscreen></iframe>
-
-</div>
-<div class="row">
-<p>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan nunc ut pharetra gravida. Sed lacinia sagittis hendrerit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
-</p>
-</div>
-</ion-item>
-                    </ion-item-group>
-                </ion-content>
+	  .video-container{
+      position:relative;
+      padding-bottom:56.25%;
+      padding-top:30px;
+      height:0;
+      overflow:hidden;
+    }
+    .video-container iframe, .video-container object, .video-container embed {
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:90%;
+    }
+    p.item-type {
+      float: left;
+      padding-top: 12px;
+      font-size: 14px;
+      font-family: "apple-system","Helvetica Neue","Roboto","Segoe UI",sans-serif;
+    }
+    a.item-view {
+      float: right;
+      font-size: 14px;
+    }
+    p.item-date {
+      float: left;
+      font-size: 14px;
+    }
+    p.item-views {
+      float: right;
+      top: auto;
+      right: auto;
+      position: static;
+      font-size: 14px;
+    }
+    p.item-summary {
+      font-size: 14px;
+    }
+    h2.item-title {
+      font-size: 16px;
+    }
+    li.tags {
+      display: inline;
+      color: white;
+      background-color: #FFAD33;
+      padding: 1px 5px;
+      margin-right: 5px;
+      border-radius: .25em;
+      font-size: 14px;
+    }
+    .article-img {
+      display: inline-block;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      width: 100%;
+      height: 250px;
+      overflow: hidden;
+    }
+  </style>
+  <ion-content>
+    <ion-slide-box auto-play="true" show-pager="true" does-continue="true">
+      <ion-slide>
+        <img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273"style="max-width:100%;max-height:100%;">
+      </ion-slide>
+      <ion-slide>
+        <img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273"style="max-width:100%;max-height:100%;"> 
+      </ion-slide>
+      <ion-slide>
+        <img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273" style="max-width:100%;max-height:100%;">  
+      </ion-slide>
+    </ion-slide-box>
+    <ion-item-list>
+      <ion-item ng-repeat="item in itemlist">
+        <div ng-if="item.type == 'article'">
+          <div>
+            <p class="item-type" >Article</p>
+            <a class="item-view button icon-right ion-chevron-right button-clear button-dark">View</a>
+          </div>
+          <div style="clear: both;"></div>
+          <ul>
+            <li class="tags" ng-repeat="tag in item.tags">
+              {{tag}}
+            </li>
+          </ul>
+          <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+            <h2 class="item-title">{{item.title}}</h2>
+          </div>
+          <div>
+            <p class="item-date">{{item.dt_created}}</p>
+            <p class="item-views icon ion-eye">{{item.views}}</p>
+          </div>
+          <div style="clear: both;"></div>
+          <div class="article-img">
+            <img src="{{item.image}}">
+          </div>
+          <div class="item-text-wrap">
+            <p class="item-summary">{{item.summary}}</p>
+          </div>
+        </div>
+        <div ng-if="item.type == 'video'">
+          video
+        </div>
+        <div ng-if="item.type == 'resource'">
+          resource
+        </div>
+      </ion-item>
+      <!--
+      <ion-item>
+        <div class="row">
+          <div class="col">Unknown Tag List</div>
+          <div class="col"style="text-align:right">Test Text
+            <i class="icon ion-ios-chevron-right"></i>
+          </div>
+        </div>
+        <div class="row">Information Text Here</div>
+        <div class="row">
+          <div class="col"><p>2016-5-24</p></div>
+          <div class="col"style="text-align:right">
+            <ion-icon name="ios-eye"></ion-icon>38923
+          </div>
+        </div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="row">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan nunc ut pharetra gravida. Sed lacinia sagittis hendrerit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+          </p>
+        </div>
+      </ion-item>
+      </ion-item>
+      <ion-item>
+        <div class="row">
+          <div class="col">Unknown Tag List</div>
+          <div class="col"style="text-align:right">Test Text
+            <i class="icon ion-ios-chevron-right"></i>
+          </div>
+        </div>
+        <div class="row">Information Text Here</div>
+        <div class="row">
+          <div class="col"><p>2016-5-24</p></div>
+          <div class="col"style="text-align:right">
+            <ion-icon name="ios-eye"></ion-icon>38923
+          </div>
+        </div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="row">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan nunc ut pharetra gravida. Sed lacinia sagittis hendrerit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+          </p>
+        </div>
+      </ion-item>
+      -->
+    </ion-item-list>
+  </ion-content>
 </ion-view>
