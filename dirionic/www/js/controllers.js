@@ -111,32 +111,44 @@ angular.module('starter.controllers', [])
 }])
 
 .controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", function($scope, $ionicLoading, VideoListSvc) {
-    $ionicLoading.show({template: "Loading videos..."});
+	$ionicLoading.show({template: "Loading videos..."});
 
-    $scope.videos = [];
-    $scope.$on("videolist", function(_, data) {
+	$scope.videos = [];
+	$scope.$on("videolist", function(_, data) {
 
-        data.forEach(function(video) {
-            $scope.videos.push({
-                //json data
-            });
-        });
-        
-        $ionicLoading.hide();
-    });
+    	data.forEach(function(video) {
+        	$scope.videos.push({
+            	id: video.id,
+        	title: video.title,
+        	summary: video.summary,
+        	videolink: video.videolink,
+        	speaker: video.speaker,
+        	views: video.views,
+        	tags: video.tags,
+        	});
+    	});
+   	 
+    	$ionicLoading.hide();
+	});
     
-    VideoListSvc.loadVideos();
+	VideoListSvc.loadVideos();
 }])
 
 .controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", function($scope, $stateParams, VideoSvc) {
-    $scope.video = null;
-    $scope.$on("video", function(_, data) {
-        $scope.video = {
-            //json data
-        };
-    });
+	$scope.video = null;
+	$scope.$on("video", function(_, data) {
+    	$scope.video = {
+          	id: data.id,
+        	title: data.title,
+        	summary:data.summary,
+        	videolink: data.videolink,
+        	speaker: data.speaker,
+        	views: data.views,
+        	tags: data.tags,
+    	};
+	});
     
-    VideoSvc.loadVideo($stateParams.id);
+	VideoSvc.loadVideo($stateParams.id);
 }])
 
 .controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {

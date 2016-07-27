@@ -1,9 +1,44 @@
+	 	 	 	
 <ion-view view-title="Articles">
-  <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="article in articles" href="#/app/articles/{{article.id}}">
-        {{article.title}}
-      </ion-item>
-    </ion-list>
-  </ion-content>
+ <ion-content>
+   <ion-list>
+     <ion-item ng-repeat="article in
+articles" href="#/app/articles/{{article.id}}">
+ 
+
+
+	<div class="row">
+			 <div class="col">{{article.tags}}</div>
+<div
+class="col"style="text-align:right">{{article.title}}
+<i class="icon ion-ios-chevron-right"></i></div>
+</div>
+
+
+
+
+<div class="row">
+			 <div
+class="col"><p>{{article.dt_created}}</p></div>
+<div
+class="col"style="text-align:right"><ion-icon
+name="ios-eye"></ion-icon>{{article.views}}</div>
+</div>
+
+
+
+
+<div class="video-container">
+<img
+src="{{article.image}}"style="width:100%;">
+</div>
+<div class="row">
+<p>
+{{article.content}}
+</p>
+</div>
+     </ion-item>
+	
+   </ion-list>
+ </ion-content>
 </ion-view>
