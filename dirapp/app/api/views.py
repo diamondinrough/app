@@ -93,7 +93,7 @@ class FeedbackView(RetrieveAPIView):
 
 
 class HeadOfInfoListView(ListAPIView):
-    queryset = HeadOfInfo.objects.all().order_by('-dt_created')
+    queryset = HeadOfInfo.objects.all()
     serializer_class = HeadOfInfoSerializer
     lookup_field = 'person'
 
