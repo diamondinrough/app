@@ -1,0 +1,43 @@
+<ion-view view-title="Videos">
+<style>
+    .video-container{
+position:relative;
+padding-bottom:56.25%;
+padding-top:30px;
+height:0;
+overflow:hidden;
+}
+.video-container iframe, .video-container object,.video-container embed{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:90%;
+}
+</style>
+  <ion-content>
+	<ion-list>
+ <ion-item ng-repeat="video in videos" >
+<div class="row">
+   		  <div class="col">{{video.tags}}</div>
+<div class="col"style="text-align:right">{{video.title}} <i class="icon ion-ios-chevron-right"></i></div>
+</div>
+
+<div class="row">
+   		  <div class="col">Temp Date</div>
+<div class="col"style="text-align:right"><ion-icon name="ios-eye"></ion-icon>{{video.views}}</div>
+</div>
+
+<div class="video-container">
+{{video.videolink}}
+<iframe src={{video.videolink}} frameborder="0" allowfullscreen></iframe>
+</div>
+<div class="row">
+<p>
+{{video.summary}}
+</p>
+</div>
+</ion-item>
+ </ion-list>
+  </ion-content>
+</ion-view>
