@@ -38,7 +38,7 @@ class UserView(RetrieveAPIView):
 
 
 class ArticleListView(ListAPIView):
-    queryset = Article.objects.all()
+    queryset = Article.objects.all().order_by('-dt_created')
     serializer_class = ArticleSerializer
 
 
@@ -49,7 +49,7 @@ class ArticleView(RetrieveAPIView):
 
 
 class VideoListView(ListAPIView):
-    queryset = Video.objects.all()
+    queryset = Video.objects.all().order_by('-dt_created')
     serializer_class = VideoSerializer
 
 
@@ -60,7 +60,7 @@ class VideoView(RetrieveAPIView):
 
 
 class ResourceListView(ListAPIView):
-    queryset = Resource.objects.all()
+    queryset = Resource.objects.all().order_by('-dt_created')
     serializer_class = ResourceSerializer
 
 
@@ -71,7 +71,7 @@ class ResourceView(RetrieveAPIView):
 
 
 class HelpListView(ListAPIView):
-    queryset = Help.objects.all()
+    queryset = Help.objects.all().order_by('-dt_created')
     serializer_class = HelpSerializer
 
 
@@ -82,7 +82,7 @@ class HelpView(RetrieveAPIView):
 
 
 class FeedbackListView(ListAPIView):
-    queryset = Feedback.objects.all()
+    queryset = Feedback.objects.all().order_by('-dt_created')
     serializer_class = FeedbackSerializer
     
 
