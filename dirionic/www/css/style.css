@@ -1,1 +1,113 @@
 /* Empty. Add your own CSS if you like */
+p.item-type {
+  float: left;
+  padding-top: 12px;
+  font-size: 14px;
+  font-family: "apple-system","Helvetica Neue","Roboto","Segoe UI",sans-serif;
+}
+a.item-view {
+  float: right;
+  font-size: 14px;
+}
+p.item-date {
+  float: left;
+  font-size: 14px;
+  color: #666666;
+}
+p.item-copyright {
+  float: left;
+  font-size: 14px;
+  color: #666666;
+}
+p.item-views {
+  float: right;
+  top: auto;
+  right: auto;
+  position: static;
+  font-size: 14px;
+  color: #666666;
+}
+p.item-author {
+  float: right;
+  top: auto;
+  right: auto;
+  position: static;
+  font-size: 14px;
+  color: #666666;
+}
+p.item-downloads {
+  float: right;
+  top: auto;
+  right: auto;
+  position: static;
+  font-size: 14px;
+  margin-left: 10px;
+}
+p.item-summary {
+  font-size: 14px;
+}
+h2.item-title {
+  font-size: 16px;
+}
+li.tag {
+  display: inline;
+  color: white;
+  padding: 1px 5px;
+  margin-right: 5px;
+  border-radius: .25em;
+  font-size: 14px;
+}
+.item-footer {
+  padding-bottom: 30px;
+}
+.item-img-container {
+  display: block;
+  text-align: center;
+  margin: 5px 0px;
+  max-height: 200px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.item-img {
+  width: 100%;
+}
+.resource-container {
+  overflow: auto;
+  margin: 5px 0px;
+}
+.resource-type {
+  float: left;
+  color: white;
+  background-color: #3366ff;
+  padding: 15px 15px;
+  border-radius: .4em;
+}
+.resource-content {
+  margin-left: 75px;
+}
+.slider {
+  width: 100%;
+  height: 200px;
+}
+
+.video-container {
+  position: relative;
+  padding: 120px;
+}
+.video-container iframe {
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+}
+
+img.slider-img {
+  width: 100%;
+  height: 100%;
+}
+.video-tabs {
+  top: 240px;
+}
+a.video-tab {
+}

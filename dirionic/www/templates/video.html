@@ -1,0 +1,27 @@
+<ion-view>
+  <style>
+    .videopage {
+      margin: 0 0;
+    }
+    .tags {
+      margin: 10px 0px;
+    }
+    h1.title {
+      margin: 10px 0px;
+      font-size: 24px;
+    }
+    
+  </style>
+  <ion-nav-title>{{video.title}}</ion-nav-title>
+  <ion-content>
+    <div class="video-container">
+      <iframe ng-src="{{video.embed}}" allowfullscreen></iframe>
+    </div>
+    <!--
+    <div class="tabs video-tabs">
+      <a class="tab-item video-tab" href="#/app/index/videos/{{video.id}}/info">Tab1</a>
+      <a class="tab-item video-tab" href="#/app/index/videos/{{video.id}}/recommend">Tab2</a>
+    </div>
+    -->
+  </ion-content>
+</ion-view>

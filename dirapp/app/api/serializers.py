@@ -11,7 +11,7 @@ class UserSerializer(ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'dt_created', 'dt_updated')
+        fields = ('id', 'username', 'first_name', 'last_name', 'image', 'dt_created', 'dt_updated')
 
 
 class TagSerializer(ModelSerializer):
@@ -84,3 +84,9 @@ class FeedbackSerializer(ModelSerializer):
     class Meta:
         model = Feedback
         fields = ('id', 'comments', 'contactinfo', 'name')
+
+
+class HeadOfInfoSerializer(ModelSerializer):
+    class Meta:
+        model = HeadOfInfo
+        fields = ('person', 'position', 'name', 'wechat', 'email')

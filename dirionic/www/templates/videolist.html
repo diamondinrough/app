@@ -1,43 +1,32 @@
 <ion-view view-title="Videos">
-<style>
-    .video-container{
-position:relative;
-padding-bottom:56.25%;
-padding-top:30px;
-height:0;
-overflow:hidden;
-}
-.video-container iframe, .video-container object,.video-container embed{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:90%;
-}
-</style>
   <ion-content>
-	<ion-list>
- <ion-item ng-repeat="video in videos" >
-<div class="row">
-   		  <div class="col">{{video.tags}}</div>
-<div class="col"style="text-align:right">{{video.title}} <i class="icon ion-ios-chevron-right"></i></div>
-</div>
-
-<div class="row">
-   		  <div class="col">Temp Date</div>
-<div class="col"style="text-align:right"><ion-icon name="ios-eye"></ion-icon>{{video.views}}</div>
-</div>
-
-<div class="video-container">
-{{video.videolink}}
-<iframe src={{video.videolink}} frameborder="0" allowfullscreen></iframe>
-</div>
-<div class="row">
-<p>
-{{video.summary}}
-</p>
-</div>
-</ion-item>
- </ion-list>
+    <ion-list>
+      <ion-item ng-repeat="video in videos">
+        <div>
+          <p class="item-type">Video</p>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/videos/{{video.id}}">View</a>
+        </div>
+        <div style="clear: both;"></div>
+        <ul>
+          <li class="tag" ng-repeat="tag in video.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+        <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+          <h2 class="item-title">{{video.title}}</h2>
+        </div>
+        <div>
+          <p class="item-date">{{video.dt_created}}</p>
+          <p class="item-views icon ion-eye">{{video.views}}</p>
+        </div>
+        <div style="clear: both;"></div>
+        <div class="item-img-container">
+          <img class="item-img" ng-src="https://img.youtube.com/vi/{{video.videoid}}/0.jpg" alt="thumbnail">
+        </div>
+        <div class="item-text-wrap">
+          <p class="item-summary">{{video.summary}}</p>
+        </div>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>
