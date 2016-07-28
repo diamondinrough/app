@@ -26,6 +26,11 @@ class IndexView(MultipleModelAPIView):
     ]
 
 
+class IndexSlidesListView(ListAPIView):
+    queryset = IndexSlide.objects.all().order_by('order')
+    serializer_class = IndexSlideSerializer
+
+
 class UserListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer

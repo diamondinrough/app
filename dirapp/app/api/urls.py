@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.rootredirect),
+    url(r'^app/index/slides', views.IndexSlidesListView.as_view(), name='apiindexslides'),
     url(r'^app/index/', views.IndexView.as_view(), name='apiindexview'),
     url(r'^app/users/(?P<username>\w+)/', views.UserView.as_view(), name='apiuserview'),
     url(r'^app/users/', views.UserListView.as_view(), name='apiuserlistview'),

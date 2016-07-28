@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer, DateTimeField, CharField
+rom rest_framework.serializers import ModelSerializer, DateTimeField, Field, CharField
 
+from colorfield.fields import ColorField
 
 from ..models import *
 
@@ -20,12 +21,6 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = ('name', 'color')
-
-
-class IndexSlideSerializer(ModelSerializer):
-    class Meta:
-        model = IndexSlide
-        fields = ('image', 'order')
 
 
 class ArticleSerializer(ModelSerializer):
@@ -50,7 +45,6 @@ class ArticleLinkSerializer(ModelSerializer):
 
 class VideoSerializer(ModelSerializer):
     poster = UserSerializer()
-    tags = TagSerializer(many=True)
 
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 
@@ -61,7 +55,6 @@ class VideoSerializer(ModelSerializer):
 
 class ResourceSerializer(ModelSerializer):
     poster = UserSerializer()
-    tags = TagSerializer(many=True)
 
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
 

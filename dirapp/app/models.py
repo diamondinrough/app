@@ -1,5 +1,6 @@
 from django.db import models
 
+from colorfield.fields import ColorField
 #from taggit.managers import TaggableManager
 #from taggit.models import TagBase, GenericTaggedItemBase
 
@@ -51,12 +52,22 @@ class Task(models.Model):
         return self.name
 
 
+class IndexSlide(models.Model):
+    id = models.AutoField(primary_key=True)
+    image = models.ImageField(upload_to='index/slides/')
+    order = models.IntegerField(default=0)
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=20, primary_key=True)
+
+    color = ColorField(default='#000000')
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
 
 
 class Article(models.Model):
@@ -66,7 +77,7 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=500, null=True)
-    image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.gif')
+    image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.png')
     views = models.IntegerField(default=0)
 
     tags = models.ManyToManyField(Tag, blank=False, related_name='articletag')
