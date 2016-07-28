@@ -26,6 +26,16 @@ class IndexView(MultipleModelAPIView):
     ]
 
 
+class IndexSlidesListView(ListAPIView):
+    queryset = IndexSlide.objects.all().order_by('order')
+    serializer_class = IndexSlideSerializer
+
+
+class TagListView(ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
 class UserListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -39,18 +49,17 @@ class UserView(RetrieveAPIView):
 
 class ArticleListTagView(ListAPIView):
     serializer_class = ArticleSerializer
-    pagination_class = StandardPagination
 
     def get_queryset(self):
         tags = self.kwargs['tags'].split(',')
-        qset = Article.objects.all()
+        qset = Article.objects.all().order_by('-dt_created')
         for tag in tags:
             qset = qset.filter(tags__name=tag)
         return qset
 
 
 class ArticleListView(ListAPIView):
-    queryset = Article.objects.all()
+    queryset = Article.objects.all().order_by('-dt_created')
     serializer_class = ArticleSerializer
 
 
@@ -62,18 +71,17 @@ class ArticleView(RetrieveAPIView):
 
 class VideoListTagView(ListAPIView):
     serializer_class = VideoSerializer
-    pagination_class = StandardPagination
 
     def get_queryset(self):
         tags = self.kwargs['tags'].split(',')
-        qset = Video.objects.all()
+        qset = Video.objects.all().order_by('-dt_created')
         for tag in tags:
             qset = qset.filter(tags__name=tag)
         return qset
 
 
 class VideoListView(ListAPIView):
-    queryset = Video.objects.all()
+    queryset = Video.objects.all().order_by('-dt_created')
     serializer_class = VideoSerializer
 
 
@@ -85,18 +93,17 @@ class VideoView(RetrieveAPIView):
 
 class ResourceListTagView(ListAPIView):
     serializer_class = ResourceSerializer
-    pagination_class = StandardPagination
 
     def get_queryset(self):
         tags = self.kwargs['tags'].split(',')
-        qset = Resource.objects.all()
+        qset = Resource.objects.all().order_by('-dt_created')
         for tag in tags:
             qset = qset.filter(tags__name=tag)
         return qset
 
 
 class ResourceListView(ListAPIView):
-    queryset = Resource.objects.all()
+    queryset = Resource.objects.all().order_by('-dt_created')
     serializer_class = ResourceSerializer
 
 
@@ -107,7 +114,7 @@ class ResourceView(RetrieveAPIView):
 
 
 class HelpListView(ListAPIView):
-    queryset = Help.objects.all()
+    queryset = Help.objects.all().order_by('-dt_created')
     serializer_class = HelpSerializer
 
 
@@ -118,7 +125,7 @@ class HelpView(RetrieveAPIView):
 
 
 class FeedbackListView(ListAPIView):
-    queryset = Feedback.objects.all()
+    queryset = Feedback.objects.all().order_by('-dt_created')
     serializer_class = FeedbackSerializer
     
 
@@ -126,3 +133,14 @@ class FeedbackView(RetrieveAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
     lookup_field = 'id'
+
+
+class HeadOfInfoListView(ListAPIView):
+    queryset = HeadOfInfo.objects.all()
+    serializer_class = HeadOfInfoSerializer
+    lookup_field = 'person'
+
+class HeadOfInfoView(RetrieveAPIView):
+    queryset = HeadOfInfo.objects.all()
+    serializer_class = HeadOfInfoSerializer
+    lookup_field = 'person'
