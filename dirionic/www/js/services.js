@@ -97,3 +97,24 @@ angular.module('starter.services', [])
         });
     }
 }]);
+
+.service("HelpListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
+    this.loadResources = function() {
+        $http.get(site + "api/app/help/?format=json")
+        .success(function(data) {
+            $rootScope.$broadcast("helplist", data);
+        })
+        .error(function() {
+            $ionicLoading.hide();
+        });
+    }
+}])
+
+.service("HelpSvc", ["$http", "$rootScope", function($http, $rootScope) {
+    this.loadResource = function(id) {
+        $http.get(site + "api/app/help/" + id + "/?format=json")
+        .success(function(data) {
+            $rootScope.$broadcast("help", data);
+        });
+    }
+}])
