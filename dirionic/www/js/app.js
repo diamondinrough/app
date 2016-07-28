@@ -23,7 +23,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $sceDelegateProvider) {
   $stateProvider
 
   .state('app', {
@@ -38,6 +38,55 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       'index': {
         templateUrl: 'templates/index.html',
         controller: 'IndexCtrl'
+      }
+    }
+  })
+
+  .state('app.indexarticle', {
+    url: '/index/articles/:id',
+    views: {
+      'index': {
+        templateUrl: 'templates/article.html',
+        controller: 'ArticleCtrl'
+      }
+    }
+  })
+
+  .state('app.indexvideo', {
+    url: '/index/videos/:id',
+//    abstract: true,
+    views: {
+      'index': {
+        templateUrl: 'templates/video.html',
+        controller: 'VideoCtrl'
+      }
+    }
+  })
+/*
+  .state('app.indexvideo.info', {
+    url: "/info",
+    views: {
+      'index': {
+        templateUrl: 'templates/videoinfo.html'
+      }
+    }
+  })
+
+  .state('app.indexvideo.recommend', {
+    url: "/recommend",
+    views: {
+      'index': {
+        templateUrl: 'templates/videorecommend.html'
+      }
+    }
+  })
+*/
+  .state('app.indexresource', {
+    url: '/index/resource/:id',
+    views: {
+      'index': {
+        templateUrl: 'templates/resource.html',
+        controller: 'ResourceCtrl'
       }
     }
   })
@@ -114,4 +163,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   $urlRouterProvider.otherwise('/app/index');
 
   $ionicConfigProvider.tabs.position('bottom');
+
+  $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://youtube.com/**']);
 });
