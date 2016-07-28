@@ -26,15 +26,52 @@ angular.module('starter.services', [])
     }
 }])
 
-.service("ArticleListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-    this.loadArticles = function() {
-        $http.get(site + "api/app/articles/?format=json")
+.service("TagListSvc", ["$http", "$rootScope", function($http, $rootScope) {
+    this.loadTags = function() {
+        $http.get(site + "api/app/tags/?format=json")
         .success(function(data) {
-            $rootScope.$broadcast("articlelist", data);
+            $rootScope.$broadcast("taglist", data)
         })
         .error(function() {
-            $ionicLoading.hide();
+            console.error("Failed to load tags from " + site);
         });
+    }
+}])
+
+.service("ArticleListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
+    this.loadArticles = function(taglist) {
+        notags = true;
+        activetags = [];
+        if (taglist) {
+            for (i = 0; i < taglist.length; i++) {
+                if (taglist[i].checked) {
+                    notags = false;
+                    activetags.push(taglist[i]);
+                }
+            }
+        }
+        if (notags) {
+            $http.get(site + "api/app/articles/?format=json")
+            .success(function(data) {
+                $rootScope.$broadcast("articlelist", data);
+            })
+            .error(function() {
+                $ionicLoading.hide();
+            });
+        } else {
+            url = site + "api/app/articles/tags/";
+            for (i = 0; i < activetags.length; i++) {
+                url += activetags[i].name + ",";
+            }
+            url = url.substr(0,url.length-1) + "/?format=json";
+            $http.get(url)
+            .success(function(data) {
+                $rootScope.$broadcast("articlelist", data);
+            })
+            .error(function() {
+                $ionicLoading.hide();
+            });
+        }
     }
 }])
 
@@ -48,14 +85,39 @@ angular.module('starter.services', [])
 }])
 
 .service("VideoListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-    this.loadVideos = function() {
-        $http.get(site + "api/app/videos/?format=json")
-        .success(function(data) {
-            $rootScope.$broadcast("videolist", data);
-        })
-        .error(function() {
-            $ionicLoading.hide();
-        });
+    this.loadVideos = function(taglist) {
+        notags = true;
+        activetags = [];
+        if (taglist) {
+            for (i = 0; i < taglist.length; i++) {
+                if (taglist[i].checked) {
+                    notags = false;
+                    activetags.push(taglist[i]);
+                }
+            }
+        }
+        if (notags) {
+            $http.get(site + "api/app/videos/?format=json")
+            .success(function(data) {
+                $rootScope.$broadcast("videolist", data);
+            })
+            .error(function() {
+                $ionicLoading.hide();
+            });
+        } else {
+            url = site + "api/app/videos/tags/";
+            for (i = 0; i < activetags.length; i++) {
+                url += activetags[i].name + ",";
+            }
+            url = url.substr(0,url.length-1) + "/?format=json";
+            $http.get(url)
+            .success(function(data) {
+                $rootScope.$broadcast("videolist", data);
+            })
+            .error(function() {
+                $ionicLoading.hide();
+            });
+        }
     }
 }])
 
