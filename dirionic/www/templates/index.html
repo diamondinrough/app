@@ -1,6 +1,6 @@
 <ion-view view-title="Index">
   <style>
-	  .video-container{
+    .video-container{
       position:relative;
       padding-bottom:56.25%;
       padding-top:30px;
@@ -14,98 +14,97 @@
       width:100%;
       height:90%;
     }
-    p.item-type {
-      float: left;
-      padding-top: 12px;
-      font-size: 14px;
-      font-family: "apple-system","Helvetica Neue","Roboto","Segoe UI",sans-serif;
-    }
-    a.item-view {
-      float: right;
-      font-size: 14px;
-    }
-    p.item-date {
-      float: left;
-      font-size: 14px;
-    }
-    p.item-views {
-      float: right;
-      top: auto;
-      right: auto;
-      position: static;
-      font-size: 14px;
-    }
-    p.item-summary {
-      font-size: 14px;
-    }
-    h2.item-title {
-      font-size: 16px;
-    }
-    li.tags {
-      display: inline;
-      color: white;
-      background-color: #FFAD33;
-      padding: 1px 5px;
-      margin-right: 5px;
-      border-radius: .25em;
-      font-size: 14px;
-    }
-    .article-img {
-      display: inline-block;
-      margin-top: 5px;
-      margin-bottom: 5px;
-      border-radius: 5px;
-      width: 100%;
-      height: 250px;
-      overflow: hidden;
-    }
   </style>
   <ion-content>
     <ion-slide-box auto-play="true" show-pager="true" does-continue="true">
-      <ion-slide>
-        <img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273"style="max-width:100%;max-height:100%;">
-      </ion-slide>
-      <ion-slide>
-        <img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273"style="max-width:100%;max-height:100%;"> 
-      </ion-slide>
-      <ion-slide>
-        <img src="http://media.gettyimages.com/photos/digital-composite-image-of-human-eye-picture-id550091273" style="max-width:100%;max-height:100%;">  
+      <ion-slide ng-repeat="slide in slides">
+        <img class="slider-img" ng-src="{{slide}}">
       </ion-slide>
     </ion-slide-box>
     <ion-item-list>
-      <ion-item ng-repeat="item in itemlist">
-        <div ng-if="item.type == 'article'">
-          <div>
-            <p class="item-type" >Article</p>
-            <a class="item-view button icon-right ion-chevron-right button-clear button-dark">View</a>
+      <ion-item ng-if="article">
+        <div>
+          <p class="item-type">Article</p>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/articles/{{article.id}}">View</a>
+        </div>
+        <div style="clear: both;"></div>
+        <ul>
+          <li class="tag" ng-repeat="tag in article.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+        <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+          <h2 class="item-title">{{article.title}}</h2>
+        </div>
+        <div>
+          <p class="item-date">{{article.dt_created}}</p>
+          <p class="item-views icon ion-eye">{{article.views}}</p>
+        </div>
+        <div style="clear: both;"></div>
+        <div class="item-img-container">
+          <img class="item-img" ng-src="{{article.image}}">
+        </div>
+        <div class="item-text-wrap">
+          <p class="item-summary">{{article.summary}}</p>
+        </div>
+      </ion-item>
+      <ion-item ng-if="video">
+        <div>
+          <p class="item-type">Video</p>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/videos/{{video.id}}">View</a>
+        </div>
+        <div style="clear: both;"></div>
+        <ul>
+          <li class="tag" ng-repeat="tag in video.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+        <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+          <h2 class="item-title">{{video.title}}</h2>
+        </div>
+        <div>
+          <p class="item-date">{{video.dt_created}}</p>
+          <p class="item-views icon ion-eye">{{video.views}}</p>
+        </div>
+        <div style="clear: both;"></div>
+        <div class="item-img-container">
+          <img class="item-img" ng-src="https://img.youtube.com/vi/{{video.videoid}}/0.jpg" alt="thumbnail">
+        </div>
+        <div class="item-text-wrap">
+          <p class="item-summary">{{video.summary}}</p>
+        </div>
+      </ion-item>
+      <ion-item ng-if="resource">
+        <div>
+          <p class="item-type">Resource</p>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/resource/{{resource.id}}">View</a>
+        </div>
+        <div style="clear: both;"></div>
+        <ul>
+          <li class="tag" ng-repeat="tag in resource.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+        <div class="resource-container">
+          <div class="resource-type">
+            {{resource.filetype}}
           </div>
-          <div style="clear: both;"></div>
-          <ul>
-            <li class="tags" ng-repeat="tag in item.tags">
-              {{tag}}
-            </li>
-          </ul>
-          <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
-            <h2 class="item-title">{{item.title}}</h2>
-          </div>
-          <div>
-            <p class="item-date">{{item.dt_created}}</p>
-            <p class="item-views icon ion-eye">{{item.views}}</p>
-          </div>
-          <div style="clear: both;"></div>
-          <div class="article-img">
-            <img src="{{item.image}}">
-          </div>
-          <div class="item-text-wrap">
-            <p class="item-summary">{{item.summary}}</p>
+          <div class="resource-content">
+            <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+              <h2 class="item-title">{{resource.title}}</h2>
+            </div>
+            <div class="item-text-wrap">
+              <p class="item-summary">{{resource.summary}}</p>
+            </div>
           </div>
         </div>
-        <div ng-if="item.type == 'video'">
-          video
+        <div style="clear: both;"></div>
+        <div>
+          <p class="item-date">{{resource.dt_created}}</p>
+          <p class="item-downloads icon ion-arrow-down-a">{{resource.downloads}}</p>
+          <p class="item-views icon ion-eye">{{resource.views}}</p>
         </div>
-        <div ng-if="item.type == 'resource'">
-          resource
-        </div>
+        <div style="clear: both;"></div>
       </ion-item>
       <!--
       <ion-item>

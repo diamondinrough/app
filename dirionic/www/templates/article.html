@@ -1,7 +1,44 @@
 <ion-view>
+  <style>
+    .articlepage {
+      margin: 10px 15px;
+    }
+    .tags {
+      margin: 10px 0px;
+    }
+    h1.title {
+      margin: 10px 0px;
+      font-size: 24px;
+    }
+  </style>
   <ion-nav-title>{{article.title}}</ion-nav-title>
-  <ion-content class="padding">
-    <img ng-src="{{article.image}}">
-    <p class="item">{{article.content}}</p>
+  <ion-content>
+    <div class="articlepage">
+      <div class="tags">
+        <ul>
+          <li class="tag" style="background-color: {{tag.color}}; "ng-repeat="tag in article.tags">
+            {{tag.name}}
+          </li>
+        </ul>
+      </div>
+      <div class="item-text-wrap">
+        <h1 class="title">{{article.title}}</h1>
+      </div>
+      <div>
+        <p class="item-date">{{article.dt_created}}</p>
+        <p class="item-author">{{article.author}}</p>
+      </div>
+      <div style="clear: both;"></div>
+      <div class="item-img-container">
+        <img class="item-img" ng-src="{{article.image}}">
+      </div>
+      <div>
+        <p>{{article.content}}</p>
+      </div>
+      <div class="item-footer">
+        <p class="item-copyright">Copyright</p>
+        <p class="item-views">{{article.views}}</p>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

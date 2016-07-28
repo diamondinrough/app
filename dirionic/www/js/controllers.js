@@ -4,63 +4,82 @@ function getname(author) {
 
 angular.module('starter.controllers', [])
 
-.controller("IndexCtrl", ["$scope", "$ionicLoading", "IndexSvc", function($scope, $ionicLoading, IndexSvc) {
+.controller("IndexCtrl", ["$scope", "$ionicLoading", "IndexSlideSvc", "ArticleListSvc", "VideoListSvc", "ResourceListSvc", "$ionicSlideBoxDelegate", function($scope, $ionicLoading, IndexSlideSvc, ArticleListSvc, VideoListSvc, ResourceListSvc, $ionicSlideBoxDelegate) {
     $ionicLoading.show({template: "Loading index..."});
 
+    $scope.slides = [];
     $scope.itemlist = [];
-    $scope.$on("index", function(_, data) {
-        data.forEach(function(item) {
-            var type = item.type;
-            console.log(type);
-            if (type == "article") {
-                $scope.itemlist.push({
-                    type: type,
-                    id: item.id,
-                    title: item.title,
-                    content: item.content,
-                    summary: item.summary,
-                    image: item.image,
-                    author: getname(item.author),
-                    views: item.views,
-                    tags: item.tags,
-                    dt_created: item.dt_created,
-                    dt_updated: item.dt_updated
-                });
-            } else if (type == "video") {
-                $scope.itemlist.push({
-                    type: type,
-                    id: item.id,
-                    title: item.title,
-                    // videos changed to urls rather than upload, waiting for database change
-                    summary: item.summary,
-                    speaker: item.speaker,
-                    poster: getname(item.poster),
-                    views: item.views,
-                    tags: item.tags,
-                    dt_created: item.dt_created
-                });
-            } else if (type == "resource") {
-                $scope.itemlist.push({
-                    type: type,
-                    id: item.id,
-                    title: item.title,
-                    resourcefile: item.resourcefile,
-                    summary: item.summary,
-                    poster: getname(item.poster),
-                    views: item.views,
-                    downloads: item.downloads,
-                    tags: item.tags,
-                    dt_created: item.dt_created
-                });
-            } else {
-                console.log("ERROR: Unknown type: " + type);
-            }
-        });
 
+    $scope.$on("indexslides", function(_, data) {
+        data.forEach(function(slide) {
+            $scope.slides.push(slide.image);
+        });
+        console.log('loading');
+
+        $ionicSlideBoxDelegate.update();
         $ionicLoading.hide();
-   });
+    });
+
+    $scope.article = null;
+    $scope.video = null;
+    $scope.resource = null;
+
+    $scope.$on("articlelist", function(_, data) {
+        if (data.length > 0) {
+            data = data[0];
+            $scope.article = {
+                id: data.id,
+                title: data.title,
+                content: data.content,
+                summary: data.summary,
+                image: data.image,
+                author: getname(data.author),
+                views: data.views,
+                tags: data.tags,
+                dt_created: data.dt_created,
+                dt_updated: data.dt_updated
+            };
+        }
+    });
+    $scope.$on("videolist", function(_, data) {
+        if (data.length > 0) {
+            data = data[0];
+            $scope.video = {
+                id: data.id,
+                title: data.title,
+                summary: data.summary,
+                videolink: data.videolink,
+                videoid: data.videolink.split("=")[1],
+                speaker: data.speaker,
+                views: data.views,
+                tags: data.tags,
+                dt_created: data.dt_created,
+            };
+        }
+    });
+    $scope.$on("resourcelist", function(_, data) {
+        if (data.length > 0) {
+            data = data[0];
+            $scope.resource = {
+                id: data.id,
+                title: data.title,
+                resourcefile: data.resourcefile,
+                filetype: data.filetype,
+                summary: data.summary,
+                poster: getname(data.poster),
+                views: data.views,
+                downloads: data.downloads,
+                tags: data.tags,
+                dt_created: data.dt_created
+            };
+        }
+    });
     
-    IndexSvc.loadIndex();
+    ArticleListSvc.loadArticles();
+    VideoListSvc.loadVideos();
+    ResourceListSvc.loadResources();
+
+    IndexSlideSvc.loadSlides();
 }])
 
 .controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", function($scope, $ionicLoading, ArticleListSvc) {
@@ -119,12 +138,14 @@ angular.module('starter.controllers', [])
     	data.forEach(function(video) {
         	$scope.videos.push({
             	id: video.id,
-        	title: video.title,
-        	summary: video.summary,
-        	videolink: video.videolink,
-        	speaker: video.speaker,
-        	views: video.views,
-        	tags: video.tags,
+            	title: video.title,
+            	summary: video.summary,
+            	videolink: video.videolink,
+                videoid: video.videolink.split("=")[1],
+            	speaker: video.speaker,
+            	views: video.views,
+            	tags: video.tags,
+                dt_created: video.dt_created,
         	});
     	});
    	 
@@ -134,7 +155,7 @@ angular.module('starter.controllers', [])
 	VideoListSvc.loadVideos();
 }])
 
-.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", function($scope, $stateParams, VideoSvc) {
+.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", function($scope, $stateParams, VideoSvc, $sce) {
 	$scope.video = null;
 	$scope.$on("video", function(_, data) {
     	$scope.video = {
@@ -142,9 +163,12 @@ angular.module('starter.controllers', [])
         	title: data.title,
         	summary:data.summary,
         	videolink: data.videolink,
+            videoid: data.videolink.split('=')[1],
+            embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + data.videolink.split('=')[1]),
         	speaker: data.speaker,
         	views: data.views,
         	tags: data.tags,
+            dt_created: data.dt_created,
     	};
 	});
     
