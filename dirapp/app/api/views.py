@@ -31,6 +31,11 @@ class IndexSlidesListView(ListAPIView):
     serializer_class = IndexSlideSerializer
 
 
+class TagListView(ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
 class UserListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -44,11 +49,10 @@ class UserView(RetrieveAPIView):
 
 class ArticleListTagView(ListAPIView):
     serializer_class = ArticleSerializer
-    pagination_class = StandardPagination
 
     def get_queryset(self):
         tags = self.kwargs['tags'].split(',')
-        qset = Article.objects.all()
+        qset = Article.objects.all().order_by('-dt_created')
         for tag in tags:
             qset = qset.filter(tags__name=tag)
         return qset
@@ -67,11 +71,10 @@ class ArticleView(RetrieveAPIView):
 
 class VideoListTagView(ListAPIView):
     serializer_class = VideoSerializer
-    pagination_class = StandardPagination
 
     def get_queryset(self):
         tags = self.kwargs['tags'].split(',')
-        qset = Video.objects.all()
+        qset = Video.objects.all().order_by('-dt_created')
         for tag in tags:
             qset = qset.filter(tags__name=tag)
         return qset
@@ -90,11 +93,10 @@ class VideoView(RetrieveAPIView):
 
 class ResourceListTagView(ListAPIView):
     serializer_class = ResourceSerializer
-    pagination_class = StandardPagination
 
     def get_queryset(self):
         tags = self.kwargs['tags'].split(',')
-        qset = Resource.objects.all()
+        qset = Resource.objects.all().order_by('-dt_created')
         for tag in tags:
             qset = qset.filter(tags__name=tag)
         return qset
