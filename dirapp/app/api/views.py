@@ -26,6 +26,11 @@ class IndexView(MultipleModelAPIView):
     ]
 
 
+class IndexSlidesListView(ListAPIView):
+    queryset = IndexSlide.objects.all().order_by('order')
+    serializer_class = IndexSlideSerializer
+
+
 class UserListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -50,7 +55,7 @@ class ArticleListTagView(ListAPIView):
 
 
 class ArticleListView(ListAPIView):
-    queryset = Article.objects.all()
+    queryset = Article.objects.all().order_by('-dt_created')
     serializer_class = ArticleSerializer
 
 
@@ -73,7 +78,7 @@ class VideoListTagView(ListAPIView):
 
 
 class VideoListView(ListAPIView):
-    queryset = Video.objects.all()
+    queryset = Video.objects.all().order_by('-dt_created')
     serializer_class = VideoSerializer
 
 
@@ -96,7 +101,7 @@ class ResourceListTagView(ListAPIView):
 
 
 class ResourceListView(ListAPIView):
-    queryset = Resource.objects.all()
+    queryset = Resource.objects.all().order_by('-dt_created')
     serializer_class = ResourceSerializer
 
 
@@ -107,7 +112,7 @@ class ResourceView(RetrieveAPIView):
 
 
 class HelpListView(ListAPIView):
-    queryset = Help.objects.all()
+    queryset = Help.objects.all().order_by('-dt_created')
     serializer_class = HelpSerializer
 
 
@@ -118,7 +123,7 @@ class HelpView(RetrieveAPIView):
 
 
 class FeedbackListView(ListAPIView):
-    queryset = Feedback.objects.all()
+    queryset = Feedback.objects.all().order_by('-dt_created')
     serializer_class = FeedbackSerializer
     
 
@@ -126,3 +131,14 @@ class FeedbackView(RetrieveAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
     lookup_field = 'id'
+
+
+class HeadOfInfoListView(ListAPIView):
+    queryset = HeadOfInfo.objects.all()
+    serializer_class = HeadOfInfoSerializer
+    lookup_field = 'person'
+
+class HeadOfInfoView(RetrieveAPIView):
+    queryset = HeadOfInfo.objects.all()
+    serializer_class = HeadOfInfoSerializer
+    lookup_field = 'person'

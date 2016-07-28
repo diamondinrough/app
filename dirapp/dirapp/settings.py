@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'drf_multiple_model',
+
+    'colorfield',
     #'taggit',
     #'taggit_serializer',
 

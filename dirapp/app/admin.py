@@ -14,4 +14,4 @@ admin.site.register(Video)
 admin.site.register(Resource)
 admin.site.register(Help)
 admin.site.register(Feedback)
-
+admin.site.register(IndexSlide)

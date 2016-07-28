@@ -1,5 +1,6 @@
 from django.db import models
 
+from colorfield.fields import ColorField
 #from taggit.managers import TaggableManager
 #from taggit.models import TagBase, GenericTaggedItemBase
 
@@ -11,7 +12,8 @@ class User(models.Model):
     username = models.CharField(max_length=30)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-
+    image = models.ImageField(upload_to='users/images/', default='users/images/default.jpg')
+    
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
     dt_updated = models.DateTimeField(auto_now=True)
 
@@ -51,12 +53,22 @@ class Task(models.Model):
         return self.name
 
 
+class IndexSlide(models.Model):
+    id = models.AutoField(primary_key=True)
+    image = models.ImageField(upload_to='index/slides/')
+    order = models.IntegerField(default=0)
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=20, primary_key=True)
+
+    color = ColorField(default='#000000')
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
 
 
 class Article(models.Model):
@@ -66,7 +78,7 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=500, null=True)
-    image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.gif')
+    image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.png')
     views = models.IntegerField(default=0)
 
     tags = models.ManyToManyField(Tag, blank=False, related_name='articletag')
@@ -154,3 +166,10 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.name + ' feedback'
+
+class HeadOfInfo(models.Model):
+    person = models.ForeignKey(User)
+    position = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
+    wechat = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)

@@ -1,6 +1,7 @@
 django
 django-filter
 django-rest-multiple-models
+django-colorfield
 djangorestframework
 markdown
 pillow
