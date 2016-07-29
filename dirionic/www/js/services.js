@@ -96,7 +96,7 @@ angular.module('starter.services', [])
             $rootScope.$broadcast("userlist", data);
         });
     }
-}]);
+}])
 
 .service("HelpListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadResources = function() {
@@ -117,4 +117,4 @@ angular.module('starter.services', [])
             $rootScope.$broadcast("help", data);
         });
     }
-}])
+}]);
