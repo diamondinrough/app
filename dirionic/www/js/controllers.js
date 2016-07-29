@@ -226,11 +226,11 @@ angular.module('starter.controllers', [])
 .controller("HelpListCtrl", ["$scope", "$ionicLoading", "HelpListSvc", function($scope, $ionicLoading, HelpListSvc) {
     $ionicLoading.show({template: "Loading help..."});
 
-    $scope.articles = [];
+    $scope.help = [];
     $scope.$on("helplist", function(_, data) {
 
         data.forEach(function(help) {
-            $scope.articles.push({
+            $scope.help.push({
                 id: help.id,
                 poster: help.poster,
                 question: help.question,
