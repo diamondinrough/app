@@ -221,7 +221,7 @@ angular.module('starter.controllers', [])
     });
     
     UserListSvc.loadUsers();
-}]);
+}])
 
 .controller("HelpListCtrl", ["$scope", "$ionicLoading", "HelpListSvc", function($scope, $ionicLoading, HelpListSvc) {
     $ionicLoading.show({template: "Loading help..."});
@@ -262,4 +262,4 @@ angular.module('starter.controllers', [])
     });
     
     HelpSvc.loadHelp($stateParams.id);
-}])
+}]);
