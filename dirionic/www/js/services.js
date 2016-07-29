@@ -1,4 +1,4 @@
-var site = "http://54.152.36.188/";
+var site = "http://0.0.0.0/";
 
 angular.module('starter.services', [])
 
