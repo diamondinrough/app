@@ -11,7 +11,7 @@
       font-size: 24px;
     }
   </style>
-  <ion-nav-title>{{article.title}}</ion-nav-title>
+  <ion-nav-title>{{help.title}}</ion-nav-title>
   <ion-content>
     <div class="articlepage">
       <div class="tags">
@@ -22,22 +22,20 @@
         </ul>
       </div>
       <div class="item-text-wrap">
-        <h1 class="title">{{article.title}}</h1>
+        <h1 class="title">{{help.question}}</h1>
       </div>
       <div>
-        <p class="item-date">{{article.dt_created}}</p>
-        <p class="item-author">{{article.author}}</p>
+        <p class="item-date">{{help.dt_created}}</p>
+        <p class="item-author">{{help.poster}}</p>
       </div>
       <div style="clear: both;"></div>
       <div class="item-img-container">
-        <img class="item-img" ng-src="{{article.image}}">
+        
       </div>
       <div>
-        <p>{{article.content}}</p>
+        <p>{{help.detail}}</p>
       </div>
       <div class="item-footer">
-        <p class="item-copyright">Copyright</p>
-        <p class="item-views">{{article.views}}</p>
       </div>
     </div>
   </ion-content>
