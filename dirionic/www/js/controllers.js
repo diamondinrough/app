@@ -221,4 +221,45 @@ angular.module('starter.controllers', [])
     });
     
     UserListSvc.loadUsers();
+}])
+
+.controller("HelpListCtrl", ["$scope", "$ionicLoading", "HelpListSvc", function($scope, $ionicLoading, HelpListSvc) {
+    $ionicLoading.show({template: "Loading help..."});
+
+    $scope.help = [];
+    $scope.$on("helplist", function(_, data) {
+
+        data.forEach(function(help) {
+            $scope.help.push({
+                id: help.id,
+                poster: help.poster,
+                question: help.question,
+                detail: help.detail,
+                tags: help.tags,
+                dt_created: help.dt_created,
+                dt_updated: help.dt_updated
+            });
+        });
+
+        $ionicLoading.hide();
+    });
+    
+    HelpListSvc.loadHelp();
+}])
+
+.controller("HelpCtrl", ["$scope", "$stateParams", "HelpSvc", function($scope, $stateParams, HelpSvc) {
+    $scope.help = null;
+    $scope.$on("help", function(_, data) {
+        $scope.help = {
+                id: data.id,
+                poster: data.poster,
+                question: data.question,
+                detail: data.detail,
+                tags: data.tags,
+                dt_created: data.dt_created,
+                dt_updated: data.dt_updated
+        };
+    });
+    
+    HelpSvc.loadHelp($stateParams.id);
 }]);
