@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^app/feedback/', views.FeedbackListView.as_view(), name='api-feedback-list-view'),
     url(r'^app/headofinfo/(?P<person>\w+)/', views.HeadOfInfoView.as_view(), name='headofinfoview'),
     url(r'^app/headofinfo/', views.HeadOfInfoListView.as_view(), name='headofinfolistview'),
+    url(r'^app/test/', views.TestView.as_view(), name='apitest'),
 ]
