@@ -23,7 +23,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
+// <<<<<<< HEAD
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $sceDelegateProvider) {
+// =======
+// .config(function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom'); 
+// >>>>>>> hannah
   $stateProvider
 
   .state('app', {

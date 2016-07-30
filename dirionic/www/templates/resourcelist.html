@@ -1,0 +1,41 @@
+<ion-view view-title="Resources" ng-controller="resourceListCtrl as vm">
+<div class="tabs-top tabs-background-stable tabs-color-calm">
+    <div class="tabs tabs-icon-left">
+        <a class="tab-item" href="#">
+            <i class="icon ion-pricetag"></i>
+            Product
+        </a>
+         <a class="tab-item" href="#">
+            <i class="icon ion-pricetag"></i>
+            Marketing
+        </a>
+          <a class="tab-item" href="#">
+            <i class="icon ion-pricetag"></i>
+            Engineering
+        </a>
+        <a class="tab-item" href="#">
+            <i class="icon ion-pricetag"></i>
+            Social
+        </a>
+        <a class="tab-item" ui-sref="#">
+            <i class="icon ion-pricetag"></i>
+            Technology
+        </a>
+        <a class="tab-item" ui-sref="#">
+            <i class="icon ion-pricetag"></i>
+            Innovation
+        </a>
+    </div>
+    <ion-content class="scroll-content ionic-scroll  has-header has-tabs-top has-tabs">
+      <div class="list">
+        <a class="item item-icon-right" ng-repeat="resource in vm.resources"
+          ng-click="vm.selectResource(resource.id)">
+            <p>{{resource.id}}</p>
+            <p>{{resource.title}}</p>
+            <img ng-src="{{resource.resourcefile}}">
+            <p>{{resource.summary}}</p>
+             <p>{{resource.tags}}</p>
+             <p>{{resource.downloads}}</p>
+            <i class="icon ion-chevron-right icon-access"></i>
+    </ion-content>
+  </ion-view>
