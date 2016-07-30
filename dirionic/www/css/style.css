@@ -111,3 +111,13 @@ img.slider-img {
 }
 a.video-tab {
 }
+
+.video-detail {
+  margin-top: 60px;
+}
+
+.video-detail p {
+  margin: 5px 10px;
+  font-size: 18px;
+  color: #666666;
+}

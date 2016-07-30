@@ -43,7 +43,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   })
 
   .state('app.indexarticle', {
-    url: '/index/articles/:id',
+    url: '/index/article/:id',
     views: {
       'index': {
         templateUrl: 'templates/article.html',
@@ -53,8 +53,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   })
 
   .state('app.indexvideo', {
-    url: '/index/videos/:id',
-//    abstract: true,
+    url: '/index/video/:id',
     views: {
       'index': {
         templateUrl: 'templates/video.html',
@@ -62,25 +61,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
-/*
-  .state('app.indexvideo.info', {
-    url: "/info",
-    views: {
-      'index': {
-        templateUrl: 'templates/videoinfo.html'
-      }
-    }
-  })
 
-  .state('app.indexvideo.recommend', {
-    url: "/recommend",
-    views: {
-      'index': {
-        templateUrl: 'templates/videorecommend.html'
-      }
-    }
-  })
-*/
   .state('app.indexresource', {
     url: '/index/resource/:id',
     views: {

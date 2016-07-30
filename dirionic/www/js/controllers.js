@@ -285,8 +285,9 @@ angular.module('starter.controllers', [])
 	VideoListSvc.loadVideos();
 }])
 
-.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", function($scope, $stateParams, VideoSvc, $sce) {
+.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", "$ionicTabsDelegate", function($scope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate) {
 	$scope.video = null;
+
 	$scope.$on("video", function(_, data) {
     	$scope.video = {
           	id: data.id,
@@ -302,6 +303,23 @@ angular.module('starter.controllers', [])
     	};
 	});
     
+    $scope.tabs = [
+    { selected: true, ngclass: "active" },
+    { selected: false, ngclass: "" }
+    ];
+    $scope.infotab = function() {
+        $scope.tabs[0].selected = true;
+        $scope.tabs[0].ngclass = "active";
+        $scope.tabs[1].selected = false;
+        $scope.tabs[1].ngclass = "";
+    }
+    $scope.recommendtab = function() {
+        $scope.tabs[1].selected = true;
+        $scope.tabs[1].ngclass = "active";
+        $scope.tabs[0].selected = false;
+        $scope.tabs[0].ngclass = "";
+    }
+
 	VideoSvc.loadVideo($stateParams.id);
 }])
 
