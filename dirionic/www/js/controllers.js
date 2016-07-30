@@ -8,7 +8,6 @@ angular.module('starter.controllers', [])
     $ionicLoading.show({template: "Loading index..."});
 
     $scope.slides = [];
-    $scope.itemlist = [];
 
     $scope.$on("indexslides", function(_, data) {
         data.forEach(function(slide) {
@@ -16,6 +15,7 @@ angular.module('starter.controllers', [])
         });
         console.log('loading');
 
+        $scope.$broadcast("scroll.refreshComplete");
         $ionicSlideBoxDelegate.update();
         $ionicLoading.hide();
     });
@@ -74,6 +74,20 @@ angular.module('starter.controllers', [])
             };
         }
     });
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading index..."});
+        $scope.slides = [];
+        $scope.article = null;
+        $scope.video = null;
+        $scope.resource = null;
+
+        ArticleListSvc.loadArticles();
+        VideoListSvc.loadVideos();
+        ResourceListSvc.loadResources();
+
+        IndexSlideSvc.loadSlides();
+    }
     
     ArticleListSvc.loadArticles();
     VideoListSvc.loadVideos();
