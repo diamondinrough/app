@@ -90,13 +90,15 @@ angular.module('starter.controllers', [])
     $scope.moreitems = false;
 
     $scope.$on("taglist", function(_, data) {
-        data.forEach(function(tag) {
-            $scope.taglist.push({
-                name: tag.name,
-                color: tag.color,
-                checked: false
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
             });
-        });
+        }
     });
 
     $scope.$on("articlelist", function(_, data) {
@@ -202,13 +204,15 @@ angular.module('starter.controllers', [])
     $scope.moreitems = false;
 
     $scope.$on("taglist", function(_, data) {
-        data.forEach(function(tag) {
-            $scope.taglist.push({
-                name: tag.name,
-                color: tag.color,
-                checked: false
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
             });
-        });
+        }
     });
 
 	$scope.$on("videolist", function(_, data) {
@@ -282,7 +286,7 @@ angular.module('starter.controllers', [])
     }
 
     TagListSvc.loadTags();
-	VideoListSvc.loadVideos();
+	VideoListSvc.loadVideos($scope.taglist);
 }])
 
 .controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", "$ionicTabsDelegate", function($scope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate) {
