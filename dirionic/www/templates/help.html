@@ -1,38 +1,44 @@
-<ion-view title="帮助" id="page4" class=" ">
-    <ion-content padding="false" class="has-header">
-        <h4 id="page4-heading1" style="color:#949191;" class=" header">联系我们</h4>
-        <ion-list id="page4-list5" class=" ">
-            <ion-item class="item-icon-right  list" id="page4-list-item13" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">负责人联系方式
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-icon-right  list  first" id="page4-list-item6" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">意见反馈
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-        </ion-list>
-        <h4 id="page4-heading2" style="color:#949191;" class=" header first">常见问题</h4>
-        <ion-list id="page4-list6" class=" ">
-            <ion-item class="item-icon-right  list" id="page4-list-item14" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">陆向谦创业课是什么？
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-icon-right  list  first" id="page4-list-item16" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">陆向谦创业课是什么？
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-icon-right  list  first" id="page4-list-item17" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">陆向谦创业课是什么？
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-icon-right  list  first" id="page4-list-item15" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">陆向谦创业课是什么？
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-        </ion-list>
-        <div>
-            <div class="question">
-                <a href="#"></a>
-            </div>
-        </div>
-        <div>
-            <div class="question">
-                <a href="#">全部问题</a>
-            </div>
-        </div>
-    </ion-content>
+<ion-view>
+  <style>
+    .articlepage {
+      margin: 10px 15px;
+    }
+    .tags {
+      margin: 10px 0px;
+    }
+    h1.title {
+      margin: 10px 0px;
+      font-size: 24px;
+    }
+  </style>
+  <ion-nav-title>{{article.title}}</ion-nav-title>
+  <ion-content>
+    <div class="articlepage">
+      <div class="tags">
+        <ul>
+          <li class="tag" style="background-color: {{tag.color}}; "ng-repeat="tag in article.tags">
+            {{tag.name}}
+          </li>
+        </ul>
+      </div>
+      <div class="item-text-wrap">
+        <h1 class="title">{{article.title}}</h1>
+      </div>
+      <div>
+        <p class="item-date">{{article.dt_created}}</p>
+        <p class="item-author">{{article.author}}</p>
+      </div>
+      <div style="clear: both;"></div>
+      <div class="item-img-container">
+        <img class="item-img" ng-src="{{article.image}}">
+      </div>
+      <div>
+        <p>{{article.content}}</p>
+      </div>
+      <div class="item-footer">
+        <p class="item-copyright">Copyright</p>
+        <p class="item-views">{{article.views}}</p>
+      </div>
+    </div>
+  </ion-content>
 </ion-view>
