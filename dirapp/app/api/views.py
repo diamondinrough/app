@@ -5,6 +5,7 @@ from drf_multiple_model.views import MultipleModelAPIView
 
 from ..models import *
 from .serializers import *
+from .pagination import *
 from . import serializers
 
 def rootredirect(request):
@@ -49,6 +50,7 @@ class UserView(RetrieveAPIView):
 
 class ArticleListTagView(ListAPIView):
     serializer_class = ArticleSerializer
+    pagination_class = TenPagination
 
     def get_queryset(self):
         tags = self.kwargs['tags'].split(',')
@@ -61,6 +63,7 @@ class ArticleListTagView(ListAPIView):
 class ArticleListView(ListAPIView):
     queryset = Article.objects.all().order_by('-dt_created')
     serializer_class = ArticleSerializer
+    pagination_class = TenPagination
 
 
 class ArticleView(RetrieveAPIView):
