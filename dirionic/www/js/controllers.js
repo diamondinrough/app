@@ -4,7 +4,7 @@ function getname(author) {
 
 angular.module('starter.controllers', [])
 
-.controller("IndexCtrl", ["$scope", "$ionicLoading", "IndexSlideSvc", "ArticleListSvc", "VideoListSvc", "ResourceListSvc", "$ionicSlideBoxDelegate", function($scope, $ionicLoading, IndexSlideSvc, ArticleListSvc, VideoListSvc, ResourceListSvc, $ionicSlideBoxDelegate) {
+.controller("IndexCtrl", ["$scope", "$ionicLoading", "IndexSlideSvc", "IndexArticleSvc", "IndexVideoSvc", "IndexResourceSvc", "$ionicSlideBoxDelegate", function($scope, $ionicLoading, IndexSlideSvc, IndexArticleSvc, IndexVideoSvc, IndexResourceSvc, $ionicSlideBoxDelegate) {
     $ionicLoading.show({template: "Loading index..."});
 
     $scope.slides = [];
@@ -13,7 +13,6 @@ angular.module('starter.controllers', [])
         data.forEach(function(slide) {
             $scope.slides.push(slide.image);
         });
-        console.log('loading');
 
         $scope.$broadcast("scroll.refreshComplete");
         $ionicSlideBoxDelegate.update();
@@ -24,9 +23,9 @@ angular.module('starter.controllers', [])
     $scope.video = null;
     $scope.resource = null;
 
-    $scope.$on("articlelist", function(_, data) {
-        if (data.length > 0) {
-            data = data[0];
+    $scope.$on("index-article", function(_, data) {
+        if (data.results.length > 0) {
+            data = data.results[0];
             $scope.article = {
                 id: data.id,
                 title: data.title,
@@ -41,7 +40,7 @@ angular.module('starter.controllers', [])
             };
         }
     });
-    $scope.$on("videolist", function(_, data) {
+    $scope.$on("index-video", function(_, data) {
         if (data.length > 0) {
             data = data[0];
             $scope.video = {
@@ -57,7 +56,7 @@ angular.module('starter.controllers', [])
             };
         }
     });
-    $scope.$on("resourcelist", function(_, data) {
+    $scope.$on("index-resource", function(_, data) {
         if (data.length > 0) {
             data = data[0];
             $scope.resource = {
@@ -82,16 +81,16 @@ angular.module('starter.controllers', [])
         $scope.video = null;
         $scope.resource = null;
 
-        ArticleListSvc.loadArticles();
-        VideoListSvc.loadVideos();
-        ResourceListSvc.loadResources();
+        IndexArticleSvc.loadArticle();
+        IndexVideoSvc.loadVideo();
+        IndexResourceSvc.loadResource();
 
         IndexSlideSvc.loadSlides();
     }
     
-    ArticleListSvc.loadArticles();
-    VideoListSvc.loadVideos();
-    ResourceListSvc.loadResources();
+    IndexArticleSvc.loadArticle();
+    IndexVideoSvc.loadVideo();
+    IndexResourceSvc.loadResource();
 
     IndexSlideSvc.loadSlides();
 }])
@@ -101,7 +100,9 @@ angular.module('starter.controllers', [])
 
     $scope.articles = [];
     $scope.taglist = [];
+    $scope.count = 0;
     $scope.moreitems = false;
+    $scope.next = null;
 
     $scope.$on("taglist", function(_, data) {
         if ($scope.taglist.length == 0) {
@@ -116,7 +117,7 @@ angular.module('starter.controllers', [])
     });
 
     $scope.$on("articlelist", function(_, data) {
-        data.forEach(function(article) {
+        data.results.forEach(function(article) {
             $scope.articles.push({
                 id: article.id,
                 title: article.title,
@@ -130,8 +131,13 @@ angular.module('starter.controllers', [])
                 dt_updated: article.dt_updated
             });
         });
+        $scope.count = data.count;
+        $scope.next = data.next;
+        if ($scope.next != null) $scope.moreitems = true;
+        else $scope.moreitems = false;
 
         $scope.$broadcast("scroll.refreshComplete");
+        $scope.$broadcast("scroll.infiniteScrollComplete");
         $ionicLoading.hide();
     });
     
@@ -176,18 +182,18 @@ angular.module('starter.controllers', [])
     };
     
     $scope.loadMore = function() {
-        console.log("load more");
+        ArticleListSvc.loadArticles($scope.taglist, $scope.next);
     }
 
     $scope.reload = function() {
         $ionicLoading.show({template: "Loading articles..."});
         $scope.articles = [];
         $scope.moreitems = false;
-        ArticleListSvc.loadArticles($scope.taglist);
+        ArticleListSvc.loadArticles($scope.taglist, null);
     }
 
     TagListSvc.loadTags();
-    ArticleListSvc.loadArticles($scope.taglist);
+    ArticleListSvc.loadArticles($scope.taglist, null);
 }])
 
 .controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", function($scope, $stateParams, ArticleSvc) {
