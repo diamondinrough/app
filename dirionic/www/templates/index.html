@@ -1,20 +1,7 @@
 <ion-view view-title="Index">
-  <style>
-    .video-container{
-      position:relative;
-      padding-bottom:56.25%;
-      padding-top:30px;
-      height:0;
-      overflow:hidden;
-    }
-    .video-container iframe, .video-container object, .video-container embed {
-      position:absolute;
-      top:0;
-      left:0;
-      width:100%;
-      height:90%;
-    }
-  </style>
+  <ion-nav-buttons side="right">
+    <a class="button button-icon ion-ios-search-strong"></a>
+  </ion-nav-buttons>
   <ion-content>
     <ion-slide-box auto-play="true" show-pager="true" does-continue="true">
       <ion-slide ng-repeat="slide in slides">
@@ -25,7 +12,7 @@
       <ion-item ng-if="article">
         <div>
           <p class="item-type">Article</p>
-          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/articles/{{article.id}}">View</a>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/article/{{article.id}}">View</a>
         </div>
         <div style="clear: both;"></div>
         <ul>
@@ -51,7 +38,9 @@
       <ion-item ng-if="video">
         <div>
           <p class="item-type">Video</p>
-          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/videos/{{video.id}}">View</a>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/video/{{video.id}}">View
+            <ion-nav-view name="video"></ion-nav-view>
+          </a>
         </div>
         <div style="clear: both;"></div>
         <ul>

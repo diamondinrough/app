@@ -82,12 +82,24 @@ angular.module('starter.controllers', [])
     IndexSlideSvc.loadSlides();
 }])
 
-.controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", function($scope, $ionicLoading, ArticleListSvc) {
+.controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", "TagListSvc", "$ionicPopup", function($scope, $ionicLoading, ArticleListSvc, TagListSvc, $ionicPopup) {
     $ionicLoading.show({template: "Loading articles..."});
 
     $scope.articles = [];
-    $scope.$on("articlelist", function(_, data) {
+    $scope.taglist = [];
+    $scope.moreitems = false;
 
+    $scope.$on("taglist", function(_, data) {
+        data.forEach(function(tag) {
+            $scope.taglist.push({
+                name: tag.name,
+                color: tag.color,
+                checked: false
+            });
+        });
+    });
+
+    $scope.$on("articlelist", function(_, data) {
         data.forEach(function(article) {
             $scope.articles.push({
                 id: article.id,
@@ -103,10 +115,63 @@ angular.module('starter.controllers', [])
             });
         });
 
+        $scope.$broadcast("scroll.refreshComplete");
         $ionicLoading.hide();
     });
     
-    ArticleListSvc.loadArticles();
+    $scope.showTags = function() {
+        var tags = $ionicPopup.show({
+            template: `
+                <style>
+                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
+                        float: right;
+                    }
+                    .item-checkbox.item-checkbox-right {
+                        padding: 15px;
+                    }
+                </style>
+                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked"
+                class="item-checkbox-right">
+                <p style="color: {{tag.color}};">{{tag.name}}</p>
+                </ion-checkbox>
+            `,
+            title: 'Tags',
+            scope: $scope,
+            buttons: [
+                {
+                    text: '<b>Reset</b>',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        for (i = 0; i < $scope.taglist.length; i++) {
+                            $scope.taglist[i].checked = false;
+                        }
+                        $scope.reload();
+                    }
+                },
+                {
+                    text: '<b>Done</b>',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        $scope.reload();   
+                    }
+                }
+            ]
+        });
+    };
+    
+    $scope.loadMore = function() {
+        console.log("load more");
+    }
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading articles..."});
+        $scope.articles = [];
+        $scope.moreitems = false;
+        ArticleListSvc.loadArticles($scope.taglist);
+    }
+
+    TagListSvc.loadTags();
+    ArticleListSvc.loadArticles($scope.taglist);
 }])
 
 .controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", function($scope, $stateParams, ArticleSvc) {
@@ -129,12 +194,24 @@ angular.module('starter.controllers', [])
     ArticleSvc.loadArticle($stateParams.id);
 }])
 
-.controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", function($scope, $ionicLoading, VideoListSvc) {
+.controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", "TagListSvc", "$ionicPopup", function($scope, $ionicLoading, VideoListSvc, TagListSvc, $ionicPopup) {
 	$ionicLoading.show({template: "Loading videos..."});
 
 	$scope.videos = [];
-	$scope.$on("videolist", function(_, data) {
+    $scope.taglist = [];
+    $scope.moreitems = false;
 
+    $scope.$on("taglist", function(_, data) {
+        data.forEach(function(tag) {
+            $scope.taglist.push({
+                name: tag.name,
+                color: tag.color,
+                checked: false
+            });
+        });
+    });
+
+	$scope.$on("videolist", function(_, data) {
     	data.forEach(function(video) {
         	$scope.videos.push({
             	id: video.id,
@@ -148,15 +225,69 @@ angular.module('starter.controllers', [])
                 dt_created: video.dt_created,
         	});
     	});
-   	 
+        
+        $scope.$broadcast("scroll.refreshComplete");
     	$ionicLoading.hide();
 	});
+
+    $scope.showTags = function() {
+        var tags = $ionicPopup.show({
+            template: `
+                <style>
+                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
+                        float: right;
+                    }
+                    .item-checkbox.item-checkbox-right {
+                        padding: 15px;
+                    }
+                </style>
+                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked"
+                class="item-checkbox-right">
+                <p style="color: {{tag.color}};">{{tag.name}}</p>
+                </ion-checkbox>
+            `,
+            title: 'Tags',
+            scope: $scope,
+            buttons: [
+                {
+                    text: '<b>Reset</b>',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        for (i = 0; i < $scope.taglist.length; i++) {
+                            $scope.taglist[i].checked = false;
+                        }
+                        $scope.reload();
+                    }
+                },
+                {
+                    text: '<b>Done</b>',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        $scope.reload();   
+                    }
+                }
+            ]
+        });
+    };
     
+    $scope.loadMore = function() {
+        console.log("load more");
+    }
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading videos..."});
+        $scope.videos = [];
+        $scope.moreitems = false;
+        VideoListSvc.loadVideos($scope.taglist);
+    }
+
+    TagListSvc.loadTags();
 	VideoListSvc.loadVideos();
 }])
 
-.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", function($scope, $stateParams, VideoSvc, $sce) {
+.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", "$ionicTabsDelegate", function($scope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate) {
 	$scope.video = null;
+
 	$scope.$on("video", function(_, data) {
     	$scope.video = {
           	id: data.id,
@@ -172,6 +303,23 @@ angular.module('starter.controllers', [])
     	};
 	});
     
+    $scope.tabs = [
+    { selected: true, ngclass: "active" },
+    { selected: false, ngclass: "" }
+    ];
+    $scope.infotab = function() {
+        $scope.tabs[0].selected = true;
+        $scope.tabs[0].ngclass = "active";
+        $scope.tabs[1].selected = false;
+        $scope.tabs[1].ngclass = "";
+    }
+    $scope.recommendtab = function() {
+        $scope.tabs[1].selected = true;
+        $scope.tabs[1].ngclass = "active";
+        $scope.tabs[0].selected = false;
+        $scope.tabs[0].ngclass = "";
+    }
+
 	VideoSvc.loadVideo($stateParams.id);
 }])
 

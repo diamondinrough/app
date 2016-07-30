@@ -17,11 +17,26 @@
     <div class="video-container">
       <iframe ng-src="{{video.embed}}" allowfullscreen></iframe>
     </div>
-    <!--
+    
     <div class="tabs video-tabs">
-      <a class="tab-item video-tab" href="#/app/index/videos/{{video.id}}/info">Tab1</a>
-      <a class="tab-item video-tab" href="#/app/index/videos/{{video.id}}/recommend">Tab2</a>
+      <a class="tab-item video-tab" ng-class="tabs[0].ngclass" ng-click="infotab()">Info</a>
+      <a class="tab-item video-tab" ng-class="tabs[1].ngclass" ng-click="recommendtab()">Recommended</a>
     </div>
-    -->
+
+    <div ng-if="tabs[0].selected">
+      <div class="video-detail">
+        <p>Speaker: {{video.speaker}}</p>
+        <p>Title: {{video.title}}</p>
+        <p>Summary: {{video.summary}}</p>
+      </div>
+    </div>
+
+    <div ng-if="tabs[1].selected">
+      <div class="video-detail">
+        <p>Some videos here</p>
+      </div>
+    </div>
+
   </ion-content>
+
 </ion-view>

@@ -1,5 +1,12 @@
 <ion-view view-title="Videos">
+  <ion-nav-buttons side="left">
+    <button class="button button-icon icon ion-ios-pricetag" ng-click="showTags()"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <a class="button button-icon ion-ios-search-strong"></a>
+  </ion-nav-buttons>
   <ion-content>
+    <ion-refresher pulling-text="Reload articles" on-refresh="reload()"></ion-refresher>
     <ion-list>
       <ion-item ng-repeat="video in videos">
         <div>
@@ -28,5 +35,6 @@
         </div>
       </ion-item>
     </ion-list>
+    <ion-infinite-scroll ng-if="moreitems" on-infinite="loadMore()"></ion-infinite-scroll>
   </ion-content>
 </ion-view>
