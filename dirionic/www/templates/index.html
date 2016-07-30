@@ -3,6 +3,7 @@
     <a class="button button-icon ion-ios-search-strong"></a>
   </ion-nav-buttons>
   <ion-content>
+    <ion-refresher pulling-text="Reload index" on-refresh="reload()"></ion-refresher>
     <ion-slide-box auto-play="true" show-pager="true" does-continue="true">
       <ion-slide ng-repeat="slide in slides">
         <img class="slider-img" ng-src="{{slide}}">
