@@ -86,6 +86,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
+  
+  .state('app.article-search', {
+    url: '/articles/search',
+    views: {
+      'articles': {
+        templateUrl: 'templates/article-search.html',
+        controller: 'ArticleSearchCtrl'
+      }
+    }
+  })
 
   .state('app.article', {
     url: '/articles/:id',
@@ -96,6 +106,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
+
+  
 
   .state('app.videolist', {
     url: '/videos',

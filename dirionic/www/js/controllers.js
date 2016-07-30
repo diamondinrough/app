@@ -116,7 +116,7 @@ angular.module('starter.controllers', [])
         }
     });
 
-    $scope.$on("articlelist", function(_, data) {
+    $scope.$on("article-list", function(_, data) {
         data.results.forEach(function(article) {
             $scope.articles.push({
                 id: article.id,
@@ -182,18 +182,18 @@ angular.module('starter.controllers', [])
     };
     
     $scope.loadMore = function() {
-        ArticleListSvc.loadArticles($scope.taglist, $scope.next);
+        ArticleListSvc.loadArticles(null, null, $scope.next, "article-list");
     }
 
     $scope.reload = function() {
         $ionicLoading.show({template: "Loading articles..."});
         $scope.articles = [];
         $scope.moreitems = false;
-        ArticleListSvc.loadArticles($scope.taglist, null);
+        ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
     }
 
     TagListSvc.loadTags();
-    ArticleListSvc.loadArticles($scope.taglist, null);
+    ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
 }])
 
 .controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", function($scope, $stateParams, ArticleSvc) {
@@ -214,6 +214,123 @@ angular.module('starter.controllers', [])
     });
     
     ArticleSvc.loadArticle($stateParams.id);
+}])
+
+.controller("ArticleSearchCtrl", ["$scope", "ArticleListSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", function($scope, ArticleListSvc, TagListSvc, $ionicPopup, $ionicLoading) {
+    $scope.search = { text: "" };
+
+    $scope.articles = [];
+    $scope.taglist = [];
+    $scope.count = 0;
+    $scope.moreitems = false;
+    $scope.next = null;
+    
+
+    $scope.$on("article-search-list", function(_, data) {
+        data.results.forEach(function(article) {
+            $scope.articles.push({
+                id: article.id,
+                title: article.title,
+                content: article.content,
+                summary: article.summary,
+                image: article.image,
+                author: getname(article.author),
+                views: article.views,
+                tags: article.tags,
+                dt_created: article.dt_created,
+                dt_updated: article.dt_updated
+            });
+        });
+        $scope.count = data.count;
+        $scope.next = data.next;
+        if ($scope.next != null) $scope.moreitems = true;
+        else $scope.moreitems = false;
+
+        $scope.$broadcast("scroll.refreshComplete")
+        $scope.$broadcast("scroll.infiniteScrollComplete");
+        $ionicLoading.hide();
+    });
+
+    $scope.loadSearches = function() {
+        $scope.articles = [];
+        $scope.count = 0;
+        $scope.moreitems = false;
+        $scope.next = null;
+
+        if ($scope.search.text != '') {
+            ArticleListSvc.loadArticles($scope.taglist, $scope.search.text, null, 'article-search-list');
+        } else {
+            $scope.$broadcast("scroll.refreshComplete");
+            $scope.$broadcast("scroll.infiniteScrollComplete");
+            $ionicLoading.hide();
+        }
+    }
+
+    $scope.$on("taglist", function(_, data) {
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
+            });
+        }
+    });
+
+    $scope.showTags = function() {
+        var tags = $ionicPopup.show({
+            template: `
+                <style>
+                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
+                        float: right;
+                    }
+                    .item-checkbox.item-checkbox-right {
+                        padding: 15px;
+                    }
+                </style>
+                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked"
+                class="item-checkbox-right">
+                <p style="color: {{tag.color}};">{{tag.name}}</p>
+                </ion-checkbox>
+            `,
+            title: 'Tags',
+            scope: $scope,
+            buttons: [
+                {
+                    text: '<b>Reset</b>',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        for (i = 0; i < $scope.taglist.length; i++) {
+                            $scope.taglist[i].checked = false;
+                        }
+                        $scope.reload();
+                    }
+                },
+                {
+                    text: '<b>Done</b>',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        $scope.reload();   
+                    }
+                }
+            ]
+        });
+    };
+
+    $scope.loadMore = function() {
+        ArticleListSvc.loadArticles(null, null, $scope.next, "article-search-list");
+    }
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading articles..."});
+        $scope.articles = [];
+        $scope.moreitems = false;
+        $scope.loadSearches();
+    }
+
+    TagListSvc.loadTags();
+    $scope.loadSearches();
 }])
 
 .controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", "TagListSvc", "$ionicPopup", function($scope, $ionicLoading, VideoListSvc, TagListSvc, $ionicPopup) {
