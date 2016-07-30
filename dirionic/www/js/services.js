@@ -9,7 +9,7 @@ angular.module('starter.services', [])
             $rootScope.$broadcast("indexslides", data);
         })
         .error(function() {
-            console.error("Failed to load slides from " + site);
+            console.error("Failed to load slides from " + site + "api/app/index/slides/?format=json");
         });
     }
 }])
@@ -26,6 +26,34 @@ angular.module('starter.services', [])
     }
 }])
 
+.service("IndexArticleSvc", ["$http", "$rootScope", function($http, $rootScope) {
+    this.loadArticle = function() {
+        $http.get(site + "api/app/articles/?format=json")
+        .success(function(data) {
+            $rootScope.$broadcast("index-article", data);
+        });
+    }
+}])
+
+.service("IndexVideoSvc", ["$http", "$rootScope", function($http, $rootScope) {
+    this.loadVideo = function() {
+        $http.get(site + "api/app/videos/?format=json")
+        .success(function(data) {
+            $rootScope.$broadcast("index-video", data);
+            console.log('loaded index video');
+        });
+    }
+}])
+
+.service("IndexResourceSvc", ["$http", "$rootScope", function($http, $rootScope) {
+    this.loadResource = function() {
+        $http.get(site + "api/app/resources/?format=json")
+        .success(function(data) {
+            $rootScope.$broadcast("index-resource", data);
+        });
+    }
+}])
+
 .service("TagListSvc", ["$http", "$rootScope", function($http, $rootScope) {
     this.loadTags = function() {
         $http.get(site + "api/app/tags/?format=json")
@@ -33,42 +61,53 @@ angular.module('starter.services', [])
             $rootScope.$broadcast("taglist", data)
         })
         .error(function() {
-            console.error("Failed to load tags from " + site);
+            console.error("Failed to load tags from " + site  + "api/app/tags/?format=json");
         });
     }
 }])
 
 .service("ArticleListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-    this.loadArticles = function(taglist) {
-        notags = true;
-        activetags = [];
-        if (taglist) {
-            for (i = 0; i < taglist.length; i++) {
-                if (taglist[i].checked) {
-                    notags = false;
-                    activetags.push(taglist[i]);
+    this.loadArticles = function(taglist, next) {
+        if (next == null) {
+            notags = true;
+            activetags = [];
+            if (taglist) {
+                for (i = 0; i < taglist.length; i++) {
+                    if (taglist[i].checked) {
+                        notags = false;
+                        activetags.push(taglist[i]);
+                    }
                 }
             }
-        }
-        if (notags) {
-            $http.get(site + "api/app/articles/?format=json")
-            .success(function(data) {
-                $rootScope.$broadcast("articlelist", data);
-            })
-            .error(function() {
-                $ionicLoading.hide();
-            });
-        } else {
-            url = site + "api/app/articles/tags/";
-            for (i = 0; i < activetags.length; i++) {
-                url += activetags[i].name + ",";
+            if (notags) {
+                $http.get(site + "api/app/articles/?format=json")
+                .success(function(data) {
+                    $rootScope.$broadcast("articlelist", data);
+                })
+                .error(function() {
+                    $ionicLoading.hide();
+                });
+            } else {
+                url = site + "api/app/articles/tags/";
+                for (i = 0; i < activetags.length; i++) {
+                    url += activetags[i].name + ",";
+                }
+                url = url.substr(0,url.length-1) + "/?format=json";
+                $http.get(url)
+                .success(function(data) {
+                    $rootScope.$broadcast("articlelist", data);
+                })
+                .error(function() {
+                    $ionicLoading.hide();
+                });
             }
-            url = url.substr(0,url.length-1) + "/?format=json";
-            $http.get(url)
+        } else {
+            $http.get(next)
             .success(function(data) {
                 $rootScope.$broadcast("articlelist", data);
             })
             .error(function() {
+                console.error("Failed to load article list from " + next);
                 $ionicLoading.hide();
             });
         }
