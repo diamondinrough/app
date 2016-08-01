@@ -11,7 +11,7 @@ class UserSerializer(ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'image', 'dt_created', 'dt_updated')
+        fields = ('id', 'username', 'first_name', 'last_name', 'image', 'position', 'email', 'wechat', 'dt_created', 'dt_updated')
 
 
 class TagSerializer(ModelSerializer):
