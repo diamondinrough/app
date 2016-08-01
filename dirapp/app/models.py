@@ -130,7 +130,7 @@ class Resource(models.Model):
     id = models.AutoField(primary_key=True)
     poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='userresources')
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='teamresources')
-    
+    image = models.ImageField(upload_to='resources/images/')
     title = models.CharField(max_length=200)
     resourcefile = models.FileField(upload_to='resources/')
     filetype = models.CharField(max_length=5)
