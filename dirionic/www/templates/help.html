@@ -2,22 +2,22 @@
     <ion-content padding="false" class="has-header">
         <h4 style="color:#949191;" class=" header">Contact Us</h4>
         <ion-list>
-            <ion-item class="item-icon-right  list" href="#/app/helps/contact">Contact the Manager
+            <ion-item class="item-icon-right  list" href="#/app/help/contact">Contact the Manager
                 <i class="icon ion-chevron-right icon-accessory"></i>
             </ion-item>
-            <ion-item class="item-icon-right  list  first" href="#/app/helps/feedback">Feed Back
+            <ion-item class="item-icon-right  list  first" href="#/app/help/feedback">Feed Back
                 <i class="icon ion-chevron-right icon-accessory"></i>
             </ion-item>
         </ion-list>
         <h4 style="color:#949191;" class=" header">FAQ</h4>
-        <ion-list ng-repeat="help in helps">
-            <ion-item class="item-icon-right  list" href="#/app/helps/{{help.id}}">{{help.title}}
-                <i class="icon ion-chevron-right icon-accessory" href="#/app/helps/{{help.id}}"></i>
+        <ion-list ng-repeat="helplist in helps">
+            <ion-item class="item-icon-right  list" href="#/app/help/{{helplist.id}}">{{helplist.title}}
+                <i class="icon ion-chevron-right icon-accessory" href="#/app/help/{{helplist.id}}"></i>
             </ion-item>
         </ion-list>
         <div>
             <div class="question">
-                <a href="#/app/helps/all-questions">All Questions</a>
+                <a href="#/app/help/all-questions">All Questions</a>
             </div>
         </div>
     </ion-content>
