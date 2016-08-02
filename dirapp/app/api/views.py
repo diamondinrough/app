@@ -56,18 +56,6 @@ class UserView(RetrieveAPIView):
     lookup_field = 'username'
 
 
-class ArticleListTagView(ListAPIView):
-    serializer_class = ArticleSerializer
-    pagination_class = TenPagination
-
-    def get_queryset(self):
-        tags = self.kwargs['tags'].split(',')
-        qset = Article.objects.all().order_by('-dt_created')
-        for tag in tags:
-            qset = qset.filter(tags__name=tag)
-        return qset
-
-
 class ArticleListView(ListAPIView):
     serializer_class = ArticleSerializer
     pagination_class = TenPagination
