@@ -13,6 +13,9 @@ class User(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     image = models.ImageField(upload_to='users/images/', default='users/images/default.jpg')
+    position = models.CharField(max_length=50)
+    wechat = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
     
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
     dt_updated = models.DateTimeField(auto_now=True)
@@ -169,7 +172,3 @@ class Feedback(models.Model):
 
 class HeadOfInfo(models.Model):
     person = models.ForeignKey(User)
-    position = models.CharField(max_length=50)
-    name = models.CharField(max_length=50)
-    wechat = models.CharField(max_length=50)
-    email = models.CharField(max_length=50)
