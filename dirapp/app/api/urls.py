@@ -10,7 +10,6 @@ urlpatterns = [
     url(r'^app/users/(?P<username>\w+)/', views.UserView.as_view(), name='api-user-view'),
     url(r'^app/users/', views.UserListView.as_view(), name='api-user-list-view'),
     url(r'^app/tags/', views.TagListView.as_view(), name='api-tag-list-view'),
-    url(r'^app/articles/tags/(?P<tags>[a-zA-Z0-9,\-]+)/', views.ArticleListTagView.as_view(), name='api-article-list-tag-view'),
     url(r'^app/articles/(?P<id>[0-9]+)/', views.ArticleView.as_view(), name='api-article-view'),
     url(r'^app/articles/', views.ArticleListView.as_view(), name='api-article-list-view'),
     url(r'^app/videos/tags/(?P<tags>[a-zA-Z0-9,\-]+)/', views.VideoListTagView.as_view(), name='api-video-list-tag-view'),
