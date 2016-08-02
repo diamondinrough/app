@@ -1,37 +1,23 @@
-<ion-view title="帮助" id="page4" class=" ">
+<ion-view view-title="Help">
     <ion-content padding="false" class="has-header">
-        <h4 id="page4-heading1" style="color:#949191;" class=" header">联系我们</h4>
-        <ion-list id="page4-list5" class=" ">
-            <ion-item class="item-icon-right  list" id="page4-list-item13" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">负责人联系方式
+        <h4 style="color:#949191;" class=" header">Contact Us</h4>
+        <ion-list>
+            <ion-item class="item-icon-right  list" href="#/app/help/contact">Contact the Manager
                 <i class="icon ion-chevron-right icon-accessory"></i>
             </ion-item>
-            <ion-item class="item-icon-right  list  first" id="page4-list-item6" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">意见反馈
+            <ion-item class="item-icon-right  list  first" href="#/app/help/feedback">Feed Back
                 <i class="icon ion-chevron-right icon-accessory"></i>
             </ion-item>
         </ion-list>
-        <h4 id="page4-heading2" style="color:#949191;" class=" header first">常见问题</h4>
-        <ion-list id="page4-list6" class=" ">
-            <ion-item class="item-icon-right  list" id="page4-list-item14" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">陆向谦创业课是什么？
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-icon-right  list  first" id="page4-list-item16" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">陆向谦创业课是什么？
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-icon-right  list  first" id="page4-list-item17" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">陆向谦创业课是什么？
-                <i class="icon ion-chevron-right icon-accessory"></i>
-            </ion-item>
-            <ion-item class="item-icon-right  list  first" id="page4-list-item15" href="#" onclick="window.open('#', '_system', 'location=yes'); return false;">陆向谦创业课是什么？
-                <i class="icon ion-chevron-right icon-accessory"></i>
+        <h4 style="color:#949191;" class=" header">FAQ</h4>
+        <ion-list ng-repeat="helplist in help">
+            <ion-item class="item-icon-right  list" href="#/app/help/{{helplist.id}}">{{helplist.question}}
+                <i class="icon ion-chevron-right icon-accessory" href="#/app/help/{{helplist.id}}"></i>
             </ion-item>
         </ion-list>
         <div>
             <div class="question">
-                <a href="#"></a>
-            </div>
-        </div>
-        <div>
-            <div class="question">
-                <a href="#">全部问题</a>
+                <a href="#/app/help/all-questions">All Questions</a>
             </div>
         </div>
     </ion-content>

@@ -1,11 +1,15 @@
 from django.shortcuts import HttpResponse, redirect
+from django.db.models import Q
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
 from drf_multiple_model.views import MultipleModelAPIView
 
 from ..models import *
 from .serializers import *
+from .pagination import *
 from . import serializers
+
 
 def rootredirect(request):
     return redirect('/api/app/')
@@ -13,6 +17,11 @@ def rootredirect(request):
 
 def apiindex(request):
     return HttpResponse('api index')
+
+
+class TestView(ListAPIView):
+    def get(self, request, format=None):
+        return Response(type(request.query_params))
 
 
 class IndexView(MultipleModelAPIView):
@@ -47,20 +56,21 @@ class UserView(RetrieveAPIView):
     lookup_field = 'username'
 
 
-class ArticleListTagView(ListAPIView):
+class ArticleListView(ListAPIView):
     serializer_class = ArticleSerializer
+    pagination_class = TenPagination
 
     def get_queryset(self):
-        tags = self.kwargs['tags'].split(',')
         qset = Article.objects.all().order_by('-dt_created')
-        for tag in tags:
-            qset = qset.filter(tags__name=tag)
+        if 'tags' in self.request.query_params:
+            tags = self.request.query_params.get('tags').split(',')
+            for tag in tags:
+                qset = qset.filter(tags__name=tag)
+        if 'search' in self.request.query_params:
+            searches = self.request.query_params.get('search').split(',')
+            for search in searches:
+                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(author__username__icontains=search))
         return qset
-
-
-class ArticleListView(ListAPIView):
-    queryset = Article.objects.all().order_by('-dt_created')
-    serializer_class = ArticleSerializer
 
 
 class ArticleView(RetrieveAPIView):

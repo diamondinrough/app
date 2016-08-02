@@ -1,15 +1,8 @@
 from rest_framework import serializers
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.serializers import ModelSerializer, DateTimeField, CharField
 
 
 from ..models import *
-
-
-class StandardPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 10
 
 
 class UserSerializer(ModelSerializer):
@@ -18,7 +11,7 @@ class UserSerializer(ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'image', 'dt_created', 'dt_updated')
+        fields = ('id', 'username', 'first_name', 'last_name', 'image', 'position', 'email', 'wechat', 'dt_created', 'dt_updated')
 
 
 class TagSerializer(ModelSerializer):
