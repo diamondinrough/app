@@ -138,6 +138,18 @@ class VideoListTagView(ListAPIView):
 class VideoListView(ListAPIView):
     queryset = Video.objects.all().order_by('-dt_created')
     serializer_class = VideoSerializer
+    
+    def get_queryset(self):
+        qset = Video.objects.all().order_by('-dt_created')
+        if 'tags' in self.request.query_params:
+            tags = self.request.query_params.get('tags').split(',')
+            for tag in tags:
+                qset = qset.filter(tags__name=tag)
+        if 'search' in self.request.query_params:
+            searches = self.request.query_params.get('search').split(',')
+            for search in searches:
+                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(speaker__icontains=search))
+        return qset
 
 
 class VideoView(RetrieveAPIView):
