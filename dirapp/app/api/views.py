@@ -1,6 +1,8 @@
 from django.shortcuts import HttpResponse, redirect
 from django.db.models import Q
 
+from rest_framework.views import APIView
+from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from drf_multiple_model.views import MultipleModelAPIView
@@ -17,6 +19,25 @@ def rootredirect(request):
 
 def apiindex(request):
     return HttpResponse('api index')
+
+
+class ViewCount(APIView):
+    def put(self, request, format=None):
+        try:
+            item = None
+            type = request.data.get('type')
+            pk = request.data.get('pk')
+            if type == 'Article':
+                item = Article.objects.get(pk=pk)
+            elif type == 'Video':
+                item = Video.objects.get(pk=pk)
+            elif type == 'Resource':
+                item = Resource.objects.get(pk=pk)
+            if item:
+                item.views += 1
+                item.save()
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class TestView(ListAPIView):

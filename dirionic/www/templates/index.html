@@ -22,7 +22,7 @@
           </li>
         </ul>
         <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
-          <h2 class="item-title">{{article.title}}</h2>
+          <h2 class="item-title" ng-bind-html="article.title"></h2>
         </div>
         <div>
           <p class="item-date">{{article.dt_created}}</p>
@@ -33,7 +33,7 @@
           <img class="item-img" ng-src="{{article.image}}">
         </div>
         <div class="item-text-wrap">
-          <p class="item-summary">{{article.summary}}</p>
+          <p class="item-summary" ng-bind-html="article.summary"></p>
         </div>
       </ion-item>
       <ion-item ng-if="video">
@@ -50,7 +50,7 @@
           </li>
         </ul>
         <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
-          <h2 class="item-title">{{video.title}}</h2>
+          <h2 class="item-title ng-bind-html="video.title"></h2>
         </div>
         <div>
           <p class="item-date">{{video.dt_created}}</p>
@@ -61,7 +61,7 @@
           <img class="item-img" ng-src="https://img.youtube.com/vi/{{video.videoid}}/0.jpg" alt="thumbnail">
         </div>
         <div class="item-text-wrap">
-          <p class="item-summary">{{video.summary}}</p>
+          <p class="item-summary" ng-bind-html="video.summary"></p>
         </div>
       </ion-item>
       <ion-item ng-if="resource">
@@ -81,10 +81,10 @@
           </div>
           <div class="resource-content">
             <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
-              <h2 class="item-title">{{resource.title}}</h2>
+              <h2 class="item-title" ng-bind-html="resource.title"></h2>
             </div>
             <div class="item-text-wrap">
-              <p class="item-summary">{{resource.summary}}</p>
+              <p class="item-summary" ng-bind-html="resource.summary"></p>
             </div>
           </div>
         </div>

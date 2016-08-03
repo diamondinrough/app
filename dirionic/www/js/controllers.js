@@ -4,7 +4,7 @@ function getname(author) {
 
 angular.module('starter.controllers', [])
 
-.controller("IndexCtrl", ["$scope", "$ionicLoading", "IndexSlideSvc", "IndexArticleSvc", "IndexVideoSvc", "IndexResourceSvc", "$ionicSlideBoxDelegate", function($scope, $ionicLoading, IndexSlideSvc, IndexArticleSvc, IndexVideoSvc, IndexResourceSvc, $ionicSlideBoxDelegate) {
+.controller("IndexCtrl", ["$scope", "$ionicLoading", "IndexSlideSvc", "IndexArticleSvc", "IndexVideoSvc", "IndexResourceSvc", "$ionicSlideBoxDelegate", "$sce", function($scope, $ionicLoading, IndexSlideSvc, IndexArticleSvc, IndexVideoSvc, IndexResourceSvc, $ionicSlideBoxDelegate, $sce) {
     $ionicLoading.show({template: "Loading index..."});
 
     $scope.slides = [];
@@ -28,9 +28,9 @@ angular.module('starter.controllers', [])
             data = data.results[0];
             $scope.article = {
                 id: data.id,
-                title: data.title,
+                title: $sce.trustAsHtml(data.title),
                 content: data.content,
-                summary: data.summary,
+                summary: $sce.trustAsHtml(data.summary),
                 image: data.image,
                 author: getname(data.author),
                 views: data.views,
@@ -45,8 +45,8 @@ angular.module('starter.controllers', [])
             data = data[0];
             $scope.video = {
                 id: data.id,
-                title: data.title,
-                summary: data.summary,
+                title: $sce.trustAsHtml(data.title),
+                summary: $sce.trustAsHtml(data.summary),
                 videolink: data.videolink,
                 videoid: data.videolink.split("=")[1],
                 speaker: data.speaker,
@@ -61,10 +61,10 @@ angular.module('starter.controllers', [])
             data = data[0];
             $scope.resource = {
                 id: data.id,
-                title: data.title,
+                title: $sce.trustAsHtml(data.title),
                 resourcefile: data.resourcefile,
                 filetype: data.filetype,
-                summary: data.summary,
+                summary: $sce.trustAsHtml(data.summary),
                 poster: getname(data.poster),
                 views: data.views,
                 downloads: data.downloads,
@@ -196,14 +196,14 @@ angular.module('starter.controllers', [])
     ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
 }])
 
-.controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", "ViewCountSvc", function($scope, $stateParams, ArticleSvc, ViewCountSvc) {
+.controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", "ViewCountSvc", "$sce", function($scope, $stateParams, ArticleSvc, ViewCountSvc, $sce) {
     $scope.article = null;
     $scope.$on("article", function(_, data) {
         $scope.article = {
             id: data.id,
-            title: data.title,
-            content: data.content,
-            summary: data.summary,
+            title: $sce.trustAsHtml(data.title),
+            content: $sce.trustAsHtml(data.content),
+            summary: $sce.trustAsHtml(data.summary),
             image: data.image,
             author: getname(data.author),
             views: data.views,
