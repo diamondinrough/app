@@ -196,7 +196,7 @@ angular.module('starter.controllers', [])
     ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
 }])
 
-.controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", function($scope, $stateParams, ArticleSvc) {
+.controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", "ViewCountSvc", function($scope, $stateParams, ArticleSvc, ViewCountSvc) {
     $scope.article = null;
     $scope.$on("article", function(_, data) {
         $scope.article = {
@@ -211,6 +211,8 @@ angular.module('starter.controllers', [])
             dt_created: data.dt_created,
             dt_updated: data.dt_updated
         };
+
+        ViewCountSvc.viewed("Article", data.id);
     });
     
     ArticleSvc.loadArticle($stateParams.id);
@@ -426,7 +428,7 @@ angular.module('starter.controllers', [])
 	VideoListSvc.loadVideos($scope.taglist);
 }])
 
-.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", "$ionicTabsDelegate", function($scope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate) {
+.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", "$ionicTabsDelegate", "ViewCountSvc", function($scope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate, ViewCountSvc) {
 	$scope.video = null;
 
 	$scope.$on("video", function(_, data) {
@@ -442,6 +444,8 @@ angular.module('starter.controllers', [])
         	tags: data.tags,
             dt_created: data.dt_created,
     	};
+
+        ViewCountSvc.viewed("Video", data.id);
 	});
     
     $scope.tabs = [
@@ -533,7 +537,7 @@ angular.module('starter.controllers', [])
         $ionicLoading.hide();
     });
     
-    HelpListSvc.loadHelp();
+    HelpListSvc.loadHelpList();
 }])
 
 .controller("HelpCtrl", ["$scope", "$stateParams", "HelpSvc", function($scope, $stateParams, HelpSvc) {

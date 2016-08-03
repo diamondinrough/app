@@ -14,6 +14,12 @@ angular.module('starter.services', [])
     }
 }])
 
+.service("ViewCountSvc", ["$http", function($http) {
+    this.viewed = function(type, pk) {
+        $http.put(site + "api/app/viewcount/", { type: type, pk: pk });
+    }
+}])
+
 .service("IndexSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadIndex = function() {
         $http.get(site + "api/app/index/?format=json")
@@ -193,7 +199,7 @@ angular.module('starter.services', [])
 }])
 
 .service("HelpListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-    this.loadResources = function() {
+    this.loadHelpList = function() {
         $http.get(site + "api/app/help/?format=json")
         .success(function(data) {
             $rootScope.$broadcast("helplist", data);
@@ -205,7 +211,7 @@ angular.module('starter.services', [])
 }])
 
 .service("HelpSvc", ["$http", "$rootScope", function($http, $rootScope) {
-    this.loadResource = function(id) {
+    this.loadHelp = function(id) {
         $http.get(site + "api/app/help/" + id + "/?format=json")
         .success(function(data) {
             $rootScope.$broadcast("help", data);

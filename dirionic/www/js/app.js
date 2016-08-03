@@ -23,12 +23,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-// <<<<<<< HEAD
+
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $sceDelegateProvider) {
-// =======
-// .config(function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
-  $ionicConfigProvider.tabs.position('bottom'); 
-// >>>>>>> hannah
+
   $stateProvider
 
   .state('app', {
@@ -81,7 +78,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/articles',
     views: {
       'articles': {
-        templateUrl: 'templates/articlelist.html',
+        templateUrl: 'templates/article-list.html',
         controller: 'ArticleListCtrl'
       }
     }
@@ -106,8 +103,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
-
-  
 
   .state('app.videolist', {
     url: '/videos',
@@ -153,10 +148,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/help',
     views: {
       'help': {
-        templateUrl: 'templates/help.html'
+        templateUrl: 'templates/help.html',
+        controller: 'HelpListCtrl'
       }
     }
-  });
+  })
+
+  .state('app.help-question-list', {
+    url: '/help/questions',
+    views: {
+      'help': {
+        templateUrl: 'templates/question-list.html',
+        controller: 'HelpListCtrl'
+      }
+    }
+  })
 
   $urlRouterProvider.otherwise('/app/index');
 
