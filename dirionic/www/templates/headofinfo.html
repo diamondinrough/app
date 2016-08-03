@@ -1,0 +1,17 @@
+<ion-view title="Head of Information">
+  <ion-content padding="false" class="has-header">
+    <div class="list">
+      <div class="item item-divider">
+        <p>Position?</p>
+      </div>
+      <div class="item item-avatar" ng-repeat="user in contacts">
+        <img ng-src="{{user.picture}}" alt="no img">
+        <div style="margin-left: 20px;">
+          <h2>{{user.username}}</h2>
+          <p>Wechat: {{user.wechat}}</p>
+          <p>Email: {{user.email}}</p>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

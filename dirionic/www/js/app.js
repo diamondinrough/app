@@ -44,6 +44,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
+  .state('app.index-search', {
+    url: '/index/search',
+    views: {
+      'index': {
+        templateUrl: 'templates/index-search.html',
+        controller: 'IndexSearchCtrl'
+      }
+    }
+  })
+
   .state('app.indexarticle', {
     url: '/index/article/:id',
     views: {
@@ -108,7 +118,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/videos',
     views: {
       'videos': {
-        templateUrl: 'templates/videolist.html',
+        templateUrl: 'templates/video-list.html',
         controller: 'VideoListCtrl'
       }
     }
@@ -149,7 +159,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     views: {
       'help': {
         templateUrl: 'templates/help.html',
-        controller: 'HelpListCtrl'
+        controller: 'HelpCtrl'
       }
     }
   })
@@ -159,7 +169,37 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     views: {
       'help': {
         templateUrl: 'templates/question-list.html',
-        controller: 'HelpListCtrl'
+        controller: 'QuestionListCtrl'
+      }
+    }
+  })
+
+  .state('app.help-question', {
+    url: '/help/questions/:id',
+    views: {
+      'help': {
+        templateUrl: 'templates/question.html',
+        controller: 'QuestionCtrl'
+      }
+    }
+  })
+
+  .state('app.help-head-of-info', {
+    url: '/help/headofinfo',
+    views: {
+      'help': {
+        templateUrl: 'templates/headofinfo.html',
+        controller: 'HOICtrl'
+      }
+    }
+  })
+
+  .state('app.help-feedback', {
+    url: '/help/feedback',
+    views: {
+      'help': {
+        templateUrl: 'templates/feedback.html',
+        controller: 'FeedbackCtrl'
       }
     }
   })

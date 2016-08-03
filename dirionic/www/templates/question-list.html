@@ -1,0 +1,14 @@
+<ion-view title="All Questions">
+  <ion-nav-buttons side="right">
+    <a class="button button-icon ion-ios-search-strong" href=""></a>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-refresher pulling-text="Reload questions" on-refresh="reload()"></ion-refresher>
+    <div class="list">
+      <a class="item item-icon-right" ng-repeat="question in questions" href="#/app/help/questions/{{question.id}}">
+        {{question.question}}
+        <i class="icon ion-ios-arrow-right"></i>
+      </a>
+    <ion-infinite-scroll ng-if="moreitems" on-infinite="loadMore()"></ion-infinite-scroll>
+  </ion-content>
+</ion-view>
