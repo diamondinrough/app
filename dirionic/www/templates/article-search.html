@@ -3,14 +3,16 @@
     <button class="button button-icon icon ion-ios-pricetag" ng-click="showTags()"></button>
   </ion-nav-buttons>
   <ion-content>
-    <ion-refresher pulling-text="Reload articles" on-refresh="reload()"></ion-refresher>
-    <label class="item item-input">
-      <i class="icon ion-ios-search-strong" style="margin-right: 10px;" on-touch="loadSearches()"></i>
-      <input type="search" placeholder="Search" ng-model="search.text">
-      <a ng-if="search.text != ''" on-touch="search.text=''">
-        <i class="icon ion-ios-close" style="margin-right: 12px;"></i>
-      </a>
-    </label>
+    <ion-refresher pulling-text="Reload searches" on-refresh="reload()"></ion-refresher>
+    <div>
+      <label class="item item-input">
+        <i class="icon ion-ios-search-strong" style="margin-right: 10px;" on-touch="loadSearches()"></i>
+        <input type="search" placeholder="Search" ng-model="search.text">
+        <a ng-if="search.text != ''" on-touch="search.text=''">
+          <i class="icon ion-ios-close" style="margin-right: 12px;"></i>
+        </a>
+      </label>
+    </div>
     <ion-list>  
       <ion-item ng-repeat="article in articles">
         <div>

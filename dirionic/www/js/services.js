@@ -21,14 +21,51 @@ angular.module('starter.services', [])
 }])
 
 .service("IndexSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-    this.loadIndex = function() {
+    this.loadItems = function(taglist, searches, next, bcast) {
+        if (next == null) {
+            params = { format: "json" };
+            activetags = "";
+            if (taglist != null) {
+                for (i = 0; i < taglist.length; i++) {
+                    if (taglist[i].checked) {
+                        activetags = activetags.concat(taglist[i].name + ",");
+                    }
+                }
+            }
+            if (activetags != "") {
+                activetags = activetags.substr(0, activetags.length-1);
+                console.log(activetags);
+                params['tags'] = activetags;
+            }
+            if (searches != null) {
+                search = searches.split(" ").join([separator = ","]);
+                params['search'] = search;
+            }
+            $http.get(site + "api/app/index/", { params: params })
+            .success(function(data) {
+                $rootScope.$broadcast(bcast, data);
+            })
+            .error(function() {
+                $ionicLoading.hide();
+            });
+        } else {
+            $http.get(next)
+            .success(function(data) {
+                $rootScope.$broadcast(bcast, data);
+            })
+            .error(function() {
+                console.error("Failed to load index list from " + next);
+                $ionicLoading.hide();
+            });
+        }
+        /*
         $http.get(site + "api/app/index/?format=json")
         .success(function(data) {
             $rootScope.$broadcast("index", data);
         })
         .error(function() {
             $ionicLoading.hide();
-        });
+        });*/
     }
 }])
 
@@ -74,8 +111,8 @@ angular.module('starter.services', [])
 
 .service("ArticleListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadArticles = function(taglist, searches, next, bcast) {
-        params = { format: "json" };
         if (next == null) {
+            params = { format: "json" };
             activetags = "";
             if (taglist != null) {
                 for (i = 0; i < taglist.length; i++) {
@@ -189,24 +226,41 @@ angular.module('starter.services', [])
     }
 }])
 
-.service("UserListSvc", ["$http", "$rootScope", function($http, $rootScope) {
-    this.loadUsers = function() {
+.service("UserListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
+    this.loadUsers = function(bcast) {
         $http.get(site + "api/app/users/?format=json")
         .success(function(data) {
-            $rootScope.$broadcast("userlist", data);
-        });
+            $rootScope.$broadcast(bcast, data);
+        })
+        .error(function() {
+            $ionicLoading.hide();
+        })
     }
 }])
 
 .service("HelpListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-    this.loadHelpList = function() {
-        $http.get(site + "api/app/help/?format=json")
-        .success(function(data) {
-            $rootScope.$broadcast("helplist", data);
-        })
-        .error(function() {
-            $ionicLoading.hide();
-        });
+    this.loadHelpList = function(faq, next, bcast) {
+        if (next == null) {
+            params = { format: "json" };
+            if (faq) {
+                params["faq"] = "";
+            }
+            $http.get(site + "api/app/help/", { params: params })
+            .success(function(data) {
+                $rootScope.$broadcast(bcast, data);
+            })
+            .error(function() {
+                $ionicLoading.hide();
+            });
+        } else {
+            $http.get(next)
+            .success(function(data) {
+                $rootScope.$broadcast(bcast, data);
+            })
+            .error(function() {
+                $ionicLoading.hide();
+            })
+        }
     }
 }])
 
@@ -214,7 +268,20 @@ angular.module('starter.services', [])
     this.loadHelp = function(id) {
         $http.get(site + "api/app/help/" + id + "/?format=json")
         .success(function(data) {
-            $rootScope.$broadcast("help", data);
+            $rootScope.$broadcast("question", data);
+        });
+    }
+}])
+
+.service("FeedbackSvc", ["$http", "$rootScope", function($http, $rootScope) {
+    this.post = function(data) {
+        console.log(data);
+        $http.post(site + "api/app/feedback/", data)
+        .success(function(data) {
+            $rootScope.$broadcast("feedback-success");
+        })
+        .error(function(data) {
+            $rootScope.$broadcast("feedback-error");
         });
     }
 }]);

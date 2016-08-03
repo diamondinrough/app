@@ -1,6 +1,6 @@
 <ion-view view-title="Index">
   <ion-nav-buttons side="right">
-    <a class="button button-icon ion-ios-search-strong"></a>
+    <a class="button button-icon ion-ios-search-strong" href="#/app/index/search"></a>
   </ion-nav-buttons>
   <ion-content>
     <ion-refresher pulling-text="Reload index" on-refresh="reload()"></ion-refresher>
@@ -40,7 +40,6 @@
         <div>
           <p class="item-type">Video</p>
           <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/video/{{video.id}}">View
-            <ion-nav-view name="video"></ion-nav-view>
           </a>
         </div>
         <div style="clear: both;"></div>
@@ -50,7 +49,7 @@
           </li>
         </ul>
         <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
-          <h2 class="item-title ng-bind-html="video.title"></h2>
+          <h2 class="item-title" ng-bind-html="video.title"></h2>
         </div>
         <div>
           <p class="item-date">{{video.dt_created}}</p>

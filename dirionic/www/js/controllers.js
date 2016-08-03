@@ -95,6 +95,160 @@ angular.module('starter.controllers', [])
     IndexSlideSvc.loadSlides();
 }])
 
+.controller("IndexSearchCtrl", ["$scope", "IndexSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "$sce", function($scope, IndexSvc, TagListSvc, $ionicPopup, $ionicLoading, $sce) {
+    $scope.search = { text: "" };
+
+    $scope.items = [];
+    $scope.taglist = [];
+    $scope.count = 0;
+    $scope.moreitems = false;
+    $scope.next = null;
+    
+    $scope.$on("index-search-list", function(_, data) {
+        data.results.forEach(function(item) {
+            switch(item.type) {
+                case "article":
+                    $scope.items.push({
+                        type: item.type,
+                        id: item.id,
+                        title: item.title,
+                        content: item.content,
+                        summary: item.summary,
+                        image: item.image,
+                        author: getname(item.author),
+                        views: item.views,
+                        tags: item.tags,
+                        dt_created: item.dt_created,
+                        dt_updated: item.dt_updated
+                    });
+                    break;
+                case "video":
+                    $scope.items.push({
+                        type: item.type,
+                        id: item.id,
+                        title: $sce.trustAsHtml(item.title),
+                        summary: $sce.trustAsHtml(item.summary),
+                        videolink: item.videolink,
+                        videoid: item.videolink.split("=")[1],
+                        speaker: item.speaker,
+                        views: item.views,
+                        tags: item.tags,
+                        dt_created: item.dt_created,
+                    });
+                    break;
+                case "resource":
+                    $scope.items.push({
+                        type: item.type,
+                        id: item.id,
+                        title: $sce.trustAsHtml(item.title),
+                        resourcefile: item.resourcefile,
+                        filetype: item.filetype,
+                        summary: $sce.trustAsHtml(item.summary),
+                        poster: getname(item.poster),
+                        views: item.views,
+                        downloads: item.downloads,
+                        tags: item.tags,
+                        dt_created: item.dt_created
+                    });
+                    break;
+                default:
+                    console.error("Unknown type: " + item.type);
+            }
+        });
+        $scope.count = data.count;
+        $scope.next = data.next;
+        if ($scope.next != null) $scope.moreitems = true;
+        else $scope.moreitems = false;
+
+        $scope.$broadcast("scroll.refreshComplete")
+        $scope.$broadcast("scroll.infiniteScrollComplete");
+        $ionicLoading.hide();
+    });
+
+    $scope.$on("taglist", function(_, data) {
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
+            });
+        }
+    });
+
+    $scope.showTags = function() {
+        var tags = $ionicPopup.show({
+            template: `
+                <style>
+                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
+                        float: right;
+                    }
+                    .item-checkbox.item-checkbox-right {
+                        padding: 15px;
+                    }
+                </style>
+                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked"
+                class="item-checkbox-right">
+                <p style="color: {{tag.color}};">{{tag.name}}</p>
+                </ion-checkbox>
+            `,
+            title: 'Tags',
+            scope: $scope,
+            buttons: [
+                {
+                    text: '<b>Reset</b>',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        for (i = 0; i < $scope.taglist.length; i++) {
+                            $scope.taglist[i].checked = false;
+                        }
+                        $scope.reload();
+                    }
+                },
+                {
+                    text: '<b>Done</b>',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        $scope.reload();   
+                    }
+                }
+            ]
+        });
+    };
+
+    $scope.loadSearches = function() {
+        $scope.items = [];
+        $scope.count = 0;
+        $scope.moreitems = false;
+        $scope.next = null;
+
+        $ionicLoading.show({template: "Loading searches..."});
+
+        if ($scope.search.text != '') {
+            IndexSvc.loadItems($scope.taglist, $scope.search.text, null, 'index-search-list');
+        } else {
+            $scope.$broadcast("scroll.refreshComplete");
+            $scope.$broadcast("scroll.infiniteScrollComplete");
+            $ionicLoading.hide();
+        }
+    }
+
+    $scope.loadMore = function() {
+        IndexSvc.loadItems(null, null, $scope.next, "index-search-list");
+    }
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading searches..."});
+        $scope.articles = [];
+        $scope.moreitems = false;
+        $scope.loadSearches();
+    }
+
+    TagListSvc.loadTags();
+    $scope.loadSearches();
+}])
+
 .controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", "TagListSvc", "$ionicPopup", function($scope, $ionicLoading, ArticleListSvc, TagListSvc, $ionicPopup) {
     $ionicLoading.show({template: "Loading articles..."});
 
@@ -226,7 +380,6 @@ angular.module('starter.controllers', [])
     $scope.count = 0;
     $scope.moreitems = false;
     $scope.next = null;
-    
 
     $scope.$on("article-search-list", function(_, data) {
         data.results.forEach(function(article) {
@@ -252,21 +405,6 @@ angular.module('starter.controllers', [])
         $scope.$broadcast("scroll.infiniteScrollComplete");
         $ionicLoading.hide();
     });
-
-    $scope.loadSearches = function() {
-        $scope.articles = [];
-        $scope.count = 0;
-        $scope.moreitems = false;
-        $scope.next = null;
-
-        if ($scope.search.text != '') {
-            ArticleListSvc.loadArticles($scope.taglist, $scope.search.text, null, 'article-search-list');
-        } else {
-            $scope.$broadcast("scroll.refreshComplete");
-            $scope.$broadcast("scroll.infiniteScrollComplete");
-            $ionicLoading.hide();
-        }
-    }
 
     $scope.$on("taglist", function(_, data) {
         if ($scope.taglist.length == 0) {
@@ -320,12 +458,29 @@ angular.module('starter.controllers', [])
         });
     };
 
+    $scope.loadSearches = function() {
+        $scope.articles = [];
+        $scope.count = 0;
+        $scope.moreitems = false;
+        $scope.next = null;
+
+        $ionicLoading.show({template: "Loading searches..."});
+
+        if ($scope.search.text != '') {
+            ArticleListSvc.loadArticles($scope.taglist, $scope.search.text, null, 'article-search-list');
+        } else {
+            $scope.$broadcast("scroll.refreshComplete");
+            $scope.$broadcast("scroll.infiniteScrollComplete");
+            $ionicLoading.hide();
+        }
+    }
+
     $scope.loadMore = function() {
         ArticleListSvc.loadArticles(null, null, $scope.next, "article-search-list");
     }
 
     $scope.reload = function() {
-        $ionicLoading.show({template: "Loading articles..."});
+        $ionicLoading.show({template: "Loading searches..."});
         $scope.articles = [];
         $scope.moreitems = false;
         $scope.loadSearches();
@@ -497,33 +652,37 @@ angular.module('starter.controllers', [])
     ResourceSvc.loadResource($stateParams.id);
 }])
 
-.controller("UserListCtrl", ["$scope", "$ionicLoading", "UserListSvc", function($scope, $ionicLoading, UserListSvc) {
-    $ionicLoading.show({template: "Loading users..."});
+.controller("HOICtrl", ["$scope", "$ionicLoading", "UserListSvc", function($scope, $ionicLoading, UserListSvc) {
+    $ionicLoading.show({template: "Loading contacts..."});
     
-    $scope.users = [];
-    $scope.$on("userlist", function(_, data) {
-        
+    $scope.contacts = [];
+    $scope.$on("hoi-users", function(_, data) {
         data.forEach(function(user) {
-            $scope.users.push({
+            $scope.contacts.push({
                 id: user.id,
-                username: user.username
+                username: user.username,
+                wechat: user.wechat,
+                email: user.email,
+                picture: user.image
             });
         });
-        
         $ionicLoading.hide();
     });
     
-    UserListSvc.loadUsers();
+    UserListSvc.loadUsers("hoi-users");
 }])
 
-.controller("HelpListCtrl", ["$scope", "$ionicLoading", "HelpListSvc", function($scope, $ionicLoading, HelpListSvc) {
-    $ionicLoading.show({template: "Loading help..."});
+.controller("HelpCtrl", ["$scope", "$ionicLoading", "HelpListSvc", function($scope, $ionicLoading, HelpListSvc) {
+    $ionicLoading.show({template: "Loading help page..."});
 
-    $scope.help = [];
-    $scope.$on("helplist", function(_, data) {
+    $scope.count = 0;
+    $scope.moreitems = false;
+    $scope.next = null;
 
-        data.forEach(function(help) {
-            $scope.help.push({
+    $scope.faq = [];
+    $scope.$on("faq-list", function(_, data) {
+        data.results.forEach(function(help) {
+            $scope.faq.push({
                 id: help.id,
                 poster: help.poster,
                 question: help.question,
@@ -534,16 +693,79 @@ angular.module('starter.controllers', [])
             });
         });
 
+        $scope.count = data.count;
+        $scope.next = data.next;
+        if ($scope.next != null) $scope.moreitems = true;
+        else $scope.moreitems = false;
+
+        $scope.$broadcast("scroll.refreshComplete");
+        $scope.$broadcast("scroll.infiniteScrollComplete");
         $ionicLoading.hide();
     });
     
-    HelpListSvc.loadHelpList();
+    $scope.loadMore = function() {
+        HelpListSvc.loadHelpList(null, $scope.next, "faq-list");
+    }
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading help page..."});
+        $scope.faq = [];
+        $scope.moreitems = false;
+        HelpListSvc.loadHelpList(true, null, "faq-list");
+    }
+
+    HelpListSvc.loadHelpList(true, null, "faq-list");
 }])
 
-.controller("HelpCtrl", ["$scope", "$stateParams", "HelpSvc", function($scope, $stateParams, HelpSvc) {
-    $scope.help = null;
-    $scope.$on("help", function(_, data) {
-        $scope.help = {
+.controller("QuestionListCtrl", ["$scope", "$ionicLoading", "HelpListSvc", function($scope, $ionicLoading, HelpListSvc) {
+    $ionicLoading.show({template: "Loading questions..."});
+
+    $scope.count = 0;
+    $scope.moreitems = false;
+    $scope.next = null;
+
+    $scope.questions = [];
+    $scope.$on("question-list", function(_, data) {
+        data.results.forEach(function(question) {
+            $scope.questions.push({
+                id: question.id,
+                poster: question.poster,
+                question: question.question,
+                detail: question.detail,
+                tags: question.tags,
+                dt_created: question.dt_created,
+                dt_updated: question.dt_updated
+            });
+        });
+
+        $scope.count = data.count;
+        $scope.next = data.next;
+        if ($scope.next != null) $scope.moreitems = true;
+        else $scope.moreitems = false;
+
+        $scope.$broadcast("scroll.refreshComplete");
+        $scope.$broadcast("scroll.infiniteScrollComplete");
+        $ionicLoading.hide();
+    });
+    
+    $scope.loadMore = function() {
+        HelpListSvc.loadHelpList(null, $scope.next, "question-list");
+    }
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading questions..."});
+        $scope.questions = [];
+        $scope.moreitems = false;
+        HelpListSvc.loadHelpList(false, null, "question-list");
+    }
+
+    HelpListSvc.loadHelpList(false, null, "question-list");
+}])
+
+.controller("QuestionCtrl", ["$scope", "$stateParams", "HelpSvc", function($scope, $stateParams, HelpSvc) {
+    $scope.question = null;
+    $scope.$on("question", function(_, data) {
+        $scope.question = {
                 id: data.id,
                 poster: data.poster,
                 question: data.question,
@@ -555,4 +777,22 @@ angular.module('starter.controllers', [])
     });
     
     HelpSvc.loadHelp($stateParams.id);
+}])
+
+.controller("FeedbackCtrl", ["$scope", "FeedbackSvc", "$ionicLoading", "$ionicHistory", function($scope, FeedbackSvc, $ionicLoading, $ionicHistory) {
+    $scope.feedback = { comments: "", contactinfo: "", name: "" }
+
+    $scope.submit = function() {
+        $ionicLoading.show({template: "Submitting feedback..."});
+        FeedbackSvc.post($scope.feedback);
+    }
+
+    $scope.$on("feedback-success", function(_, __) {
+        $ionicLoading.show({template: "Feedback Successful!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+
+    $scope.$on("feedback-error", function(_, __) {
+        $ionicLoading.show({template: "Feedback Failed", duration: 1000});
+    })
 }]);
