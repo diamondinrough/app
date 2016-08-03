@@ -148,7 +148,7 @@ class VideoListView(ListAPIView):
         if 'search' in self.request.query_params:
             searches = self.request.query_params.get('search').split(',')
             for search in searches:
-                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(author__username__icontains=search))
+                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(author__username__icontains=search))
         return qset
 
 
