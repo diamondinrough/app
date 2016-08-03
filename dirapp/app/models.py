@@ -148,11 +148,13 @@ class Resource(models.Model):
     def __str__(self):
         return self.title
 
+
 class Help(models.Model):
     id = models.AutoField(primary_key=True)
     poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='helpresources')
     question = models.CharField(max_length=200)
     detail = models.TextField()
+    faq = models.BooleanField(default=False)
     
     tags = models.ManyToManyField(Tag, blank=False, related_name='helptag')
     
@@ -161,14 +163,18 @@ class Help(models.Model):
     def __str__(self):
         return self.question
 
+
 class Feedback(models.Model):
     id = models.AutoField(primary_key=True)
     comments = models.TextField()
     contactinfo = models.CharField(max_length=200)
     name = models.CharField(max_length=50)
 
+    dt_created = models.DateTimeField(auto_now_add=True, editable=False)
+
     def __str__(self):
         return self.name + ' feedback'
+
 
 class HeadOfInfo(models.Model):
     person = models.ForeignKey(User)
