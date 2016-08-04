@@ -172,18 +172,6 @@ class ResourceListTagView(ListAPIView):
 class ResourceListView(ListAPIView):
     queryset = Resource.objects.all().order_by('-dt_created')
     serializer_class = ResourceSerializer
-    
-    def get_queryset(self):
-        qset = Resource.objects.all().order_by('-dt_created')
-        if 'tags' in self.request.query_params:
-            tags = self.request.query_params.get('tags').split(',')
-            for tag in tags:
-                qset = qset.filter(tags__name=tag)
-        if 'search' in self.request.query_params:
-            searches = self.request.query_params.get('search').split(',')
-            for search in searches:
-                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search))
-        return qset
 
 
 class ResourceView(RetrieveAPIView):
