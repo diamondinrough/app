@@ -14,10 +14,10 @@
         // vm.articles = articles;
 
        
-        vm.selectArticle = function(resourceId){
+        vm.selectResource = function(resourceId){
                 //TODO: select correct league
-                dirApi.setResourceId(resourceId)
-                $state.go("app.index");
+                // dirApi.setResourceId(resourceId)
+                $state.go("app.resource");
         };
 
     };

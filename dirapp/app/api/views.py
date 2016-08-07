@@ -47,13 +47,37 @@ class TestView(ListAPIView):
 
 class IndexView(MultipleModelAPIView):
     flat = True    #merges lists together
-    sorting_field = '-dt_created'
+#    sorting_field = '-dt_created'
 
-    queryList = [
-        (Article.objects.all(), ArticleSerializer),
-        (Video.objects.all(), VideoSerializer),
-        (Resource.objects.all(), ResourceSerializer),
-    ]
+#    queryList = [
+#        (Article.objects.all(), ArticleSerializer),
+#        (Video.objects.all(), VideoSerializer),
+#        (Resource.objects.all(), ResourceSerializer),
+#    ]
+
+    def get_queryList(self):
+        article_qset = Article.objects.all().order_by('-dt_created')
+        video_qset = Video.objects.all().order_by('-dt_created')
+        resource_qset = Resource.objects.all().order_by('-dt_created')
+
+        if 'tags' in self.request.query_params:
+            tags = self.request.query_params.get('tags').split(',')
+            for tag in tags:
+                article_qset = article_qset.filter(tags__name=tag)
+                video_qset = video_qset.filter(tags__name=tag)
+                resource_qset = resource_qset.filter(tags__name=tag)
+        if 'search' in self.request.query_params:
+            searches = self.request.query_params.get('search').split(',')
+            for search in searches:
+                article_qset = article_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(author__username__icontains=search))
+                video_qset = video_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(poster__username__icontains=search))
+                resource_qset = resource_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(poster__username__icontains=search))
+        qlist = [
+            (article_qset, ArticleSerializer),
+            (video_qset, VideoSerializer),
+            (resource_qset, ResourceSerializer),
+        ]
+        return qlist
 
 
 class IndexSlidesListView(ListAPIView):
@@ -114,6 +138,18 @@ class VideoListTagView(ListAPIView):
 class VideoListView(ListAPIView):
     queryset = Video.objects.all().order_by('-dt_created')
     serializer_class = VideoSerializer
+    
+    def get_queryset(self):
+        qset = Video.objects.all().order_by('-dt_created')
+        if 'tags' in self.request.query_params:
+            tags = self.request.query_params.get('tags').split(',')
+            for tag in tags:
+                qset = qset.filter(tags__name=tag)
+        if 'search' in self.request.query_params:
+            searches = self.request.query_params.get('search').split(',')
+            for search in searches:
+                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(speaker__icontains=search))
+        return qset
 
 
 class VideoView(RetrieveAPIView):
@@ -136,6 +172,18 @@ class ResourceListTagView(ListAPIView):
 class ResourceListView(ListAPIView):
     queryset = Resource.objects.all().order_by('-dt_created')
     serializer_class = ResourceSerializer
+    
+    def get_queryset(self):
+        qset = Resource.objects.all().order_by('-dt_created')
+        if 'tags' in self.request.query_params:
+            tags = self.request.query_params.get('tags').split(',')
+            for tag in tags:
+                qset = qset.filter(tags__name=tag)
+        if 'search' in self.request.query_params:
+            searches = self.request.query_params.get('search').split(',')
+            for search in searches:
+                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search))
+        return qset
 
 
 class ResourceView(RetrieveAPIView):
@@ -145,8 +193,14 @@ class ResourceView(RetrieveAPIView):
 
 
 class HelpListView(ListAPIView):
-    queryset = Help.objects.all().order_by('-dt_created')
     serializer_class = HelpSerializer
+    pagination_class = TenPagination
+
+    def get_queryset(self):
+        qset = Help.objects.all().order_by('-dt_created')
+        if 'faq' in self.request.query_params:
+            qset = qset.filter(faq=True)
+        return qset
 
 
 class HelpView(RetrieveAPIView):
@@ -155,15 +209,24 @@ class HelpView(RetrieveAPIView):
     lookup_field = 'id'
 
 
-class FeedbackListView(ListAPIView):
-    queryset = Feedback.objects.all().order_by('-dt_created')
-    serializer_class = FeedbackSerializer
+class FeedbackListView(APIView):
+    def get(self, request, format=None):
+        qset = Feedback.objects.all().order_by('-dt_created')
+        serializer = FeedbackSerializer(qset, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = FeedbackSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class FeedbackView(RetrieveAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    lookup_field = 'id'
+    lookup_field = 'id' 
 
 
 class HeadOfInfoListView(ListAPIView):
