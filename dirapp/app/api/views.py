@@ -124,19 +124,7 @@ class ArticleView(RetrieveAPIView):
     lookup_field = 'id'
 
 
-class VideoListTagView(ListAPIView):
-    serializer_class = VideoSerializer
-
-    def get_queryset(self):
-        tags = self.kwargs['tags'].split(',')
-        qset = Video.objects.all().order_by('-dt_created')
-        for tag in tags:
-            qset = qset.filter(tags__name=tag)
-        return qset
-
-
 class VideoListView(ListAPIView):
-    queryset = Video.objects.all().order_by('-dt_created')
     serializer_class = VideoSerializer
     
     def get_queryset(self):
@@ -158,19 +146,7 @@ class VideoView(RetrieveAPIView):
     lookup_field = 'id'
 
 
-class ResourceListTagView(ListAPIView):
-    serializer_class = ResourceSerializer
-
-    def get_queryset(self):
-        tags = self.kwargs['tags'].split(',')
-        qset = Resource.objects.all().order_by('-dt_created')
-        for tag in tags:
-            qset = qset.filter(tags__name=tag)
-        return qset
-
-
 class ResourceListView(ListAPIView):
-    queryset = Resource.objects.all().order_by('-dt_created')
     serializer_class = ResourceSerializer
     
     def get_queryset(self):
