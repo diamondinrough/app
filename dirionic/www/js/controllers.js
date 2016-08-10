@@ -223,7 +223,7 @@ angular.module('starter.controllers', [])
 
     $scope.$on("user-register-success", function(_, __) {
         $ionicLoading.show({template: "You are registered!", duration: 1000});
-        $ionicHistory.goBack();
+        $ionicHistory.goBack(-2);
     });
 
     $scope.$on("user-register-fail", function(_, __) {
@@ -233,6 +233,8 @@ angular.module('starter.controllers', [])
 
 .controller("LoginCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc) {
     $scope.user = { username:"", password:"" };
+    $scope.authenticated = AuthSvc.authenticated();
+    $scope.currentuser = AuthSvc.currentuser();
 
     $scope.login = function() {
         $ionicLoading.show({template: "Logging in..."});
