@@ -41,8 +41,8 @@ angular.module('starter.controllers', [])
         }
     });
     $scope.$on("index-video", function(_, data) {
-        if (data.length > 0) {
-            data = data[0];
+        if (data.results.length > 0) {
+            data = data.results[0];
             $scope.video = {
                 id: data.id,
                 title: $sce.trustAsHtml(data.title),
@@ -95,7 +95,7 @@ angular.module('starter.controllers', [])
     IndexSlideSvc.loadSlides();
 }])
 
-.controller("IndexSearchCtrl", ["$scope", "IndexSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "$sce", function($scope, IndexSvc, TagListSvc, $ionicPopup, $ionicLoading, $sce) {
+.controller("IndexSearchCtrl", ["$scope", "IndexSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "$sce", "TagPopupSvc", function($scope, IndexSvc, TagListSvc, $ionicPopup, $ionicLoading, $sce, TagPopupSvc) {
     $scope.search = { text: "" };
 
     $scope.items = [];
@@ -178,44 +178,8 @@ angular.module('starter.controllers', [])
     });
 
     $scope.showTags = function() {
-        var tags = $ionicPopup.show({
-            template: `
-                <style>
-                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
-                        float: right;
-                    }
-                    .item-checkbox.item-checkbox-right {
-                        padding: 15px;
-                    }
-                </style>
-                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked"
-                class="item-checkbox-right">
-                <p style="color: {{tag.color}};">{{tag.name}}</p>
-                </ion-checkbox>
-            `,
-            title: 'Tags',
-            scope: $scope,
-            buttons: [
-                {
-                    text: '<b>Reset</b>',
-                    type: 'button-assertive',
-                    onTap: function(e) {
-                        for (i = 0; i < $scope.taglist.length; i++) {
-                            $scope.taglist[i].checked = false;
-                        }
-                        $scope.reload();
-                    }
-                },
-                {
-                    text: '<b>Done</b>',
-                    type: 'button-positive',
-                    onTap: function(e) {
-                        $scope.reload();   
-                    }
-                }
-            ]
-        });
-    };
+        var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
+    }
 
     $scope.loadSearches = function() {
         $scope.items = [];
@@ -249,7 +213,69 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", "TagListSvc", "$ionicPopup", function($scope, $ionicLoading, ArticleListSvc, TagListSvc, $ionicPopup) {
+.controller("RegisterCtrl", function($scope, $ionicLoading, $ionicHistory, UserSvc) {
+    $scope.user = { username:"", password:"", first_name:"", last_name:"" }
+
+    $scope.register = function() {
+        $ionicLoading.show({template: "Registering..."});
+        UserSvc.register($scope.user);
+    }
+
+    $scope.$on("user-register-success", function(_, __) {
+        $ionicLoading.show({template: "You are registered!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+
+    $scope.$on("user-register-fail", function(_, __) {
+        $ionicLoading.show({template: "Failed to register.", duration: 1000});
+    });
+})
+
+.controller("LoginCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc) {
+    $scope.user = { username:"", password:"" };
+
+    $scope.login = function() {
+        $ionicLoading.show({template: "Logging in..."});
+        AuthSvc.authorize($scope.user);
+    }
+
+    $scope.logout = function() {
+        $ionicLoading.show({template: "Logging out..."});
+        AuthSvc.unauthorize();
+    }
+
+    $scope.$on("authorize-success", function(_, __) {
+        $ionicLoading.show({template: "Logged in!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+
+    $scope.$on("authorize-fail", function(_, __) {
+        $ionicLoading.show({template: "Failed to login.", duration: 1000});
+    });
+
+    $scope.$on("unauthorize-success", function(_, __) {
+        $ionicLoading.show({template: "Logged out!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+})
+
+.controller("ProfileCtrl", function($scope, $ionicLoading, AuthSvc, UserSvc) {
+    $scope.user = null;
+
+    $scope.$on("index-profile", function(_, data) {
+        $scope.user = {
+            username: data.username,
+            first_name: data.first_name,
+            last_name: data.last_name
+        };
+    });
+    if (AuthSvc.authenticated()) {
+        UserSvc.loadUser(AuthSvc.currentuser(), "index-profile");
+    }
+})
+
+
+.controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", "TagListSvc", "$ionicPopup", "TagPopupSvc", function($scope, $ionicLoading, ArticleListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
     $ionicLoading.show({template: "Loading articles..."});
 
     $scope.articles = [];
@@ -296,45 +322,9 @@ angular.module('starter.controllers', [])
     });
     
     $scope.showTags = function() {
-        var tags = $ionicPopup.show({
-            template: `
-                <style>
-                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
-                        float: right;
-                    }
-                    .item-checkbox.item-checkbox-right {
-                        padding: 15px;
-                    }
-                </style>
-                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked"
-                class="item-checkbox-right">
-                <p style="color: {{tag.color}};">{{tag.name}}</p>
-                </ion-checkbox>
-            `,
-            title: 'Tags',
-            scope: $scope,
-            buttons: [
-                {
-                    text: '<b>Reset</b>',
-                    type: 'button-assertive',
-                    onTap: function(e) {
-                        for (i = 0; i < $scope.taglist.length; i++) {
-                            $scope.taglist[i].checked = false;
-                        }
-                        $scope.reload();
-                    }
-                },
-                {
-                    text: '<b>Done</b>',
-                    type: 'button-positive',
-                    onTap: function(e) {
-                        $scope.reload();   
-                    }
-                }
-            ]
-        });
-    };
-    
+        var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
+    }
+
     $scope.loadMore = function() {
         ArticleListSvc.loadArticles(null, null, $scope.next, "article-list");
     }
@@ -372,7 +362,7 @@ angular.module('starter.controllers', [])
     ArticleSvc.loadArticle($stateParams.id);
 }])
 
-.controller("ArticleSearchCtrl", ["$scope", "ArticleListSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", function($scope, ArticleListSvc, TagListSvc, $ionicPopup, $ionicLoading) {
+.controller("ArticleSearchCtrl", ["$scope", "ArticleListSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "TagPopupSvc", function($scope, ArticleListSvc, TagListSvc, $ionicPopup, $ionicLoading, TagPopupSvc) {
     $scope.search = { text: "" };
 
     $scope.articles = [];
@@ -419,44 +409,8 @@ angular.module('starter.controllers', [])
     });
 
     $scope.showTags = function() {
-        var tags = $ionicPopup.show({
-            template: `
-                <style>
-                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
-                        float: right;
-                    }
-                    .item-checkbox.item-checkbox-right {
-                        padding: 15px;
-                    }
-                </style>
-                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked"
-                class="item-checkbox-right">
-                <p style="color: {{tag.color}};">{{tag.name}}</p>
-                </ion-checkbox>
-            `,
-            title: 'Tags',
-            scope: $scope,
-            buttons: [
-                {
-                    text: '<b>Reset</b>',
-                    type: 'button-assertive',
-                    onTap: function(e) {
-                        for (i = 0; i < $scope.taglist.length; i++) {
-                            $scope.taglist[i].checked = false;
-                        }
-                        $scope.reload();
-                    }
-                },
-                {
-                    text: '<b>Done</b>',
-                    type: 'button-positive',
-                    onTap: function(e) {
-                        $scope.reload();   
-                    }
-                }
-            ]
-        });
-    };
+        var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
+    }
 
     $scope.loadSearches = function() {
         $scope.articles = [];
@@ -490,12 +444,14 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", "TagListSvc", "$ionicPopup", function($scope, $ionicLoading, VideoListSvc, TagListSvc, $ionicPopup) {
+.controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", "TagListSvc", "$ionicPopup", "TagPopupSvc", function($scope, $ionicLoading, VideoListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
 	$ionicLoading.show({template: "Loading videos..."});
 
 	$scope.videos = [];
     $scope.taglist = [];
+    $scope.count = 0;
     $scope.moreitems = false;
+    $scope.next = null;
 
     $scope.$on("taglist", function(_, data) {
         if ($scope.taglist.length == 0) {
@@ -509,8 +465,8 @@ angular.module('starter.controllers', [])
         }
     });
 
-	$scope.$on("videolist", function(_, data) {
-    	data.forEach(function(video) {
+	$scope.$on("video-list", function(_, data) {
+    	data.results.forEach(function(video) {
         	$scope.videos.push({
             	id: video.id,
             	title: video.title,
@@ -522,6 +478,15 @@ angular.module('starter.controllers', [])
             	tags: video.tags,
                 dt_created: video.dt_created,
         	});
+
+            $scope.count = data.count;
+            $scope.next = data.next;
+            if ($scope.next != null) $scope.moreitems = true;
+            else $scope.moreitems = false;
+
+            $scope.$broadcast("scroll.refreshComplete")
+            $scope.$broadcast("scroll.infiniteScrollComplete");
+            $ionicLoading.hide();
     	});
         
         $scope.$broadcast("scroll.refreshComplete");
@@ -529,58 +494,107 @@ angular.module('starter.controllers', [])
 	});
 
     $scope.showTags = function() {
-        var tags = $ionicPopup.show({
-            template: `
-                <style>
-                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
-                        float: right;
-                    }
-                    .item-checkbox.item-checkbox-right {
-                        padding: 15px;
-                    }
-                </style>
-                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked"
-                class="item-checkbox-right">
-                <p style="color: {{tag.color}};">{{tag.name}}</p>
-                </ion-checkbox>
-            `,
-            title: 'Tags',
-            scope: $scope,
-            buttons: [
-                {
-                    text: '<b>Reset</b>',
-                    type: 'button-assertive',
-                    onTap: function(e) {
-                        for (i = 0; i < $scope.taglist.length; i++) {
-                            $scope.taglist[i].checked = false;
-                        }
-                        $scope.reload();
-                    }
-                },
-                {
-                    text: '<b>Done</b>',
-                    type: 'button-positive',
-                    onTap: function(e) {
-                        $scope.reload();   
-                    }
-                }
-            ]
-        });
-    };
+        var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
+    }
     
     $scope.loadMore = function() {
-        console.log("load more");
+        VideoListSvc.loadVideos(null, null, $scope.next, "video-list");
     }
 
     $scope.reload = function() {
         $ionicLoading.show({template: "Loading videos..."});
         $scope.videos = [];
         $scope.moreitems = false;
-        VideoListSvc.loadVideos($scope.taglist);
+        VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
     }
 
     TagListSvc.loadTags();
-	VideoListSvc.loadVideos($scope.taglist);
+    VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
+}])
+
+.controller("VideoSearchCtrl", ["$scope", "VideoListSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "TagPopupSvc", function($scope, VideoListSvc, TagListSvc, $ionicPopup, $ionicLoading, TagPopupSvc) {
+    $scope.search = { text: "" };
+
+    $scope.videos = [];
+    $scope.taglist = [];
+    $scope.count = 0;
+    $scope.moreitems = false;
+    $scope.next = null;
+
+    $scope.$on("video-search-list", function(_, data) {
+        data.results.forEach(function(video) {
+            $scope.videos.push({
+                id: video.id,
+                title: video.title,
+                summary: video.summary,
+                videolink: video.videolink,
+                videoid: video.videolink.split("=")[1],
+                speaker: video.speaker,
+                views: video.views,
+                tags: video.tags,
+                dt_created: video.dt_created,
+            });
+
+            $scope.count = data.count;
+            $scope.next = data.next;
+            if ($scope.next != null) $scope.moreitems = true;
+            else $scope.moreitems = false;
+
+            $scope.$broadcast("scroll.refreshComplete")
+            $scope.$broadcast("scroll.infiniteScrollComplete");
+            $ionicLoading.hide();
+        });
+        
+        $scope.$broadcast("scroll.refreshComplete");
+        $ionicLoading.hide();
+    });
+
+    $scope.$on("taglist", function(_, data) {
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
+            });
+        }
+    });
+
+    $scope.showTags = function() {
+        var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
+    }
+
+    $scope.loadSearches = function() {
+        $scope.videos = [];
+        $scope.count = 0;
+        $scope.moreitems = false;
+        $scope.next = null;
+
+        $ionicLoading.show({template: "Loading searches..."});
+
+        if ($scope.search.text != '') {
+            VideoListSvc.loadVideos($scope.taglist, $scope.search.text, null, 'video-search-list');
+        } else {
+            $scope.$broadcast("scroll.refreshComplete");
+            $scope.$broadcast("scroll.infiniteScrollComplete");
+            $ionicLoading.hide();
+        }
+    }
+
+    $scope.loadMore = function() {
+        VideoListSvc.loadVideos(null, null, $scope.next, "video-search-list");
+    }
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading searches..."});
+        $scope.videos = [];
+        $scope.moreitems = false;
+        $scope.loadSearches();
+    }
+
+    TagListSvc.loadTags();
+    $scope.loadSearches();
 }])
 
 .controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", "$ionicTabsDelegate", "ViewCountSvc", function($scope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate, ViewCountSvc) {
@@ -788,11 +802,11 @@ angular.module('starter.controllers', [])
     }
 
     $scope.$on("feedback-success", function(_, __) {
-        $ionicLoading.show({template: "Feedback Successful!", duration: 1000});
+        $ionicLoading.show({template: "Feedback Successful!", duration: 2000});
         $ionicHistory.goBack();
     });
 
     $scope.$on("feedback-error", function(_, __) {
-        $ionicLoading.show({template: "Feedback Failed", duration: 1000});
+        $ionicLoading.show({template: "Feedback Failed<br>Please fill out all fields", duration: 2000});
     })
 }]);
