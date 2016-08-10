@@ -78,13 +78,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/index/resource/:id',
     views: {
       'index': {
-        templateUrl: 'templates/resource.html',
-        controller: 'ResourceCtrl'
+        templateUrl: 'templates/resource.html'
       }
     }
   })
 
-  .state('app.articlelist', {
+  .state('app.index-register', {
+    url: '/index/register',
+    views: {
+      'index': {
+        templateUrl: 'templates/index-register.html',
+        controller: 'RegisterCtrl'
+      }
+    }
+  })
+
+  .state('app.index-login', {
+    url: '/index/login',
+    views: {
+      'index': {
+        templateUrl: 'templates/index-login.html',
+        controller: 'LoginCtrl'
+      }
+    }
+  })
+
+  .state('app.index-profile', {
+    url: '/index/profile',
+    views: {
+      'index': {
+        templateUrl: 'templates/index-profile.html',
+        controller: 'ProfileCtrl'
+      }
+    }
+  })
+
+  .state('app.article-list', {
     url: '/articles',
     views: {
       'articles': {
@@ -114,12 +143,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
-  .state('app.videolist', {
+  .state('app.video-list', {
     url: '/videos',
     views: {
       'videos': {
         templateUrl: 'templates/video-list.html',
         controller: 'VideoListCtrl'
+      }
+    }
+  })
+
+  .state('app.video-search', {
+    url: '/videos/search',
+    views: {
+      'videos': {
+        templateUrl: 'templates/video-search.html',
+        controller: 'VideoSearchCtrl'
       }
     }
   })
@@ -138,8 +177,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/resources',
     views: {
       'resources': {
-        templateUrl: 'templates/resourcelist.html',
-        controller: 'ResourceListCtrl'
+        templateUrl: 'templates/resourcelist.html'
       }
     }
   })
@@ -148,8 +186,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/resources/:id',
     views: {
       'resources': {
-        templateUrl: 'templates/resource.html',
-        controller: 'ResourceCtrl'
+        templateUrl: 'templates/resource.html'
       }
     }
   })

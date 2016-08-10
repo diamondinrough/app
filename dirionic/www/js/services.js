@@ -2,6 +2,104 @@ var site = "http://54.152.36.188/";
 
 angular.module('starter.services', [])
 
+.service("TagPopupSvc", [function() {
+    this.tagPopup = function($scope) {
+        return {
+            template: 
+               '<style> \
+                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon { \
+                        float: right; \
+                    } \
+                    .item-checkbox.item-checkbox-right { \
+                        padding: 15px; \
+                    } \
+                </style> \
+                <ion-checkbox ng-repeat="tag in taglist" ng-model="tag.checked" ng-checked="tag.checked" \
+                class="item-checkbox-right"> \
+                <p style="color: {{tag.color}};">{{tag.name}}</p> \
+                </ion-checkbox>'
+            ,
+            title: 'Tags',
+            scope: $scope,
+            buttons: [
+                {
+                    text: '<b>Reset</b>',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        for (i = 0; i < $scope.taglist.length; i++) {
+                            $scope.taglist[i].checked = false;
+                        }
+                        $scope.reload();
+                    }
+                },
+                {
+                    text: '<b>Done</b>',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        $scope.reload();   
+                    }
+                }
+            ]
+        };
+    }
+}])
+
+.service("AuthSvc", function($http, $rootScope) {
+    var token = null;
+    var isAuthenticated = false;
+    var username = null;
+
+    this.authorize = function(user) {
+        console.log("authorizing: " + user.username + " " + user.password);
+        $http.post(site + "api/app/users/auth/", user)
+        .success(function(data) {
+            token = data["token"];
+            isAuthenticated = true;
+            username = user.username;
+            $http.defaults.headers.common.Authorization = "Token " + token;
+            $rootScope.$broadcast("authorize-success");
+        })
+        .error(function() {
+            $rootScope.$broadcast("authorize-fail");
+        })
+    }
+
+    this.unauthorize = function() {
+        token = null;
+        isAuthenticated = false;
+        username = null;
+        $http.defaults.headers.common.Authorization = undefined;
+        $rootScope.$broadcast("unauthorize-success");
+    }
+
+    this.authenticated = function() {
+        return isAuthenticated;
+    }
+
+    this.currentuser = function() {
+        return username;
+    }
+})
+
+.service("UserSvc", function($http, $rootScope) {
+    this.loadUser = function(username, bcast) {
+        $http.get(site + "api/app/users/username/" + username + "/")
+        .success(function(data) {
+            $rootScope.$broadcast(bcast, data);
+        });
+    }
+
+    this.register = function(user) {
+        $http.post(site + "api/app/users/register/", user)
+        .success(function(data) {
+            $rootScope.$broadcast("user-register-success");
+        })
+        .error(function() {
+            $rootScope.$broadcast("user-register-fail");
+        })
+    }
+})
+
 .service("IndexSlideSvc", ["$http", "$rootScope", function($http, $rootScope) {
     this.loadSlides = function() {
         $http.get(site + "api/app/index/slides/?format=json")
@@ -160,36 +258,40 @@ angular.module('starter.services', [])
 }])
 
 .service("VideoListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-    this.loadVideos = function(taglist) {
-        notags = true;
-        activetags = [];
-        if (taglist) {
-            for (i = 0; i < taglist.length; i++) {
-                if (taglist[i].checked) {
-                    notags = false;
-                    activetags.push(taglist[i]);
+    this.loadVideos = function(taglist, searches, next, bcast) {
+        if (next == null) {
+            params = { format: "json" };
+            activetags = "";
+            if (taglist != null) {
+                for (i = 0; i < taglist.length; i++) {
+                    if (taglist[i].checked) {
+                        activetags = activetags.concat(taglist[i].name + ",");
+                    }
                 }
             }
-        }
-        if (notags) {
-            $http.get(site + "api/app/videos/?format=json")
+            if (activetags != "") {
+                activetags = activetags.substr(0, activetags.length-1);
+                console.log(activetags);
+                params['tags'] = activetags;
+            }
+            if (searches != null) {
+                search = searches.split(" ").join([separator = ","]);
+                params['search'] = search;
+            }
+            $http.get(site + "api/app/videos/", { params: params })
             .success(function(data) {
-                $rootScope.$broadcast("videolist", data);
+                $rootScope.$broadcast(bcast, data);
             })
             .error(function() {
                 $ionicLoading.hide();
             });
         } else {
-            url = site + "api/app/videos/tags/";
-            for (i = 0; i < activetags.length; i++) {
-                url += activetags[i].name + ",";
-            }
-            url = url.substr(0,url.length-1) + "/?format=json";
-            $http.get(url)
+            $http.get(next)
             .success(function(data) {
-                $rootScope.$broadcast("videolist", data);
+                $rootScope.$broadcast(bcast, data);
             })
             .error(function() {
+                console.error("Failed to load video list from " + next);
                 $ionicLoading.hide();
             });
         }
