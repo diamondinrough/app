@@ -1,10 +1,19 @@
 from django.db import models
 
-from colorfield.fields import ColorField
-#from taggit.managers import TaggableManager
-#from taggit.models import TagBase, GenericTaggedItemBase
+from django.contrib.auth.models import User as AuthUser
 
-# Create your models here.
+from colorfield.fields import ColorField
+
+#token stuff
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 
 class User(models.Model):
@@ -14,8 +23,8 @@ class User(models.Model):
     last_name = models.CharField(max_length=30)
     image = models.ImageField(upload_to='users/images/', default='users/images/default.jpg')
     position = models.CharField(max_length=50)
-    wechat = models.CharField(max_length=50)
-    email = models.CharField(max_length=50)
+    wechat = models.CharField(max_length=50, blank=True)
+    email = models.CharField(max_length=50, blank=True)
     
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
     dt_updated = models.DateTimeField(auto_now=True)
@@ -25,6 +34,12 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+
+
+class Contact(models.Model):
+    user = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
+    email = models.CharField(max_length=50, blank=True)
+    wechat = models.CharField(max_length=50, blank=True)
 
 
 class Team(models.Model):

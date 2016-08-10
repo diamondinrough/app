@@ -1,19 +1,25 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from rest_framework.authtoken import views as authviews
+
 from . import views
 
 urlpatterns = [
     url(r'^$', views.rootredirect),
     url(r'^app/index/slides', views.IndexSlidesListView.as_view(), name='apiindexslides'),
     url(r'^app/index/', views.IndexView.as_view(), name='api-index-view'),
-    url(r'^app/users/(?P<username>\w+)/', views.UserView.as_view(), name='api-user-view'),
-    url(r'^app/users/', views.UserListView.as_view(), name='api-user-list-view'),
+    url(r'^app/users/username/(?P<username>\w+)/', views.UserView.as_view(), name='api-user-view'),
+    url(r'^app/users/register/', views.UserCreateView.as_view()),
+    url(r'^app/users/auth/', authviews.obtain_auth_token),
+#    url(r'^app/users/', views.UserListView.as_view(), name='api-user-list-view'),
     url(r'^app/viewcount/', views.ViewCount.as_view(), name='api-view-count'),
     url(r'^app/tags/', views.TagListView.as_view(), name='api-tag-list-view'),
     url(r'^app/articles/(?P<id>[0-9]+)/', views.ArticleView.as_view(), name='api-article-view'),
+    url(r'^app/articles/create/', views.ArticleCreateView.as_view(), name='api-article-create-view'),
     url(r'^app/articles/', views.ArticleListView.as_view(), name='api-article-list-view'),
     url(r'^app/videos/(?P<id>[0-9]+)/', views.VideoView.as_view(), name='api-video-view'),
+    url(r'^app/videos/create/', views.VideoCreateView.as_view(), name='api-video-create-view'),
     url(r'^app/videos/', views.VideoListView.as_view(), name='api-video-list-view'),
     url(r'^app/resources/(?P<id>[0-9]+)/', views.ResourceView.as_view(), name='api-resource-view'),
     url(r'^app/resources/', views.ResourceListView.as_view(), name='api-resource-list-view'),
@@ -25,3 +31,4 @@ urlpatterns = [
     url(r'^app/headofinfo/', views.HeadOfInfoListView.as_view(), name='headofinfolistview'),
     url(r'^app/test/', views.TestView.as_view(), name='apitest'),
 ]
+
