@@ -1,8 +1,27 @@
 <ion-view title="Profile">
   <ion-content>
-    <div class="list">
-      <div class="item">Username: {{user.username}}</div>
-      <div class="item">First Name: {{user.first_name}}</div>
-      <div class="item">Last Name: {{user.last_name}}</div>
+    <div ng-if="authenticated">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          {{user.username}}
+        </label>
+        <label class="item item-input">
+          <span class="input-label">First Name</span>
+          {{user.first_name}}
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Last Name</span>
+          {{user.last_name}}
+        </label>
+      </div>
+    </div>
+    <div ng-if="!authenticated">
+      <div class="list">
+        <div class="item" style="text-align: center;">
+          You are not logged in!
+        </div>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

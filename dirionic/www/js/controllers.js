@@ -263,6 +263,7 @@ angular.module('starter.controllers', [])
 
 .controller("ProfileCtrl", function($scope, $ionicLoading, AuthSvc, UserSvc) {
     $scope.user = null;
+    $scope.authenticated = AuthSvc.authenticated();
 
     $scope.$on("index-profile", function(_, data) {
         $scope.user = {
