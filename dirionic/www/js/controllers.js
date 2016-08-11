@@ -277,7 +277,7 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller("ArticleListCtrl", ["$scope", "$ionicLoading", "ArticleListSvc", "TagListSvc", "$ionicPopup", "TagPopupSvc", function($scope, $ionicLoading, ArticleListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
+.controller("ArticleListCtrl", function($scope, $state, $ionicLoading, AuthSvc, ArticleListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
     $ionicLoading.show({template: "Loading articles..."});
 
     $scope.articles = [];
@@ -322,6 +322,14 @@ angular.module('starter.controllers', [])
         $scope.$broadcast("scroll.infiniteScrollComplete");
         $ionicLoading.hide();
     });
+
+    $scope.newArticle = function() {
+        if (AuthSvc.authenticated()) {
+            $state.go('app.article-create');
+        } else {
+            $ionicLoading.show({template: "You are not logged in!", duration: 1000});
+        }
+    }
     
     $scope.showTags = function() {
         var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
@@ -340,7 +348,7 @@ angular.module('starter.controllers', [])
 
     TagListSvc.loadTags();
     ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
-}])
+})
 
 .controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", "ViewCountSvc", "$sce", function($scope, $stateParams, ArticleSvc, ViewCountSvc, $sce) {
     $scope.article = null;
@@ -445,6 +453,9 @@ angular.module('starter.controllers', [])
     TagListSvc.loadTags();
     $scope.loadSearches();
 }])
+
+.controller("ArticleCreateCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc) {
+})
 
 .controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", "TagListSvc", "$ionicPopup", "TagPopupSvc", function($scope, $ionicLoading, VideoListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
 	$ionicLoading.show({template: "Loading videos..."});

@@ -133,6 +133,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
+  .state('app.article-create', {
+    url: '/articles/create',
+    views: {
+      'articles': {
+        templateUrl: 'templates/article-create.html',
+        controller: 'ArticleCreateCtrl'
+      }
+    }
+  })
+
   .state('app.article', {
     url: '/articles/:id',
     views: {
