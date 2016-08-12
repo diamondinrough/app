@@ -1,18 +1,51 @@
 <ion-view title="Profile">
+  <style>
+    .item-input input {
+      padding-top: 1px;
+      color: #444444;
+    }
+  </style>
+  <ion-nav-buttons side="right">
+    <button ng-if="authenticated" ng-click="editToggle()" class="button button-clear">{{edit.text}}</button>
+  </ion-nav-buttons>
   <ion-content>
     <div ng-if="authenticated">
       <div class="list">
         <label class="item item-input">
           <span class="input-label">Username</span>
-          {{user.username}}
+          <div ng-if="!editing">
+            {{user.username}}
+          </div>
+          <div ng-if="editing">
+            <input ng-model="user.username" type="text">
+          </div>
         </label>
         <label class="item item-input">
-          <span class="input-label">First Name</span>
-          {{user.first_name}}
+          <span class="input-label">Full Name</span>
+          <div ng-if="!editing">
+            {{user.info.fullname}}
+          </div>
+          <div ng-if="editing">
+            <input ng-model="user.info.fullname" type="text">
+          </div>
         </label>
         <label class="item item-input">
-          <span class="input-label">Last Name</span>
-          {{user.last_name}}
+          <span class="input-label">Email</span>
+          <div ng-if="!editing">
+            {{user.info.email}}
+          </div>
+          <div ng-if="editing">
+            <input ng-model="user.info.email" type="text">
+          </div>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Wechat</span>
+          <div ng-if="!editing">
+            {{user.info.wechat}}
+          </div>
+          <div ng-if="editing">
+            <input ng-model="user.info.wechat" type="text">
+          </div>
         </label>
       </div>
     </div>

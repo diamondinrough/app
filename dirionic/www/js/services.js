@@ -50,8 +50,7 @@ angular.module('starter.services', [])
     var username = null;
 
     this.authorize = function(user) {
-        console.log("authorizing: " + user.username + " " + user.password);
-        $http.post(site + "api/app/users/auth/", user)
+        $http.post(site + "api/app/user/auth/", user)
         .success(function(data) {
             token = data["token"];
             isAuthenticated = true;
@@ -59,8 +58,8 @@ angular.module('starter.services', [])
             $http.defaults.headers.common.Authorization = "Token " + token;
             $rootScope.$broadcast("authorize-success");
         })
-        .error(function() {
-            $rootScope.$broadcast("authorize-fail");
+        .error(function(data) {
+            $rootScope.$broadcast("authorize-error", data);
         })
     }
 
@@ -83,34 +82,53 @@ angular.module('starter.services', [])
 
 .service("UserSvc", function($http, $rootScope) {
     this.loadUser = function(username, bcast) {
-        $http.get(site + "api/app/users/username/" + username + "/")
+        $http.get(site + "api/app/users/" + username + "/")
         .success(function(data) {
             $rootScope.$broadcast(bcast, data);
         });
     }
 
     this.register = function(user) {
-        $http.post(site + "api/app/users/register/", user)
+        $http.post(site + "api/app/user/register/", user)
         .success(function(data) {
             $rootScope.$broadcast("user-register-success");
         })
-        .error(function() {
-            $rootScope.$broadcast("user-register-fail");
+        .error(function(data) {
+            $rootScope.$broadcast("user-register-error", data);
         })
     }
 })
 
-.service("IndexSlideSvc", ["$http", "$rootScope", function($http, $rootScope) {
+.service("UserProfileSvc", function($http, $rootScope) {
+    this.loadProfile = function(bcast) {
+        $http.get(site + "api/app/user/profile/")
+        .success(function(data) {
+            $rootScope.$broadcast(bcast, data);
+        });
+    }
+
+    this.updateProfile = function(user) {
+        $http.put(site + "api/app/user/update/", user)
+        .success(function() {
+            $rootScope.$broadcast("user-update-success")
+        })
+        .error(function(data) {
+            $rootScope.$broadcast("user-update-error", data)
+        });
+    }
+})
+
+.service("IndexSlideSvc", function($http, $rootScope, $ionicLoading) {
     this.loadSlides = function() {
         $http.get(site + "api/app/index/slides/?format=json")
         .success(function(data) {
             $rootScope.$broadcast("indexslides", data);
         })
         .error(function() {
-            console.error("Failed to load slides from " + site + "api/app/index/slides/?format=json");
+            $ionicLoading.hide();
         });
     }
-}])
+})
 
 .service("ViewCountSvc", ["$http", function($http) {
     this.viewed = function(type, pk) {
@@ -253,6 +271,25 @@ angular.module('starter.services', [])
         $http.get(site + "api/app/articles/" + id + "/?format=json")
         .success(function(data) {
             $rootScope.$broadcast("article", data);
+        });
+    }
+
+    this.newArticle = function(article, taglist) {
+        tags = [];
+        if (taglist != null) {
+            for (i = 0; i < taglist.length; i++) {
+                if (taglist[i].checked) {
+                    tags.push(taglist[i].name);
+                }
+            }
+        }
+        article["tags"] = tags;
+        $http.post(site + "api/app/articles/create/", article)
+        .success(function() {
+            $rootScope.$broadcast("article-submit-success");
+        })
+        .error(function(data) {
+            $rootScope.$broadcast("article-submit-error", data);
         });
     }
 }])
