@@ -9,12 +9,18 @@
           <span class="input-label">Username</span>
           <input ng-model="user.username" type="text">
         </label>
+        <div ng-if="errors.username" class="item error">
+          <p>{{errors.username}}</p>
+        </div>
         <label class="item item-input">
           <span class="input-label">Password</span>
           <input ng-model="user.password" type="text">
         </label>
+        <div ng-if="errors.password" class="item error">
+          <p>{{errors.password}}</p>
+        </div>
       </div>
-      <button class="button button-full button-positive" ng-click="login()">
+      <button class="button button-block button-positive" ng-click="login()">
         Login
       </button>
     </div>
@@ -24,7 +30,7 @@
           Logged in as {{currentuser}}
         </div>
       </div>
-      <button class="button button-full button-assertive" ng-click="logout()">
+      <button class="button button-block button-assertive" ng-click="logout()">
         Logout
       </button>
     </div>

@@ -1,6 +1,11 @@
 <ion-view view-title="Articles ({{articles.length}} of {{count}})">
+  <style>
+    .item {
+      padding: 5px 16px;
+    }
+  </style>
   <ion-nav-buttons side="left">
-    <a class="button button-icon ion-ios-plus-outline" ng-click="newArticle()"></a>
+    <a class="button button-icon ion-plus" ng-click="newArticle()"></a>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
     <button class="button button-icon icon ion-ios-pricetag" ng-click="showTags()"></button>

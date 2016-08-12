@@ -62,9 +62,12 @@ li.tag {
 }
 .item-img-container {
   display: block;
+  float: left;
   text-align: center;
-  margin: 5px 0px;
-  max-height: 200px;
+  margin-top: 5px;
+  margin-right: 5px;
+  max-height: 150px;
+  max-width: 50%;
   border-radius: 5px;
   overflow: hidden;
 }
@@ -120,4 +123,16 @@ a.video-tab {
   margin: 5px 10px;
   font-size: 18px;
   color: #666666;
+}
+
+.error {
+  padding: 4px 16px;
+}
+
+.error p {
+  color: red;
+}
+
+.item-input input {
+  font-size: 16px;
 }

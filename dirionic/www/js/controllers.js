@@ -1,5 +1,17 @@
 function getname(author) {
-    return author.first_name + " " + author.last_name;
+    if (author) {
+        return author.first_name + " " + author.last_name;
+    } else {
+        return "";
+    }
+}
+
+function get_name(poster) {
+    if (poster) {
+        return poster.info.fullname;
+    } else {
+        return "";
+    }
 }
 
 angular.module('starter.controllers', [])
@@ -32,7 +44,7 @@ angular.module('starter.controllers', [])
                 content: data.content,
                 summary: $sce.trustAsHtml(data.summary),
                 image: data.image,
-                author: getname(data.author),
+                poster: get_name(data.poster),
                 views: data.views,
                 tags: data.tags,
                 dt_created: data.dt_created,
@@ -115,7 +127,7 @@ angular.module('starter.controllers', [])
                         content: item.content,
                         summary: item.summary,
                         image: item.image,
-                        author: getname(item.author),
+                        poster: get_name(item.poster),
                         views: item.views,
                         tags: item.tags,
                         dt_created: item.dt_created,
@@ -214,11 +226,27 @@ angular.module('starter.controllers', [])
 }])
 
 .controller("RegisterCtrl", function($scope, $ionicLoading, $ionicHistory, UserSvc) {
-    $scope.user = { username:"", password:"", first_name:"", last_name:"" }
+    $scope.user = { username:"", password:"", password2:"", fullname:"", email:"", wechat:"" };
+    $scope.errors = { username:"", password:"", fullname:"", email:"", wechat:"" };
 
     $scope.register = function() {
-        $ionicLoading.show({template: "Registering..."});
-        UserSvc.register($scope.user);
+        if ($scope.user["password"] != $scope.user["password2"]) {
+            $ionicLoading.show({template: "Passwords don't match!", duration: 1000});
+            $scope.user["password"] = "";
+            $scope.user["password2"] = "";
+            $scope.errors["password"] = "Passwords don't match.";
+        } else {
+            user_data = {};
+            user_data["username"] = $scope.user["username"];
+            user_data["password"] = $scope.user["password"];
+            info = {};
+            info["fullname"] = $scope.user["fullname"];
+            info["email"] = $scope.user["email"];
+            info["wechat"] = $scope.user["wechat"];
+            user_data["info"] = info;
+            $ionicLoading.show({template: "Registering..."});
+           UserSvc.register(user_data);
+        }
     }
 
     $scope.$on("user-register-success", function(_, __) {
@@ -226,13 +254,24 @@ angular.module('starter.controllers', [])
         $ionicHistory.goBack(-2);
     });
 
-    $scope.$on("user-register-fail", function(_, __) {
+    $scope.$on("user-register-error", function(_, data) {
+        $scope.errors = { username:"", password:"", fullname:"", email:"", wechat:"" };
+        if (data) {
+            if ("username" in data) $scope.errors["username"] = data["username"][0];
+            if ("password" in data) $scope.errors["password"] = data["password"][0];
+            if ("info" in data) {
+                if ("fullname" in data["info"]) $scope.errors["fullname"] = data["info"]["fullname"][0]
+                if ("email" in data["info"]) $scope.errors["email"] = data["info"]["email"][0];
+                if ("wechat" in data["info"]) $scope.errors["wechat"] = data["info"]["wechat"][0];
+            }
+        }
         $ionicLoading.show({template: "Failed to register.", duration: 1000});
     });
 })
 
 .controller("LoginCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc) {
     $scope.user = { username:"", password:"" };
+    $scope.errors = { username:"", password:"" };
     $scope.authenticated = AuthSvc.authenticated();
     $scope.currentuser = AuthSvc.currentuser();
 
@@ -251,7 +290,14 @@ angular.module('starter.controllers', [])
         $ionicHistory.goBack();
     });
 
-    $scope.$on("authorize-fail", function(_, __) {
+    $scope.$on("authorize-error", function(_, data) {
+        $scope.errors = { username:"", password:"" };
+        if (data) {
+            fields = ["username", "password"];
+            for (i = 0; i < fields.length; i++) {
+                if (fields[i] in data) $scope.errors[fields[i]] = data[fields[i]][0];
+            }
+        }
         $ionicLoading.show({template: "Failed to login.", duration: 1000});
     });
 
@@ -261,19 +307,48 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller("ProfileCtrl", function($scope, $ionicLoading, AuthSvc, UserSvc) {
+.controller("ProfileCtrl", function($scope, $ionicLoading, AuthSvc, UserProfileSvc) {
     $scope.user = null;
+    $scope.errors = { username:"", info: { fullname:"", email:"", wechat:"" }};
     $scope.authenticated = AuthSvc.authenticated();
+    $scope.editing = false;
+    $scope.edit = {text:"Edit"}
+
+    $scope.editToggle = function() {
+        $scope.editing = !$scope.editing;
+        if ($scope.editing) {
+            $scope.edit["text"] = "Done";
+        } else {
+            UserProfileSvc.updateProfile($scope.user);
+            $ionicLoading.show({template: "Updating..."});
+        }
+    }
+
+    $scope.$on("user-update-success", function(_, __) {
+        $ionicLoading.show({template: "Successfully updated!", duration: 1000});
+    });
+
+    $scope.$on("user-update-error", function(_, data) {
+        $scope.errors = { username:"", info: { fullname:"", email:"", wechat:"" }};
+        if (data) {
+            if ("username" in data) $scope.errors["username"] = data["username"][0];
+            if ("info" in data) {
+                if ("fullname" in data["info"]) $scope.errors["info"]["fullname"] = data["info"]["fullname"][0]
+                if ("email" in data["info"]) $scope.errors["info"]["email"] = data["info"]["email"][0];
+                if ("wechat" in data["info"]) $scope.errors["info"]["wechat"] = data["info"]["wechat"][0];
+            }
+        }
+        $ionicLoading.show({template: "Failed to update.", duration: 1000});
+    });
 
     $scope.$on("index-profile", function(_, data) {
         $scope.user = {
             username: data.username,
-            first_name: data.first_name,
-            last_name: data.last_name
+            info: data.info
         };
     });
     if (AuthSvc.authenticated()) {
-        UserSvc.loadUser(AuthSvc.currentuser(), "index-profile");
+        UserProfileSvc.loadProfile("index-profile");
     }
 })
 
@@ -307,7 +382,7 @@ angular.module('starter.controllers', [])
                 content: article.content,
                 summary: article.summary,
                 image: article.image,
-                author: getname(article.author),
+                poster: get_name(article.poster),
                 views: article.views,
                 tags: article.tags,
                 dt_created: article.dt_created,
@@ -360,7 +435,7 @@ angular.module('starter.controllers', [])
             content: $sce.trustAsHtml(data.content),
             summary: $sce.trustAsHtml(data.summary),
             image: data.image,
-            author: getname(data.author),
+            author: get_name(data.poster),
             views: data.views,
             tags: data.tags,
             dt_created: data.dt_created,
@@ -390,7 +465,7 @@ angular.module('starter.controllers', [])
                 content: article.content,
                 summary: article.summary,
                 image: article.image,
-                author: getname(article.author),
+                poster: get_name(article.poster),
                 views: article.views,
                 tags: article.tags,
                 dt_created: article.dt_created,
@@ -455,7 +530,37 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("ArticleCreateCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc) {
+.controller("ArticleCreateCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc, ArticleSvc, TagListSvc) {
+    $scope.article = {title:"", content:"", summary:"", tags:[]};
+    $scope.taglist = [];
+
+    $scope.submit = function() {
+        ArticleSvc.newArticle($scope.article, $scope.taglist);
+        $ionicLoading.show({template: "Submitting article..."});
+    }
+
+    $scope.$on("article-submit-success", function(_, __) {
+        $ionicLoading.show({template: "Article submitted!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+
+    $scope.$on("article-submit-error", function(_, data) {
+        $ionicLoading.show({template: "Failed to submit article.", duration: 1000});
+    });
+
+    $scope.$on("taglist", function(_, data) {
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
+            });
+        }
+    });
+
+    TagListSvc.loadTags();
 })
 
 .controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", "TagListSvc", "$ionicPopup", "TagPopupSvc", function($scope, $ionicLoading, VideoListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
