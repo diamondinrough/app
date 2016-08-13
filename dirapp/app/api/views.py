@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
 
 from rest_framework.authentication import TokenAuthentication
@@ -60,6 +60,38 @@ class UserCreateView(CreateAPIView):
     queryset = AuthUser.objects.all()
 
 
+class UserProfileView(RetrieveAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsOwnerOrOptions,)
+
+#    serializer_class = AuthUserProfileSerializer
+#    queryset = AuthUser.objects.all()
+
+    def retrieve(self, request):
+        if request.user.is_authenticated():
+            serializer = AuthUserProfileSerializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserProfileUpdateView(UpdateAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsOwnerOrOptions,)
+    
+#    serializer_class = AuthUserProfileSerializer
+#    queryset = AuthUser.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            instance = request.user
+            serializer = AuthUserProfileSerializer(request.user, request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
 class UserView(RetrieveAPIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticatedOrOptions,)
@@ -86,7 +118,7 @@ class IndexView(MultipleModelAPIView):
         if 'search' in self.request.query_params:
             searches = self.request.query_params.get('search').split(',')
             for search in searches:
-                article_qset = article_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(author__username__icontains=search))
+                article_qset = article_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(poster__username__icontains=search))
                 video_qset = video_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(poster__username__icontains=search))
                 resource_qset = resource_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(poster__username__icontains=search))
         qlist = [
@@ -120,13 +152,19 @@ class ArticleListView(ListAPIView):
         if 'search' in self.request.query_params:
             searches = self.request.query_params.get('search').split(',')
             for search in searches:
-                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(author__username__icontains=search))
+                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(poster__username__icontains=search))
         return qset
 
 
 class ArticleCreateView(CreateAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleCreateSerializer
+    
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+
+    def perform_create(self, serializer):
+        serializer.save(poster=self.request.user)
 
 
 class ArticleView(RetrieveAPIView):
@@ -155,6 +193,12 @@ class VideoListView(ListAPIView):
 class VideoCreateView(CreateAPIView):
     queryset = Video.objects.all()
     serializer_field = VideoCreateSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class VideoView(RetrieveAPIView):

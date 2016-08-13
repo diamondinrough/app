@@ -1,7 +1,7 @@
 <ion-view title="Profile">
   <style>
     .item-input input {
-      padding-top: 1px;
+      padding: 0px 0px;
       color: #444444;
     }
   </style>
@@ -13,7 +13,7 @@
       <div class="list">
         <label class="item item-input">
           <span class="input-label">Username</span>
-          <div ng-if="!editing">
+          <div ng-if="!editing" style="padding-top: 1px;">
             {{user.username}}
           </div>
           <div ng-if="editing">
@@ -22,7 +22,7 @@
         </label>
         <label class="item item-input">
           <span class="input-label">Full Name</span>
-          <div ng-if="!editing">
+          <div ng-if="!editing" style="padding-top: 1px;">
             {{user.info.fullname}}
           </div>
           <div ng-if="editing">
@@ -31,7 +31,7 @@
         </label>
         <label class="item item-input">
           <span class="input-label">Email</span>
-          <div ng-if="!editing">
+          <div ng-if="!editing" style="padding-top: 1px;">
             {{user.info.email}}
           </div>
           <div ng-if="editing">
@@ -40,7 +40,7 @@
         </label>
         <label class="item item-input">
           <span class="input-label">Wechat</span>
-          <div ng-if="!editing">
+          <div ng-if="!editing" style="padding-top: 1px;">
             {{user.info.wechat}}
           </div>
           <div ng-if="editing">
