@@ -1,10 +1,21 @@
 from django.db import models
 
-from colorfield.fields import ColorField
-#from taggit.managers import TaggableManager
-#from taggit.models import TagBase, GenericTaggedItemBase
+from django.contrib.auth.models import User as AuthUser
 
-# Create your models here.
+from colorfield.fields import ColorField
+
+
+#token stuff
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+#end token stuff
 
 
 class User(models.Model):
@@ -14,8 +25,8 @@ class User(models.Model):
     last_name = models.CharField(max_length=30)
     image = models.ImageField(upload_to='users/images/', default='users/images/default.jpg')
     position = models.CharField(max_length=50)
-    wechat = models.CharField(max_length=50)
-    email = models.CharField(max_length=50)
+    wechat = models.CharField(max_length=50, blank=True)
+    email = models.CharField(max_length=50, blank=True)
     
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
     dt_updated = models.DateTimeField(auto_now=True)
@@ -25,6 +36,14 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+
+
+class Info(models.Model):
+    user = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
+    fullname = models.CharField(max_length=100)
+    email = models.EmailField()
+    wechat = models.CharField(max_length=50, blank=True)
+    image = models.ImageField(upload_to='users/images', default='users/images/default.jpg')
 
 
 class Team(models.Model):
@@ -76,7 +95,7 @@ class Tag(models.Model):
 
 class Article(models.Model):
     id = models.AutoField(primary_key=True)
-    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='userarticles')
+    poster = models.ForeignKey(AuthUser, null=True, on_delete=models.SET_NULL, related_name='userarticles')
     
     title = models.CharField(max_length=200)
     content = models.TextField()
@@ -84,7 +103,7 @@ class Article(models.Model):
     image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.png')
     views = models.IntegerField(default=0)
 
-    tags = models.ManyToManyField(Tag, blank=False, related_name='articletag')
+    tags = models.ManyToManyField(Tag, blank=True, related_name='articletag')
 
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
     dt_updated = models.DateTimeField(auto_now=True)

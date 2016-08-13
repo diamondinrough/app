@@ -1,8 +1,75 @@
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, DateTimeField, CharField
 
 
 from ..models import *
+
+
+class InfoSerializer(ModelSerializer):
+    class Meta:
+        model = Info
+        fields = ('fullname',)
+
+
+class InfoProfileSerializer(ModelSerializer):
+    class Meta:
+        model = Info
+        fields = ('fullname', 'email', 'wechat')
+
+
+AuthUser = get_user_model()
+
+
+class AuthUserSerializer(ModelSerializer):
+    info = InfoSerializer()
+
+    class Meta:
+        model = AuthUser
+        fields = ('id', 'username', 'info')
+
+
+class AuthUserProfileSerializer(ModelSerializer):
+    info = InfoProfileSerializer()
+
+    class Meta:
+        model = AuthUser
+        fields = ('id', 'username', 'info')
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.save()
+        info = InfoProfileSerializer(instance.info, validated_data.get('info'))
+        if info.is_valid():
+            info.save()
+
+        return instance
+
+
+class AuthUserCreateSerializer(ModelSerializer):
+    info = InfoProfileSerializer()
+
+    class Meta:
+        model = AuthUser
+        fields = ('id', 'username', 'password', 'info')
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def create(self, validated_data):
+        username = validated_data['username']
+        password = validated_data['password']
+        new_user = AuthUser(username=username)
+        new_user.set_password(password)
+        new_user.save()
+        fullname = validated_data['info']['fullname']
+        email = validated_data['info']['email']
+        wechat = validated_data['info']['wechat']
+        user_info = Info(user=new_user, fullname=fullname, email=email, wechat=wechat)
+        user_info.save()
+        return validated_data
 
 
 class UserSerializer(ModelSerializer):
@@ -29,7 +96,7 @@ class IndexSlideSerializer(ModelSerializer):
 
 
 class ArticleSerializer(ModelSerializer):
-    author = UserSerializer()
+    poster = AuthUserSerializer()
     tags = TagSerializer(many=True)
 
     dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
@@ -37,15 +104,13 @@ class ArticleSerializer(ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'content', 'summary', 'author', 'image', 'views', 'tags', 'dt_created', 'dt_updated')
+        fields = ('id', 'title', 'content', 'summary', 'poster', 'image', 'views', 'tags', 'dt_created', 'dt_updated')
 
 
-class ArticleLinkSerializer(ModelSerializer):
-    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
-
+class ArticleCreateSerializer(ModelSerializer):
     class Meta:
-        model = ArticleLink
-        fields = ('id', 'title', 'link', 'summary', 'poster', 'image', 'views', 'tags', 'dt_created')
+        model = Article
+        fields = ('title', 'content', 'summary', 'poster', 'tags')
 
 
 class VideoSerializer(ModelSerializer):
@@ -57,6 +122,15 @@ class VideoSerializer(ModelSerializer):
     class Meta:
         model = Video
         fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
+
+
+class VideoCreateSerializer(ModelSerializer):
+    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+
+    class Meta:
+        model = Video
+        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'tags')
+
 
 
 class ResourceSerializer(ModelSerializer):

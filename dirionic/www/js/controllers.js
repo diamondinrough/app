@@ -325,6 +325,7 @@ angular.module('starter.controllers', [])
     }
 
     $scope.$on("user-update-success", function(_, __) {
+        $scope.edit["text"] = "Edit";
         $ionicLoading.show({template: "Successfully updated!", duration: 1000});
     });
 

@@ -1,10 +1,17 @@
 from django.shortcuts import HttpResponse, redirect
 from django.db.models import Q
 
+from django.contrib.auth import get_user_model
+
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
+
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
+from .permissions import *
+
 from drf_multiple_model.views import MultipleModelAPIView
 
 from ..models import *
@@ -38,6 +45,7 @@ class ViewCount(APIView):
                 item.save()
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 
 
 class TestView(ListAPIView):
@@ -45,15 +53,56 @@ class TestView(ListAPIView):
         return Response(type(request.query_params))
 
 
+AuthUser = get_user_model()
+
+class UserCreateView(CreateAPIView):
+    serializer_class = AuthUserCreateSerializer
+    queryset = AuthUser.objects.all()
+
+
+class UserProfileView(RetrieveAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsOwnerOrOptions,)
+
+#    serializer_class = AuthUserProfileSerializer
+#    queryset = AuthUser.objects.all()
+
+    def retrieve(self, request):
+        if request.user.is_authenticated():
+            serializer = AuthUserProfileSerializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserProfileUpdateView(UpdateAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsOwnerOrOptions,)
+    
+#    serializer_class = AuthUserProfileSerializer
+#    queryset = AuthUser.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            instance = request.user
+            serializer = AuthUserProfileSerializer(request.user, request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserView(RetrieveAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+
+    serializer_class = AuthUserSerializer
+    queryset = AuthUser.objects.all()
+    lookup_field = 'username'
+
+
 class IndexView(MultipleModelAPIView):
     flat = True    #merges lists together
-#    sorting_field = '-dt_created'
-
-#    queryList = [
-#        (Article.objects.all(), ArticleSerializer),
-#        (Video.objects.all(), VideoSerializer),
-#        (Resource.objects.all(), ResourceSerializer),
-#    ]
 
     def get_queryList(self):
         article_qset = Article.objects.all().order_by('-dt_created')
@@ -69,7 +118,7 @@ class IndexView(MultipleModelAPIView):
         if 'search' in self.request.query_params:
             searches = self.request.query_params.get('search').split(',')
             for search in searches:
-                article_qset = article_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(author__username__icontains=search))
+                article_qset = article_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(poster__username__icontains=search))
                 video_qset = video_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(poster__username__icontains=search))
                 resource_qset = resource_qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(poster__username__icontains=search))
         qlist = [
@@ -90,17 +139,6 @@ class TagListView(ListAPIView):
     serializer_class = TagSerializer
 
 
-class UserListView(ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserView(RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    lookup_field = 'username'
-
-
 class ArticleListView(ListAPIView):
     serializer_class = ArticleSerializer
     pagination_class = TenPagination
@@ -114,8 +152,19 @@ class ArticleListView(ListAPIView):
         if 'search' in self.request.query_params:
             searches = self.request.query_params.get('search').split(',')
             for search in searches:
-                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(author__username__icontains=search))
+                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(content__icontains=search) | Q(poster__username__icontains=search))
         return qset
+
+
+class ArticleCreateView(CreateAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleCreateSerializer
+    
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+
+    def perform_create(self, serializer):
+        serializer.save(poster=self.request.user)
 
 
 class ArticleView(RetrieveAPIView):
@@ -124,21 +173,10 @@ class ArticleView(RetrieveAPIView):
     lookup_field = 'id'
 
 
-class VideoListTagView(ListAPIView):
-    serializer_class = VideoSerializer
-
-    def get_queryset(self):
-        tags = self.kwargs['tags'].split(',')
-        qset = Video.objects.all().order_by('-dt_created')
-        for tag in tags:
-            qset = qset.filter(tags__name=tag)
-        return qset
-
-
 class VideoListView(ListAPIView):
-    queryset = Video.objects.all().order_by('-dt_created')
     serializer_class = VideoSerializer
-    
+    pagination_class = TenPagination
+
     def get_queryset(self):
         qset = Video.objects.all().order_by('-dt_created')
         if 'tags' in self.request.query_params:
@@ -148,8 +186,19 @@ class VideoListView(ListAPIView):
         if 'search' in self.request.query_params:
             searches = self.request.query_params.get('search').split(',')
             for search in searches:
-                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(speaker__icontains=search))
+                qset = qset.filter(Q(title__icontains=search) | Q(summary__icontains=search) | Q(poster__username__icontains=search))
         return qset
+
+
+class VideoCreateView(CreateAPIView):
+    queryset = Video.objects.all()
+    serializer_field = VideoCreateSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class VideoView(RetrieveAPIView):
@@ -158,19 +207,7 @@ class VideoView(RetrieveAPIView):
     lookup_field = 'id'
 
 
-class ResourceListTagView(ListAPIView):
-    serializer_class = ResourceSerializer
-
-    def get_queryset(self):
-        tags = self.kwargs['tags'].split(',')
-        qset = Resource.objects.all().order_by('-dt_created')
-        for tag in tags:
-            qset = qset.filter(tags__name=tag)
-        return qset
-
-
 class ResourceListView(ListAPIView):
-    queryset = Resource.objects.all().order_by('-dt_created')
     serializer_class = ResourceSerializer
     
     def get_queryset(self):
