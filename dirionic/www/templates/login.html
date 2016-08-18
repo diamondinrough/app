@@ -1,0 +1,41 @@
+<ion-view>
+  <div class="bar bar-header bar-positive">
+    <a class="button button-icon icon ion-ios-arrow-back" href="#/title">
+      Back
+    </a>
+  </div>
+  <ion-content class="login has-header" scroll="false">
+    <div ng-if="!authenticated">
+      <form ng-submit="login()">
+        <div class="list">
+          <label class="item item-input">
+            <span class="input-label">Username</span>
+            <input ng-model="user.username" type="text">
+          </label>
+          <div ng-if="errors.username" class="item error">
+            <p>{{errors.username}}</p>
+          </div>
+          <label class="item item-input">
+            <span class="input-label">Password</span>
+            <input ng-model="user.password" type="password">
+          </label>
+          <div ng-if="errors.password" class="item error">
+            <p>{{errors.password}}</p>
+          </div>
+          <label class="item">
+            <button class="button button-block button-positive" type="submit">
+              Login
+            </button>
+          </label>
+        </div>
+      </form>
+    </div>
+    <div ng-if="authenticated">
+      <div class="list">
+        <div class="item" style="text-align: center;">
+          Logged in as {{currentuser}}
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.directives'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -28,157 +28,181 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
   $stateProvider
 
+  .state('title', {
+    url: '/title',
+    templateUrl: 'templates/title.html'
+  })
+
+  .state('login', {
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: 'LoginCtrl'
+  })
+
+  .state('register', {
+    url: '/register',
+    templateUrl: 'templates/register.html',
+    controller: 'RegisterCtrl'
+  })
+
+  .state('logout', {
+    url: '/logout',
+    templateUrl: 'templates/logout.html',
+    controller: 'LogoutCtrl'
+  })
+
   .state('app', {
     url: '/app',
     abstract: true,
     templateUrl: 'templates/tabs.html',
   })
 
-  .state('app.index', {
+  .state('app.home', {
+    url: '/home',
+    abstract: true,
+    views: {
+      'home': {
+        templateUrl: 'templates/home.html',
+      }
+    }
+  })
+
+  .state('app.home.index', {
     url: '/index',
     views: {
-      'index': {
+      'home.index': {
         templateUrl: 'templates/index.html',
         controller: 'IndexCtrl'
       }
     }
   })
 
-  .state('app.index-search', {
+  .state('app.home.index-article', {
+    url: '/index/article/:id',
+    views: {
+      'home.index': {
+        templateUrl: 'templates/article.html',
+        controller: 'ArticleCtrl'
+      }
+    }
+  })
+
+  .state('app.home.index-video', {
+    url: '/index/video/:id',
+    views: {
+      'home.index': {
+        templateUrl: 'templates/video.html',
+        controller: 'VideoCtrl'
+      }
+    }
+  })
+
+  .state('app.home.index-search', {
     url: '/index/search',
     views: {
-      'index': {
+      'home.index': {
         templateUrl: 'templates/index-search.html',
         controller: 'IndexSearchCtrl'
       }
     }
   })
 
-  .state('app.indexarticle', {
-    url: '/index/article/:id',
-    views: {
-      'index': {
-        templateUrl: 'templates/article.html',
-        controller: 'ArticleCtrl'
-      }
-    }
-  })
-
-  .state('app.indexvideo', {
-    url: '/index/video/:id',
-    views: {
-      'index': {
-        templateUrl: 'templates/video.html',
-        controller: 'VideoCtrl'
-      }
-    }
-  })
-
-  .state('app.indexresource', {
-    url: '/index/resource/:id',
-    views: {
-      'index': {
-        templateUrl: 'templates/resource.html'
-      }
-    }
-  })
-
-  .state('app.index-register', {
-    url: '/index/register',
-    views: {
-      'index': {
-        templateUrl: 'templates/index-register.html',
-        controller: 'RegisterCtrl'
-      }
-    }
-  })
-
-  .state('app.index-login', {
-    url: '/index/login',
-    views: {
-      'index': {
-        templateUrl: 'templates/index-login.html',
-        controller: 'LoginCtrl'
-      }
-    }
-  })
-
-  .state('app.index-profile', {
-    url: '/index/profile',
-    views: {
-      'index': {
-        templateUrl: 'templates/index-profile.html',
-        controller: 'ProfileCtrl'
-      }
-    }
-  })
-
-  .state('app.article-list', {
+  .state('app.home.article-list', {
     url: '/articles',
     views: {
-      'articles': {
+      'home.articles': {
         templateUrl: 'templates/article-list.html',
         controller: 'ArticleListCtrl'
       }
     }
   })
   
-  .state('app.article-search', {
+  .state('app.home.article-search', {
     url: '/articles/search',
     views: {
-      'articles': {
+      'home.articles': {
         templateUrl: 'templates/article-search.html',
         controller: 'ArticleSearchCtrl'
       }
     }
   })
 
-  .state('app.article-create', {
+  .state('app.home.article-create', {
     url: '/articles/create',
     views: {
-      'articles': {
+      'home.articles': {
         templateUrl: 'templates/article-create.html',
         controller: 'ArticleCreateCtrl'
       }
     }
   })
 
-  .state('app.article', {
-    url: '/articles/:id',
+  .state('app.home.article', {
+    url: '/article/:id',
     views: {
-      'articles': {
+      'home.articles': {
         templateUrl: 'templates/article.html',
         controller: 'ArticleCtrl'
       }
     }
   })
 
-  .state('app.video-list', {
+  .state('app.home.video-list', {
     url: '/videos',
     views: {
-      'videos': {
+      'home.videos': {
         templateUrl: 'templates/video-list.html',
         controller: 'VideoListCtrl'
       }
     }
   })
 
-  .state('app.video-search', {
+  .state('app.home.video-search', {
     url: '/videos/search',
     views: {
-      'videos': {
+      'home.videos': {
         templateUrl: 'templates/video-search.html',
         controller: 'VideoSearchCtrl'
       }
     }
   })
 
-  .state('app.video', {
-    url: '/videos/:id',
+  .state('app.home.video', {
+    url: '/video/:id',
     views: {
-      'videos': {
+      'home.videos': {
         templateUrl: 'templates/video.html',
         controller: 'VideoCtrl'
+      }
+    }
+  })
+
+  .state('app.group-dash', {
+    url: '/group-dash',
+    views: {
+      'groups': {
+        templateUrl: 'templates/group-dash.html',
+        controller: 'GroupDashCtrl'
+      }
+    }
+  })
+
+  .state('app.profile', {
+    url: '/profile',
+    views: {
+      'profile': {
+        templateUrl: 'templates/profile.html',
+        controller: 'ProfileCtrl'
+      }
+    }
+  })
+
+  .state('app.profile-info', {
+    url: '/profile/info',
+    views: {
+      'profile': {
+        templateUrl: 'templates/profile-info.html',
+        controller: 'ProfileInfoCtrl'
       }
     }
   })
@@ -251,7 +275,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
-  $urlRouterProvider.otherwise('/app/index');
+  $urlRouterProvider.otherwise('/title');
 
   $ionicConfigProvider.tabs.position('bottom');
 

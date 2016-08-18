@@ -1,22 +1,27 @@
+<ion-nav-bar align-title="center" class="bar bar-header bar-positive" animation="nav-title-slide-ios7">
+  <ion-nav-back-button>
+    Back
+  </ion-nav-back-button>
+  <ion-nav-title>
+  </ion-nav-title>
+</ion-nav-bar>
+
 <ion-tabs class="tabs-icon-top tabs-color-active-positive">
 
-  <ion-tab title="Front Page" icon-off="ion-ios-list-outline" icon-on="ion-ios-list" href="#/app/index">
-    <ion-nav-view name="index"></ion-nav-view>
+  <ion-tab title="Home" icon-off="ion-ios-list-outline" icon-on="ion-ios-list" href="#/app/home/index">
+    <ion-nav-view name="home"></ion-nav-view>
   </ion-tab>
 
-  <ion-tab title="Articles" icon-off="ion-ios-paper-outline" icon-on="ion-ios-paper" href="#/app/articles">
-    <ion-nav-view name="articles"></ion-nav-view>
+  <ion-tab title="Groups" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" href="#/app/group-dash">
+    <ion-nav-view name="groups"></ion-nav-view>
   </ion-tab>
 
-  <ion-tab title="Videos" icon-off="ion-ios-videocam-outline" icon-on="ion-ios-videocam" href="#/app/videos">
-    <ion-nav-view name="videos"></ion-nav-view>
-  </ion-tab>
-
-  <ion-tab title="Resources" icon-off="ion-ios-box-outline" icon-on="ion-ios-box" href="#/app/resources">
-    <ion-nav-view name="resources"></ion-nav-view>
+  <ion-tab title="Profile" icon-off="ion-ios-person-outline" icon-on="ion-ios-person" href="#/app/profile">
+    <ion-nav-view name="profile"></ion-nav-view>
   </ion-tab>
 
   <ion-tab title="Help" icon-off="ion-ios-help-outline" icon-on="ion-ios-help" href="#/app/help">
     <ion-nav-view name="help"></ion-nav-view>
   </ion-tab>
+
 </ion-tabs>
