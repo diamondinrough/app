@@ -1,0 +1,25 @@
+<ion-view title="Profile">
+  <ion-nav-buttons side="right">
+    <button ng-if="authenticated" ng-click="editToggle()" class="button button-clear">{{edit.text}}</button>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="list">
+      <label class="item item-input">
+        <span class="input-label">Username</span>
+        <input ng-model="user.username" type="text" ng-readonly="!editing">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Full Name</span>
+        <input ng-model="user.info.fullname" type="text" ng-readonly="!editing">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Email</span>
+        <input ng-model="user.info.email" type="text" ng-readonly="!editing">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Wechat</span>
+        <input ng-model="user.info.wechat" type="text" ng-readonly="!editing">
+      </label>
+    </div>
+  </ion-content>
+</ion-view>

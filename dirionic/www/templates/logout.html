@@ -1,0 +1,21 @@
+<ion-view>
+  <div class="bar bar-header bar-positive">
+    <a class="button button-icon icon ion-ios-arrow-back" href="#/app/home/index">
+      Back
+    </a>
+  </div>
+  <ion-content class="login has-header" scroll="false">
+    <div ng-if="authenticated">
+      <div class="list">
+        <div class="item" style="text-align: center;">
+          Logged in as {{currentuser}}
+        </div>
+        <label class="item">
+          <button class="button button-block button-assertive" ng-click="logout()">
+            Logout
+          </button>
+        </label>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

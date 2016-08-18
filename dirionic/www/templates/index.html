@@ -1,15 +1,10 @@
-<ion-view view-title="Index">
-  <style>
-    .item {
-      padding: 5px 16px;
-    }
-  </style>
+<ion-view view-title="Index" class="has-tabs">
   <ion-nav-buttons side="left">
-    <a class="button button-icon icon ion-log-in" href="#/app/index/login"></a>
-    <a class="button button-icon icon ion-person" href="#/app/index/profile"></a>
+    <button ng-if="authenticated" class="button button-icon icon ion-log-out" ng-click="logout()"></button>
+    <a ng-if="!authenticated" class="button button-icon icon ion-log-in" href="#/title"></a>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <a class="button button-icon ion-ios-search-strong" href="#/app/index/search"></a>
+    <a class="button button-icon ion-ios-search-strong" href="#/app/home/index/search"></a>
   </ion-nav-buttons>
   <ion-content>
     <ion-refresher pulling-text="Reload index" on-refresh="reload()"></ion-refresher>
@@ -19,10 +14,10 @@
       </ion-slide>
     </ion-slide-box>
     <ion-item-list>
-      <ion-item ng-if="article">
+      <ion-item ng-if="article" class="compact">
         <div>
           <p class="item-type">Article</p>
-          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/article/{{article.id}}">View</a>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/home/index/article/{{article.id}}">View</a>
         </div>
         <div style="clear: both;"></div>
         <ul>
@@ -45,10 +40,10 @@
           <p class="item-summary" ng-bind-html="article.summary"></p>
         </div>
       </ion-item>
-      <ion-item ng-if="video">
+      <ion-item ng-if="video" class="compact">
         <div>
           <p class="item-type">Video</p>
-          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/video/{{video.id}}">View
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/home/index/video/{{video.id}}">View
           </a>
         </div>
         <div style="clear: both;"></div>
@@ -72,10 +67,10 @@
           <p class="item-summary" ng-bind-html="video.summary"></p>
         </div>
       </ion-item>
-      <ion-item ng-if="resource">
+      <ion-item ng-if="resource" class="compact">
         <div>
           <p class="item-type">Resource</p>
-          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/index/resource/{{resource.id}}">View</a>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/home/index/resource/{{resource.id}}">View</a>
         </div>
         <div style="clear: both;"></div>
         <ul>

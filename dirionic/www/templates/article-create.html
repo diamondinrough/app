@@ -1,4 +1,4 @@
-<ion-view title="New Article">
+<ion-view title="New Article" class="has-tabs">
   <style>
     .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
         float: right;
@@ -8,6 +8,7 @@
     }
   </style>
   <ion-content>
+    <form ng-submit="submit()">
     <div class="list">
       <label class="item item-input item-stacked-label">
         <span class="input-label">Title</span>
@@ -32,9 +33,12 @@
           </div>
         </div>
       </label>
+      <label class="item">
+        <button class="button button-block button-positive" type="submit">
+          Submit Article
+        </button>
+      </label>
     </div>
-    <button class="button button-block button-positive" ng-click="submit()">
-      Submit Article
-    </button>
+    </form>
   </ion-content>
 </ion-view>

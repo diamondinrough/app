@@ -1,22 +1,17 @@
-<ion-view view-title="Videos ({{videos.length}} of {{count}})">
-  <style>
-    .item {
-      padding: 5px 16px;
-    }
-  </style>
+<ion-view view-title="Videos ({{videos.length}} of {{count}})" class="has-tabs">
   <ion-nav-buttons side="left">
     <button class="button button-icon icon ion-ios-pricetag" ng-click="showTags()"></button>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <a class="button button-icon ion-ios-search-strong" href="#/app/videos/search"></a>
+    <a class="button button-icon ion-ios-search-strong" href="#/app/home/videos/search"></a>
   </ion-nav-buttons>
   <ion-content>
     <ion-refresher pulling-text="Reload videos" on-refresh="reload()"></ion-refresher>
     <ion-list>
-      <ion-item ng-repeat="video in videos">
+      <ion-item ng-repeat="video in videos" class="compact">
         <div>
           <p class="item-type">Video</p>
-          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/videos/{{video.id}}">View</a>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/home/video/{{video.id}}">View</a>
         </div>
         <div style="clear: both;"></div>
         <ul>
