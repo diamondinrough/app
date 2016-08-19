@@ -2,7 +2,7 @@ function getname(author) {
     if (author) {
         return author.first_name + " " + author.last_name;
     } else {
-        return "";
+        return "[no poster]";
     }
 }
 
@@ -10,7 +10,7 @@ function get_name(poster) {
     if (poster) {
         return poster.info.fullname;
     } else {
-        return "";
+        return "[no poster]";
     }
 }
 
@@ -519,26 +519,178 @@ angular.module('starter.controllers', [])
     ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
 })
 
-.controller("ArticleCtrl", function($scope, $stateParams, ArticleSvc, ViewCountSvc, $sce) {
+.controller("ArticleCtrl", function($scope, $rootScope, AuthSvc, $stateParams, $ionicListDelegate, $ionicPopup, $ionicLoading, ArticleSvc, ViewCountSvc, CommentPopupSvc, $sce) {
+    $scope.authenticated = AuthSvc.authenticated();
+    $scope.currentuser = AuthSvc.currentuser();
+    $rootScope.$on("authorize-success", function() {
+        $scope.authenticated = true;
+        $scope.currentuser = AuthSvc.currentuser();
+    });
+    $rootScope.$on("unauthorize-success", function() {
+        $scope.authenticated = false;
+        $scope.currentuser = null;
+    });
+
     $scope.article = null;
     $scope.$on("article", function(_, data) {
         $scope.article = {
             id: data.id,
             title: $sce.trustAsHtml(data.title),
             content: $sce.trustAsHtml(data.content),
-            summary: $sce.trustAsHtml(data.summary),
+            summary: data.summary,
             image: data.image,
-            author: get_name(data.poster),
+            poster: get_name(data.poster),
             views: data.views,
             tags: data.tags,
             dt_created: data.dt_created,
             dt_updated: data.dt_updated
         };
-
+        $scope.article.comments = [];
+        data.comments.forEach(function(comment) {
+            childcomments = [];
+            comment.childcomment_set.forEach(function(childcomment) {
+                childcomments.push({
+                    id: childcomment.id,
+                    text: childcomment.text,
+                    poster: get_name(childcomment.poster),
+                    poster_username: childcomment.poster.username,
+                    edited: childcomment.edited,
+                    dt_created: childcomment.dt_created
+                });
+            });
+            $scope.article.comments.push({
+                id: comment.id,
+                text: comment.text,
+                poster: get_name(comment.poster),
+                poster_username: comment.poster.username,
+                edited: comment.edited,
+                dt_created: comment.dt_created,
+                childcomments: childcomments
+            });
+        });
         ViewCountSvc.viewed("Article", data.id);
     });
+
+    $scope.$on("article-comments", function(_, data) {
+        $scope.article.comments = [];
+        data.comments.forEach(function(comment) {
+            childcomments = [];
+            comment.childcomment_set.forEach(function(childcomment) {
+                childcomments.push({
+                    id: childcomment.id,
+                    text: childcomment.text,
+                    poster: get_name(childcomment.poster),
+                    poster_username: childcomment.poster.username,
+                    edited: childcomment.edited,
+                    dt_created: childcomment.dt_created
+                });
+            });
+            $scope.article.comments.push({
+                id: comment.id,
+                text: comment.text,
+                poster: get_name(comment.poster),
+                poster_username: comment.poster.username,
+                edited: comment.edited,
+                dt_created: comment.dt_created,
+                childcomments: childcomments
+            });
+        });
+    })
+
+    $scope.input = {};
+
+    $scope.submitcomment = function(text) {
+        ArticleSvc.submitComment($stateParams.id, text);
+        $ionicLoading.show({template: "Submitting comment..."});
+    }
+
+    $scope.submitreply = function(text, parent) {
+        ArticleSvc.submitReply($stateParams.id, text, parent);
+        $ionicLoading.show({template: "Submitting comment..."});
+    }
+
+    $scope.$on("article-comment-create-success", function(data) {
+        $ionicLoading.show({template: "Comment successful!", duration: 1000});
+        ArticleSvc.loadArticle($stateParams.id, "article-comments");
+    });
+
+    $scope.$on("article-reply-create-success", function(data) {
+        $ionicLoading.show({template: "Comment successful!", duration: 1000});
+        ArticleSvc.loadArticle($stateParams.id, "article-comments");
+    });
+
+    $scope.$on("article-reply-create-error", function() {
+        $ionicLoading.show({template: "Comment failed.", duration: 1000});
+    });
+
+    $scope.$on("article-comment-create-error", function() {
+        $ionicLoading.show({template: "Comment failed.", duration: 1000});
+    });
+
+    $scope.commentcreatepopup = function() {
+        var popup = $ionicPopup.show(CommentPopupSvc.commentcreate($scope));
+    }
+    $scope.replycreatepopup = function(parent) {
+        var popup = $ionicPopup.show(CommentPopupSvc.replycreate($scope, parent));
+    }
+
+    $scope.addcomment = function() {
+        $ionicListDelegate.closeOptionButtons();
+        $scope.commentcreatepopup();
+    };
+
+    $scope.addreply = function(parent) {
+        $ionicListDelegate.closeOptionButtons();
+        $scope.replycreatepopup(parent);
+    };
+
+    $scope.$on("article-comment-delete-success", function(data) {
+        $ionicLoading.show({template: "Delete successful!", duration: 1000});
+        ArticleSvc.loadArticle($stateParams.id, "article-comments");
+    });
+
+    $scope.$on("article-reply-delete-success", function(data) {
+        $ionicLoading.show({template: "Delete successful!", duration: 1000});
+        ArticleSvc.loadArticle($stateParams.id, "article-comments");
+    });
+
+    $scope.$on("article-reply-delete-error", function() {
+        $ionicLoading.show({template: "Delete failed.", duration: 1000});
+    });
+
+    $scope.$on("article-comment-delete-error", function() {
+        $ionicLoading.show({template: "Delete failed.", duration: 1000});
+    });
+
+    $scope.deletecomment = function(comment_id) {
+        ArticleSvc.deleteComment($stateParams.id, comment_id);
+        $ionicLoading.show({template: "Deleting comment..."});
+    }
+
+    $scope.deletereply = function(reply_id) {
+        ArticleSvc.deleteReply($stateParams.id, reply_id);
+        $ionicLoading.show({template: "Deleting comment..."});
+    }
+
+    $scope.commentdeletepopup = function(comment_id) {
+        var popup = $ionicPopup.show(CommentPopupSvc.commentdelete($scope, comment_id));
+    }
+
+    $scope.replydeletepopup = function(reply_id) {
+        var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id));
+    }
+
+    $scope.removecomment = function(comment_id) {
+        $ionicListDelegate.closeOptionButtons();
+        $scope.commentdeletepopup(comment_id);
+    };
+
+    $scope.removereply = function(reply_id) {
+        $ionicListDelegate.closeOptionButtons();
+        $scope.replydeletepopup(reply_id);
+    };
     
-    ArticleSvc.loadArticle($stateParams.id);
+    ArticleSvc.loadArticle($stateParams.id, "article");
 })
 
 .controller("ArticleSearchCtrl", ["$scope", "ArticleListSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "TagPopupSvc", function($scope, ArticleListSvc, TagListSvc, $ionicPopup, $ionicLoading, TagPopupSvc) {
@@ -809,8 +961,19 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("VideoCtrl", ["$scope", "$stateParams", "VideoSvc", "$sce", "$ionicTabsDelegate", "ViewCountSvc", function($scope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate, ViewCountSvc) {
-	$scope.video = null;
+.controller("VideoCtrl", function($scope, AuthSvc, $ionicLoading, $ionicListDelegate, CommentPopupSvc, $ionicPopup, $rootScope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate, ViewCountSvc) {
+	$scope.authenticated = AuthSvc.authenticated();
+    $scope.currentuser = AuthSvc.currentuser();
+    $rootScope.$on("authorize-success", function() {
+        $scope.authenticated = true;
+        $scope.currentuser = AuthSvc.currentuser();
+    });
+    $rootScope.$on("unauthorize-success", function() {
+        $scope.authenticated = false;
+        $scope.currentuser = null;
+    });
+
+    $scope.video = null;
 
 	$scope.$on("video", function(_, data) {
     	$scope.video = {
@@ -825,9 +988,58 @@ angular.module('starter.controllers', [])
         	tags: data.tags,
             dt_created: data.dt_created,
     	};
+        $scope.video.comments = [];
+        data.comments.forEach(function(comment) {
+            childcomments = [];
+            comment.childcomment_set.forEach(function(childcomment) {
+                childcomments.push({
+                    id: childcomment.id,
+                    text: childcomment.text,
+                    poster: get_name(childcomment.poster),
+                    poster_username: childcomment.poster.username,
+                    edited: childcomment.edited,
+                    dt_created: childcomment.dt_created
+                });
+            });
+            $scope.video.comments.push({
+                id: comment.id,
+                text: comment.text,
+                poster: get_name(comment.poster),
+                poster_username: comment.poster.username,
+                edited: comment.edited,
+                dt_created: comment.dt_created,
+                childcomments: childcomments
+            });
+        });
 
         ViewCountSvc.viewed("Video", data.id);
 	});
+
+    $scope.$on("video-comments", function(_, data) {
+        $scope.video.comments = [];
+        data.comments.forEach(function(comment) {
+            childcomments = [];
+            comment.childcomment_set.forEach(function(childcomment) {
+                childcomments.push({
+                    id: childcomment.id,
+                    text: childcomment.text,
+                    poster: get_name(childcomment.poster),
+                    poster_username: childcomment.poster.username,
+                    edited: childcomment.edited,
+                    dt_created: childcomment.dt_created
+                });
+            });
+            $scope.video.comments.push({
+                id: comment.id,
+                text: comment.text,
+                poster: get_name(comment.poster),
+                poster_username: comment.poster.username,
+                edited: comment.edited,
+                dt_created: comment.dt_created,
+                childcomments: childcomments
+            });
+        });
+    })
     
     $scope.tabs = [
     { selected: true, ngclass: "active" },
@@ -846,8 +1058,102 @@ angular.module('starter.controllers', [])
         $scope.tabs[0].ngclass = "";
     }
 
-	VideoSvc.loadVideo($stateParams.id);
-}])
+
+    $scope.input = {};
+
+    $scope.submitcomment = function(text) {
+        VideoSvc.submitComment($stateParams.id, text);
+        $ionicLoading.show({template: "Submitting comment..."});
+    }
+
+    $scope.submitreply = function(text, parent) {
+        VideoSvc.submitReply($stateParams.id, text, parent);
+        $ionicLoading.show({template: "Submitting comment..."});
+    }
+
+    $scope.$on("video-comment-create-success", function(data) {
+        $ionicLoading.show({template: "Comment successful!", duration: 1000});
+        VideoSvc.loadVideo($stateParams.id, "video-comments");
+    });
+
+    $scope.$on("video-reply-create-success", function(data) {
+        $ionicLoading.show({template: "Comment successful!", duration: 1000});
+        VideoSvc.loadVideo($stateParams.id, "video-comments");
+    });
+
+    $scope.$on("video-reply-create-error", function() {
+        $ionicLoading.show({template: "Comment failed.", duration: 1000});
+    });
+
+    $scope.$on("video-comment-create-error", function() {
+        $ionicLoading.show({template: "Comment failed.", duration: 1000});
+    });
+
+    $scope.commentcreatepopup = function() {
+        var popup = $ionicPopup.show(CommentPopupSvc.commentcreate($scope));
+    }
+    $scope.replycreatepopup = function(parent) {
+        var popup = $ionicPopup.show(CommentPopupSvc.replycreate($scope, parent));
+    }
+
+    $scope.addcomment = function() {
+        $ionicListDelegate.closeOptionButtons();
+        $scope.commentcreatepopup();
+    };
+
+    $scope.addreply = function(parent) {
+        $ionicListDelegate.closeOptionButtons();
+        $scope.replycreatepopup(parent);
+    };
+
+    $scope.$on("video-comment-delete-success", function(data) {
+        $ionicLoading.show({template: "Delete successful!", duration: 1000});
+        VideoSvc.loadVideo($stateParams.id, "video-comments");
+    });
+
+    $scope.$on("video-reply-delete-success", function(data) {
+        $ionicLoading.show({template: "Delete successful!", duration: 1000});
+        VideoSvc.loadVideo($stateParams.id, "video-comments");
+    });
+
+    $scope.$on("video-reply-delete-error", function() {
+        $ionicLoading.show({template: "Delete failed.", duration: 1000});
+    });
+
+    $scope.$on("video-comment-delete-error", function() {
+        $ionicLoading.show({template: "Delete failed.", duration: 1000});
+    });
+
+    $scope.deletecomment = function(comment_id) {
+        VideoSvc.deleteComment($stateParams.id, comment_id);
+        $ionicLoading.show({template: "Deleting comment..."});
+    }
+
+    $scope.deletereply = function(reply_id) {
+        VideoSvc.deleteReply($stateParams.id, reply_id);
+        $ionicLoading.show({template: "Deleting comment..."});
+    }
+
+    $scope.commentdeletepopup = function(comment_id) {
+        var popup = $ionicPopup.show(CommentPopupSvc.commentdelete($scope, comment_id));
+    }
+
+    $scope.replydeletepopup = function(reply_id) {
+        var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id));
+    }
+
+    $scope.removecomment = function(comment_id) {
+        $ionicListDelegate.closeOptionButtons();
+        $scope.commentdeletepopup(comment_id);
+    };
+
+    $scope.removereply = function(reply_id) {
+        $ionicListDelegate.closeOptionButtons();
+        $scope.replydeletepopup(reply_id);
+    };
+
+	VideoSvc.loadVideo($stateParams.id, "video");
+})
 
 .controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
     $ionicLoading.show({template: "Loading videos..."});
