@@ -166,15 +166,9 @@ a.video-tab {
 }
 .video-title {
   color: black;
-  margin: 5px 10px;
+  margin: 15px 10px;
   font-size: 24px;
 }
-.video-detail p {
-  margin: 5px 10px;
-  font-size: 18px;
-  color: #666666;
-}
-
 
 
 
@@ -234,4 +228,15 @@ a.video-tab {
 .hot-group-name {
   text-align: center;
   margin-top: 10px;
+}
+
+
+
+.comment {
+  color: black !important;
+  font-size: 15px;
+  margin-bottom: 4px !important;
+}
+.childcomment {
+  margin-left: 30px;
 }
