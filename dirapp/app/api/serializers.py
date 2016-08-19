@@ -20,6 +20,7 @@ class InfoProfileSerializer(ModelSerializer):
         fields = ('fullname', 'email', 'wechat')
 
 
+
 AuthUser = get_user_model()
 
 
@@ -73,12 +74,42 @@ class AuthUserCreateSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
-    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
-    dt_updated = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    dt_created = DateTimeField(format='%m/%d/%y')
+    dt_updated = DateTimeField(format='%m/%d/%y')
     
     class Meta:
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'image', 'position', 'email', 'wechat', 'dt_created', 'dt_updated')
+
+
+class ChildCommentSerializer(ModelSerializer):
+    poster = AuthUserSerializer()
+    dt_created = DateTimeField(format='%m/%d/%y')
+
+    class Meta:
+        model = ChildComment
+        fields = ('id', 'text', 'poster', 'edited', 'dt_created')
+
+
+class CommentSerializer(ModelSerializer):
+    childcomment_set = ChildCommentSerializer(many=True)
+    poster = AuthUserSerializer()
+    dt_created = DateTimeField(format='%m/%d/%y')
+    
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'poster', 'edited', 'childcomment_set', 'dt_created')
+
+class ChildCommentCreateSerializer(ModelSerializer):
+    class Meta:
+        model = ChildComment
+        fields = ('text', 'poster', 'edited', 'parent')
+
+
+class CommentCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('text', 'poster', 'object_id')
 
 
 class TagSerializer(ModelSerializer):
@@ -97,14 +128,15 @@ class IndexSlideSerializer(ModelSerializer):
 
 class ArticleSerializer(ModelSerializer):
     poster = AuthUserSerializer()
+    comments = CommentSerializer(many=True)
     tags = TagSerializer(many=True)
 
-    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
-    dt_updated = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    dt_created = DateTimeField(format='%m/%d/%y')
+    dt_updated = DateTimeField(format='%m/%d/%y')
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'content', 'summary', 'poster', 'image', 'views', 'tags', 'dt_created', 'dt_updated')
+        fields = ('id', 'title', 'content', 'summary', 'poster', 'image', 'views', 'comments', 'tags', 'dt_created', 'dt_updated')
 
 
 class ArticleCreateSerializer(ModelSerializer):
@@ -114,10 +146,10 @@ class ArticleCreateSerializer(ModelSerializer):
 
 
 class VideoSerializer(ModelSerializer):
-    poster = UserSerializer()
+    poster = AuthUserSerializer()
     tags = TagSerializer(many=True)
 
-    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    dt_created = DateTimeField(format='%m/%d/%y')
 
     class Meta:
         model = Video
@@ -125,7 +157,7 @@ class VideoSerializer(ModelSerializer):
 
 
 class VideoCreateSerializer(ModelSerializer):
-    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    dt_created = DateTimeField(format='%m/%d/%y')
 
     class Meta:
         model = Video
@@ -137,7 +169,7 @@ class ResourceSerializer(ModelSerializer):
     poster = UserSerializer()
     tags = TagSerializer(many=True)
 
-    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    dt_created = DateTimeField(format='%m/%d/%y')
 
     class Meta:
         model = Resource
@@ -147,7 +179,7 @@ class ResourceSerializer(ModelSerializer):
 class HelpSerializer(ModelSerializer):
     poster = UserSerializer()
     
-    dt_created = DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    dt_created = DateTimeField(format='%m/%d/%y')
 
     class Meta:
         model = Help

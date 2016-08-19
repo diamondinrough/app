@@ -8,6 +8,7 @@ from .models import *
 # Create your views here.
 
 def index(request):
+    '''
     articlelist = Article.objects.all()
     videolist = Video.objects.all()
     resourcelist = Resource.objects.all()
@@ -24,7 +25,7 @@ def index(request):
 
         if itemtype == 'Article':
             data['content'] = item.content
-            data['author'] = item.author.username
+            data['poster'] = item.poster.username
         elif itemtype == 'Video':
             data['videolink'] = item.videolink
             data['poster'] = item.poster.username
@@ -35,6 +36,8 @@ def index(request):
         items.append(data)
     context['items'] = items
     return render(request, 'app/index.html', context)
+    '''
+    return HttpResponse('index')
 
 def article(request, id):
     article = get_object_or_404(Article, pk=id)

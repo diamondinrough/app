@@ -2,6 +2,7 @@ from django.shortcuts import HttpResponse, redirect
 from django.db.models import Q
 
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 
 from rest_framework.views import APIView
 from rest_framework import status
@@ -171,6 +172,28 @@ class ArticleView(RetrieveAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     lookup_field = 'id'
+
+
+class ArticleCommentView(CreateAPIView):
+    serializer_class = CommentCreateSerializer
+    queryset = Comment.objects.all()
+
+#   authentication_classes = (TokenAuthentication,)
+#   permission_classes = (IsAuthenticatedOrOptions,)
+
+    def perform_create(self, serializer):
+        serializer.save(poster=self.request.user, content_type=ContentType.objects.get(model='article'))
+
+
+class ArticleReplyView(CreateAPIView):
+    serializer_class = ChildCommentCreateSerializer
+    queryset = ChildComment.objects.all()
+
+#   authentication_classes = (TokenAuthentication,)
+#   permission_classes = (IsAuthenticatedOrOptions,)
+
+    def perform_create(self, serializer):
+        serializer.save(poster=self.request.user, content_type=ContentType.objects.get(model='article'))
 
 
 class VideoListView(ListAPIView):
