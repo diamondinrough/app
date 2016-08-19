@@ -40,18 +40,21 @@
           <p class="item-date">{{comment.dt_created}}</p>
           <p class="item-author">{{comment.poster}}</p>
           <div style="clear: both; margin-bottom:8px;"></div>
+          <ion-option-button class="button-positive" ng-click="comment.collapse=!comment.collapse;hideOptions();">
+            Collapse
+          </ion-option-button>
           <div ng-if="authenticated">
+           <ion-option-button class="button-energized" ng-click="addreply(comment.id)">
+              Reply
+            </ion-option-button>
             <div ng-if="comment.poster_username == currentuser">
               <ion-option-button class="button-assertive" ng-click="removecomment(comment.id)">
                 Delete
               </ion-option-button>
             </div>
-            <ion-option-button class="button-energized" ng-click="addreply(comment.id)">
-              Reply
-            </ion-option-button>
-          </div>
+         </div>
         </ion-item>
-        <ion-item class="childcomment" ng-repeat="childcomment in comment.childcomments">
+        <ion-item ng-if="!comment.collapse" class="childcomment" ng-repeat="childcomment in comment.childcomments">
           <p class="comment">{{childcomment.text}}</p>
           <p class="item-date">{{childcomment.dt_created}}</p>
           <p class="item-author">{{childcomment.poster}}</p>

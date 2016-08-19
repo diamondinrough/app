@@ -565,7 +565,8 @@ angular.module('starter.controllers', [])
                 poster_username: comment.poster.username,
                 edited: comment.edited,
                 dt_created: comment.dt_created,
-                childcomments: childcomments
+                childcomments: childcomments,
+                collapse: false
             });
         });
         ViewCountSvc.viewed("Article", data.id);
@@ -592,10 +593,15 @@ angular.module('starter.controllers', [])
                 poster_username: comment.poster.username,
                 edited: comment.edited,
                 dt_created: comment.dt_created,
-                childcomments: childcomments
+                childcomments: childcomments,
+                collapse: false
             });
         });
     })
+
+    $scope.hideOptions = function() {
+        $ionicListDelegate.closeOptionButtons();
+    }
 
     $scope.input = {};
 
@@ -1008,7 +1014,8 @@ angular.module('starter.controllers', [])
                 poster_username: comment.poster.username,
                 edited: comment.edited,
                 dt_created: comment.dt_created,
-                childcomments: childcomments
+                childcomments: childcomments,
+                collapse: false
             });
         });
 
@@ -1036,10 +1043,15 @@ angular.module('starter.controllers', [])
                 poster_username: comment.poster.username,
                 edited: comment.edited,
                 dt_created: comment.dt_created,
-                childcomments: childcomments
+                childcomments: childcomments,
+                collapse: false
             });
         });
     })
+
+    $scope.hideOptions = function() {
+        $ionicListDelegate.closeOptionButtons();
+    }
     
     $scope.tabs = [
     { selected: true, ngclass: "active" },
