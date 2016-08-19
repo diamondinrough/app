@@ -1,4 +1,4 @@
-<ion-view>
+<ion-view class="has-tabs">
   <style>
     .videopage {
       margin: 0 0;
@@ -6,11 +6,6 @@
     .tags {
       margin: 10px 0px;
     }
-    h1.title {
-      margin: 10px 0px;
-      font-size: 24px;
-    }
-    
   </style>
   <ion-nav-title>{{video.title}}</ion-nav-title>
   <ion-content>
@@ -25,8 +20,8 @@
 
     <div ng-if="tabs[0].selected">
       <div class="video-detail">
+        <h2 class="video-title">{{video.title}}</h2>
         <p>Speaker: {{video.speaker}}</p>
-        <p>Title: {{video.title}}</p>
         <p>Summary: {{video.summary}}</p>
       </div>
     </div>

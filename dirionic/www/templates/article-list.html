@@ -1,23 +1,18 @@
-<ion-view view-title="Articles ({{articles.length}} of {{count}})">
-  <style>
-    .item {
-      padding: 5px 16px;
-    }
-  </style>
+<ion-view view-title="Articles ({{articles.length}} of {{count}})" class="has-tabs">
   <ion-nav-buttons side="left">
     <a class="button button-icon ion-plus" ng-click="newArticle()"></a>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
     <button class="button button-icon icon ion-ios-pricetag" ng-click="showTags()"></button>
-    <a class="button button-icon ion-ios-search-strong" href="#/app/articles/search"></a>
+    <a class="button button-icon ion-ios-search-strong" href="#/app/home/articles/search"></a>
   </ion-nav-buttons>
   <ion-content>
     <ion-refresher pulling-text="Reload articles" on-refresh="reload()"></ion-refresher>
     <ion-list>
-      <ion-item ng-repeat="article in articles">
+      <ion-item ng-repeat="article in articles" class="compact">
         <div>
           <p class="item-type">Article</p>
-          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/articles/{{article.id}}">View</a>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/home/article/{{article.id}}">View</a>
         </div>
         <div style="clear: both;"></div>
         <ul>

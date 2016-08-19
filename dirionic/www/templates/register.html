@@ -1,0 +1,62 @@
+<ion-view title="Register">
+  <style>
+    .input-label {
+      width: 150px;
+    }
+  </style>
+  <div class="bar bar-header bar-positive">
+    <button class="button button-icon icon ion-ios-arrow-back" ng-click="back()">
+      Back
+    </button>
+  </div>
+  <ion-content class="login has-header" scroll="false">
+    <form ng-submit="register()">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          <input ng-model="user.username" type="text">
+        </label>
+        <div ng-if="errors.username" class="item error">
+          <p>{{errors.username}}</p>
+        </div>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input ng-model="user.password" type="password">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Confirm Password</span>
+          <input ng-model="user.password2" type="password">
+        </label>
+        <div ng-if="errors.password" class="item error">
+          <p>{{errors.password}}</p>
+        </div>
+        <label class="item item-input">
+          <span class="input-label">Full Name</span>
+          <input ng-model="user.fullname" type="text">
+        </label>
+        <div ng-if="errors.fullname" class="item error">
+          <p>{{errors.fullname}}</p>
+        </div>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input ng-model="user.email" type="text">
+        </label>
+        <div ng-if="errors.email" class="item error">
+          <p>{{errors.email}}</p>
+        </div>
+        <label class="item item-input">
+          <span class="input-label">Wechat</span>
+          <input ng-model="user.wechat" type="text">
+        </label>
+        <div ng-if="errors.wechat" class="item error">
+          <p>{{errors.wechat}}</p>
+        </div>
+        <label class="item">
+          <button class="button button-full button-positive" type="submit">
+            Register
+          </button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>

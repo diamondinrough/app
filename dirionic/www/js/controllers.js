@@ -16,8 +16,36 @@ function get_name(poster) {
 
 angular.module('starter.controllers', [])
 
-.controller("IndexCtrl", ["$scope", "$ionicLoading", "IndexSlideSvc", "IndexArticleSvc", "IndexVideoSvc", "IndexResourceSvc", "$ionicSlideBoxDelegate", "$sce", function($scope, $ionicLoading, IndexSlideSvc, IndexArticleSvc, IndexVideoSvc, IndexResourceSvc, $ionicSlideBoxDelegate, $sce) {
+.controller("IndexCtrl", function($rootScope, $scope, $state, $ionicPopup, AuthSvc, $ionicLoading, AuthSvc, IndexSlideSvc, IndexArticleSvc, IndexVideoSvc, IndexResourceSvc, $ionicSlideBoxDelegate, $sce) {
     $ionicLoading.show({template: "Loading index..."});
+    $scope.authenticated = AuthSvc.authenticated();
+    $rootScope.$on("authorize-success", function() {
+        $scope.authenticated = true;
+    });
+    $rootScope.$on("unauthorize-success", function() {
+        $scope.authenticated = false;
+    });
+
+    $scope.logout = function() {
+        var confirm = $ionicPopup.confirm({
+            title: "Do you want to logout?"
+        })
+
+        confirm.then(function(res) {
+            if (res) {
+                $ionicLoading.show({template: "Logging out..."});
+                AuthSvc.unauthorize();
+            }
+        })
+    };
+    $scope.$on("unauthorize-success", function() {
+        $ionicLoading.show({template: "Logged out!", duration: 1000});
+        $state.go("title");
+    });
+
+    $scope.logoutbutton = function() {
+        $state.go("logout");
+    }
 
     $scope.slides = [];
 
@@ -105,7 +133,7 @@ angular.module('starter.controllers', [])
     IndexResourceSvc.loadResource();
 
     IndexSlideSvc.loadSlides();
-}])
+})
 
 .controller("IndexSearchCtrl", ["$scope", "IndexSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "$sce", "TagPopupSvc", function($scope, IndexSvc, TagListSvc, $ionicPopup, $ionicLoading, $sce, TagPopupSvc) {
     $scope.search = { text: "" };
@@ -229,6 +257,10 @@ angular.module('starter.controllers', [])
     $scope.user = { username:"", password:"", password2:"", fullname:"", email:"", wechat:"" };
     $scope.errors = { username:"", password:"", fullname:"", email:"", wechat:"" };
 
+    $scope.back = function() {
+        $ionicHistory.goBack();
+    }
+
     $scope.register = function() {
         if ($scope.user["password"] != $scope.user["password2"]) {
             $ionicLoading.show({template: "Passwords don't match!", duration: 1000});
@@ -251,7 +283,7 @@ angular.module('starter.controllers', [])
 
     $scope.$on("user-register-success", function(_, __) {
         $ionicLoading.show({template: "You are registered!", duration: 1000});
-        $ionicHistory.goBack(-2);
+        $scope.back();
     });
 
     $scope.$on("user-register-error", function(_, data) {
@@ -269,7 +301,7 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller("LoginCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc) {
+.controller("LoginCtrl", function($scope, $state, $ionicLoading, $ionicHistory, AuthSvc) {
     $scope.user = { username:"", password:"" };
     $scope.errors = { username:"", password:"" };
     $scope.authenticated = AuthSvc.authenticated();
@@ -280,14 +312,11 @@ angular.module('starter.controllers', [])
         AuthSvc.authorize($scope.user);
     }
 
-    $scope.logout = function() {
-        $ionicLoading.show({template: "Logging out..."});
-        AuthSvc.unauthorize();
-    }
-
     $scope.$on("authorize-success", function(_, __) {
         $ionicLoading.show({template: "Logged in!", duration: 1000});
-        $ionicHistory.goBack();
+        $scope.user = { username:"", password:"" };
+        $scope.errors = { username:"", password:"" };
+        $state.go("app.home.index");
     });
 
     $scope.$on("authorize-error", function(_, data) {
@@ -307,10 +336,68 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller("ProfileCtrl", function($scope, $ionicLoading, AuthSvc, UserProfileSvc) {
+.controller("LogoutCtrl", function($scope, $ionicLoading, $state, AuthSvc) {
+    $scope.authenticated = AuthSvc.authenticated();
+    $scope.currentuser = AuthSvc.currentuser();
+
+    $scope.logout = function() {
+        $ionicLoading.show({template: "Logging out..."});
+        AuthSvc.unauthorize();
+    }
+
+    $scope.$on("unauthorize-success", function() {
+        $ionicLoading.show({template: "Logged out!", duration: 1000});
+        $state.go("title");
+    });
+
+    $scope.$on("unauthorize-error", function() {
+        $ionicLoading.show({template: "Failed to log out! (how did this happen?)", duration: 1000});
+    });
+})
+
+.controller("ProfileCtrl", function($scope, $rootScope, $ionicLoading, AuthSvc, UserProfileSvc) {
+    $ionicLoading.show({template: "Loading profile..."});
+    $scope.authenticated = AuthSvc.authenticated();
+    $rootScope.$on("authorize-success", function() {
+        $scope.authenticated = true;
+        $scope.reload();
+    });
+    $rootScope.$on("unauthorize-success", function() {
+        $scope.authenticated = false;
+        $scope.reload();
+    });
+
+    $scope.user = null;
+
+    $scope.$on("index-profile", function(_, data) {
+        $scope.user = {
+            username: data.username,
+            info: data.info
+        };
+        $ionicLoading.hide();
+    });
+
+    $scope.reload = function() {
+        $ionicLoading.show({template: "Loading profile..."});
+        if (AuthSvc.authenticated()) {
+            UserProfileSvc.loadProfile("index-profile");
+        } else {
+            $scope.user = null;
+        }
+    }
+    
+    if (AuthSvc.authenticated()) {
+        UserProfileSvc.loadProfile("index-profile");
+    } else {
+        $ionicLoading.hide();
+    }
+})
+
+.controller("ProfileInfoCtrl", function($scope, $rootScope, $ionicLoading, AuthSvc, UserProfileSvc) {
+    $scope.authenticated = AuthSvc.authenticated();
+
     $scope.user = null;
     $scope.errors = { username:"", info: { fullname:"", email:"", wechat:"" }};
-    $scope.authenticated = AuthSvc.authenticated();
     $scope.editing = false;
     $scope.edit = {text:"Edit"}
 
@@ -351,6 +438,11 @@ angular.module('starter.controllers', [])
     if (AuthSvc.authenticated()) {
         UserProfileSvc.loadProfile("index-profile");
     }
+})
+
+
+.controller("GroupDashCtrl", function($scope, $ionicLoading) {
+    //$ionicLoading.show({template: "Loading group dashboard..."});
 })
 
 
@@ -402,7 +494,7 @@ angular.module('starter.controllers', [])
 
     $scope.newArticle = function() {
         if (AuthSvc.authenticated()) {
-            $state.go('app.article-create');
+            $state.go('app.home.article-create');
         } else {
             $ionicLoading.show({template: "You are not logged in!", duration: 1000});
         }
@@ -427,7 +519,7 @@ angular.module('starter.controllers', [])
     ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
 })
 
-.controller("ArticleCtrl", ["$scope", "$stateParams", "ArticleSvc", "ViewCountSvc", "$sce", function($scope, $stateParams, ArticleSvc, ViewCountSvc, $sce) {
+.controller("ArticleCtrl", function($scope, $stateParams, ArticleSvc, ViewCountSvc, $sce) {
     $scope.article = null;
     $scope.$on("article", function(_, data) {
         $scope.article = {
@@ -447,7 +539,7 @@ angular.module('starter.controllers', [])
     });
     
     ArticleSvc.loadArticle($stateParams.id);
-}])
+})
 
 .controller("ArticleSearchCtrl", ["$scope", "ArticleListSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "TagPopupSvc", function($scope, ArticleListSvc, TagListSvc, $ionicPopup, $ionicLoading, TagPopupSvc) {
     $scope.search = { text: "" };
