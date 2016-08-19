@@ -106,7 +106,7 @@ class ChildComment(models.Model):
     parent = models.ForeignKey(Comment, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['-dt_created']
+        ordering = ['dt_created']
 
 
 class Tag(models.Model):

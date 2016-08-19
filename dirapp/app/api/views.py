@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
 
 from rest_framework.authentication import TokenAuthentication
@@ -174,26 +174,42 @@ class ArticleView(RetrieveAPIView):
     lookup_field = 'id'
 
 
-class ArticleCommentView(CreateAPIView):
+class ArticleCommentCreateView(CreateAPIView):
     serializer_class = CommentCreateSerializer
     queryset = Comment.objects.all()
 
-#   authentication_classes = (TokenAuthentication,)
-#   permission_classes = (IsAuthenticatedOrOptions,)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
 
     def perform_create(self, serializer):
         serializer.save(poster=self.request.user, content_type=ContentType.objects.get(model='article'))
 
 
-class ArticleReplyView(CreateAPIView):
+class ArticleCommentDeleteView(DestroyAPIView):
+    queryset = Comment.objects.all()
+    lookup_url_kwarg = 'comment_id'
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsOwnerOrOptions,)
+
+
+class ArticleReplyCreateView(CreateAPIView):
     serializer_class = ChildCommentCreateSerializer
     queryset = ChildComment.objects.all()
 
-#   authentication_classes = (TokenAuthentication,)
-#   permission_classes = (IsAuthenticatedOrOptions,)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
 
     def perform_create(self, serializer):
-        serializer.save(poster=self.request.user, content_type=ContentType.objects.get(model='article'))
+        serializer.save(poster=self.request.user)
+
+
+class ArticleReplyDeleteView(DestroyAPIView):
+    queryset = ChildComment.objects.all()
+    lookup_url_kwarg = 'reply_id'
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsOwnerOrOptions,)
 
 
 class VideoListView(ListAPIView):
@@ -228,6 +244,44 @@ class VideoView(RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
     lookup_field = 'id'
+
+
+class VideoCommentCreateView(CreateAPIView):
+    serializer_class = CommentCreateSerializer
+    queryset = Comment.objects.all()
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+
+    def perform_create(self, serializer):
+        serializer.save(poster=self.request.user, content_type=ContentType.objects.get(model='video'))
+
+
+class VideoCommentDeleteView(DestroyAPIView):
+    queryset = Comment.objects.all()
+    lookup_url_kwarg = 'comment_id'
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsOwnerOrOptions,)
+
+
+class VideoReplyCreateView(CreateAPIView):
+    serializer_class = ChildCommentCreateSerializer
+    queryset = ChildComment.objects.all()
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+
+    def perform_create(self, serializer):
+        serializer.save(poster=self.request.user)
+
+
+class VideoReplyDeleteView(DestroyAPIView):
+    queryset = ChildComment.objects.all()
+    lookup_url_kwarg = 'reply_id'
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsOwnerOrOptions,)
 
 
 class ResourceListView(ListAPIView):

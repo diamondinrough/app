@@ -110,6 +110,7 @@ class CommentCreateSerializer(ModelSerializer):
     class Meta:
         model = Comment
         fields = ('text', 'poster', 'object_id')
+        read_only_fields = ('pk',)
 
 
 class TagSerializer(ModelSerializer):
@@ -148,12 +149,13 @@ class ArticleCreateSerializer(ModelSerializer):
 class VideoSerializer(ModelSerializer):
     poster = AuthUserSerializer()
     tags = TagSerializer(many=True)
+    comments = CommentSerializer(many=True)
 
     dt_created = DateTimeField(format='%m/%d/%y')
 
     class Meta:
         model = Video
-        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'tags', 'dt_created')
+        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'views', 'comments', 'tags', 'dt_created')
 
 
 class VideoCreateSerializer(ModelSerializer):
