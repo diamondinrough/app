@@ -602,6 +602,10 @@ angular.module('starter.controllers', [])
     $scope.hideOptions = function() {
         $ionicListDelegate.closeOptionButtons();
     }
+    $scope.collapseclass = function(collapse) {
+        if (collapse) return "ion-chevron-down";
+        else return "ion-chevron-up";
+    }
 
     $scope.input = {};
 
@@ -781,7 +785,7 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("ArticleCreateCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc, ArticleSvc, TagListSvc) {
+.controller("ArticleCreateCtrl", function($scope, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, ArticleSvc, TagListSvc) {
     $scope.article = {title:"", content:"", summary:"", tags:[]};
     $scope.taglist = [];
 
@@ -810,6 +814,14 @@ angular.module('starter.controllers', [])
             });
         }
     });
+
+    $scope.preview = function() {
+        var previewalert = $ionicPopup.alert({
+            title: 'Article Preview',
+            template: '<p ng-bind-html="article.content"></p>',
+            scope: $scope
+        });
+    };
 
     TagListSvc.loadTags();
 })
