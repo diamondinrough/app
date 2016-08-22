@@ -102,6 +102,52 @@ class UserView(RetrieveAPIView):
     lookup_field = 'username'
 
 
+class TeamList(ListAPIView):
+    serializer_class = TeamSerializer
+    queryset = Team.objects.all()
+
+
+class TeamView(RetrieveAPIView):
+    serializer_class = TeamSerializer
+    queryset = Team.objects.all()
+    lookup_field = 'id'
+
+
+class TeamCreate(CreateAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamCreateSerializer
+
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def perform_create(self, serializer):
+        serializer.save(leader=self.request.user)
+
+
+class TeamJoin(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def post(self, request, format=None):
+        if request.user.is_authenticated():
+            team = Team.objects.get(id=id)
+            team.members.add(request.user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class TeamLeave(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def post(self, request, format=None):
+        if request.user.is_authenticated():
+            team = Team.objects.get(id=id)
+            team.members.remove(request.user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
 class IndexView(MultipleModelAPIView):
     flat = True    #merges lists together
 

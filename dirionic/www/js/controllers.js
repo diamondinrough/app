@@ -441,10 +441,73 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller("GroupDashCtrl", function($scope, $ionicLoading) {
+.controller("TeamDashCtrl", function($scope, AuthSvc, $state, $ionicLoading) {
     //$ionicLoading.show({template: "Loading group dashboard..."});
+
+    $scope.newTeam = function() {
+        if (AuthSvc.authenticated()) {
+            $state.go('app.team-create');
+        } else {
+            $ionicLoading.show({template: "You are not logged in!", duration: 1000});
+        }
+    }
+ 
 })
 
+.controller("TeamCreateCtrl", function($scope, $ionicHistory, $ionicLoading, TeamSvc) {
+    $scope.team = {name:""};
+
+    $scope.submit = function() {
+        TeamSvc.newTeam($scope.team);
+        $ionicLoading.show({template: "Creating team..."});
+    }
+
+    $scope.$on("team-create-success", function() {
+        $ionicLoading.show({template: "Team created!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+
+    $scope.$on("team-create-error", function() {
+        $ionicLoading.show({template: "Failed to create team.", duration: 1000});
+    });
+})
+
+.controller("TeamListCtrl", function($scope, TeamListSvc, $ionicLoading) {
+    $scope.teams = [];
+
+    $scope.$on("team-list", function(_, data) {
+        $scope.teams = [];
+        data.forEach(function(team) {
+            $scope.teams.push({
+                id: team.id,
+                name: team.name,
+                leader_name: get_name(team.leader),
+                members: team.members,
+                description: team.description,
+                summary: team.summary
+            });
+        });
+    });
+
+    TeamListSvc.loadTeams("team-list");
+})
+
+.controller("TeamCtrl", function($scope, TeamSvc, $ionicLoading, $stateParams) {
+    $scope.team = null;
+
+    $scope.$on("team", function(_, data) {
+        $scope.team = { 
+            id: data.id,
+            name: data.name,
+            leader_name: get_name(data.leader),
+            members: data.members,
+            description: data.description,
+            summary: data.summary
+        };
+    });
+
+    TeamSvc.loadTeam($stateParams.id, "team");
+})
 
 .controller("ArticleListCtrl", function($scope, $state, $ionicLoading, AuthSvc, ArticleListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
     $ionicLoading.show({template: "Loading articles..."});
@@ -1390,11 +1453,11 @@ angular.module('starter.controllers', [])
     }
 
     $scope.$on("feedback-success", function(_, __) {
-        $ionicLoading.show({template: "Feedback Successful!", duration: 2000});
+        $ionicLoading.show({template: "Feedback Successful!", duration: 1000});
         $ionicHistory.goBack();
-    });
+    })
 
     $scope.$on("feedback-error", function(_, __) {
-        $ionicLoading.show({template: "Feedback Failed<br>Please fill out all fields", duration: 2000});
+        $ionicLoading.show({template: "Feedback Failed<br>Please fill out all fields", duration: 1000});
     })
 }]);

@@ -227,6 +227,37 @@ angular.module('starter.services', [])
     }
 }])
 
+.service("TeamSvc", function($http, $rootScope) {
+    this.newTeam = function(team) {
+        $http.post(site + "api/app/teams/create/", team)
+        .success(function() {
+            $rootScope.$broadcast("team-create-success");
+        })
+        .error(function() {
+            $rootScope.$broadcast("team-create-fail");
+        });
+    }
+
+    this.loadTeam = function(id, bcast) {
+        $http.get(site + "api/app/team/" + id + "/")
+        .success(function(data) {
+            $rootScope.$broadcast(bcast, data);
+        });
+    } 
+})
+
+.service("TeamListSvc", function($http, $rootScope, $ionicLoading) {
+    this.loadTeams = function(bcast) {
+        $http.get(site + "api/app/teams/")
+        .success(function(data) {
+            $rootScope.$broadcast(bcast, data);
+        })
+        .error(function() {
+            $ionicLoading.hide();
+        });
+    }
+})
+
 .service("IndexSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadItems = function(taglist, searches, next, bcast) {
         if (next == null) {

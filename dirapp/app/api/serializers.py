@@ -103,14 +103,13 @@ class CommentSerializer(ModelSerializer):
 class ChildCommentCreateSerializer(ModelSerializer):
     class Meta:
         model = ChildComment
-        fields = ('text', 'poster', 'edited', 'parent')
+        fields = ('text', 'edited', 'parent')
 
 
 class CommentCreateSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('text', 'poster', 'object_id')
-        read_only_fields = ('pk',)
+        fields = ('text', 'object_id')
 
 
 class TagSerializer(ModelSerializer):
@@ -119,6 +118,22 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = ('name', 'color')
+
+
+class TeamSerializer(ModelSerializer):
+    leader = AuthUserSerializer()
+    members = AuthUserSerializer(many=True)
+    dt_created = DateTimeField(format='%m/%d/%y')
+
+    class Meta:
+        model = Team
+        fields = ('id', 'name', 'leader', 'members', 'description', 'summary', 'dt_created')
+
+
+class TeamCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ('name', 'description', 'summary')
 
 
 class IndexSlideSerializer(ModelSerializer):
@@ -143,7 +158,7 @@ class ArticleSerializer(ModelSerializer):
 class ArticleCreateSerializer(ModelSerializer):
     class Meta:
         model = Article
-        fields = ('title', 'content', 'summary', 'poster', 'tags')
+        fields = ('title', 'content', 'summary', 'tags')
 
 
 class VideoSerializer(ModelSerializer):
@@ -161,7 +176,7 @@ class VideoSerializer(ModelSerializer):
 class VideoCreateSerializer(ModelSerializer):
     class Meta:
         model = Video
-        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'tags')
+        fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'tags')
 
 
 

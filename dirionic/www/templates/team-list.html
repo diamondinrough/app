@@ -1,0 +1,20 @@
+<ion-view view-title="All Teams" class="has-tabs">
+  <ion-content>
+    <ion-refresher pulling-text="Reload videos" on-refresh=""></ion-refresher>
+    <ion-list>
+      <ion-item ng-repeat="team in teams" class="compact item-icon-right">
+        <div class="team-letter">
+          {{team.name[0]}}
+        </div>
+        <h2 class="item-title">
+          {{team.name}}
+        </h2>
+        <div class="item-text-wrap">
+          {{team.summary}}
+        </div>
+        <a style="text-decoration:none;" class="icon ion-chevron-right" href="#/app/team/{{team.id}}"></a>
+      </ion-item>
+    </ion-list>
+    <!-- <ion-infinite-scroll ng-if="moreitems" on-infinite="loadMore()"></ion-infinite-scroll> -->
+  </ion-content>
+</ion-view>

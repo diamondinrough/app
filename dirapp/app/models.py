@@ -52,8 +52,12 @@ class Team(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
 
-    members = models.ManyToManyField(User, blank=False, related_name='teammembers')
+    leader = models.ForeignKey(AuthUser, blank=False, related_name='teamleaders')
+    members = models.ManyToManyField(AuthUser, blank=False, related_name='teammembers')
 
+    description = models.TextField(blank=True)
+    summary = models.CharField(blank=True, max_length=300)
+    
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
     dt_updated = models.DateTimeField(auto_now=True)
 
