@@ -231,13 +231,13 @@ class VideoListView(ListAPIView):
 
 class VideoCreateView(CreateAPIView):
     queryset = Video.objects.all()
-    serializer_field = VideoCreateSerializer
+    serializer_class = VideoCreateSerializer
 
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticatedOrOptions,)
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(poster=self.request.user)
 
 
 class VideoView(RetrieveAPIView):

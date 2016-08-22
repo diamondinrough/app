@@ -474,6 +474,26 @@ angular.module('starter.services', [])
         });
     }
 
+    this.newVideo = function(video, taglist) {
+        tags = [];
+        if (taglist != null) {
+            for (i = 0; i < taglist.length; i++) {
+                if (taglist[i].checked) {
+                    tags.push(taglist[i].name);
+                }
+            }
+        }
+        video["tags"] = tags;
+        $http.post(site + "api/app/videos/create/", video)
+        .success(function() {
+            $rootScope.$broadcast("video-submit-success");
+        })
+        .error(function(data) {
+            $rootScope.$broadcast("video-submit-error", data);
+        });
+    }
+
+
     this.submitComment = function(id, text) {
         $http.post(site + "api/app/video/" + id + "/comment/create/", {text: text, object_id: id})
         .success(function(data) {

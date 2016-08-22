@@ -826,7 +826,7 @@ angular.module('starter.controllers', [])
     TagListSvc.loadTags();
 })
 
-.controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", "TagListSvc", "$ionicPopup", "TagPopupSvc", function($scope, $ionicLoading, VideoListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
+.controller("VideoListCtrl", function($scope, AuthSvc, $ionicLoading, VideoListSvc, $state, TagListSvc, $ionicPopup, TagPopupSvc) {
 	$ionicLoading.show({template: "Loading videos..."});
 
 	$scope.videos = [];
@@ -879,6 +879,14 @@ angular.module('starter.controllers', [])
         var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
     }
     
+    $scope.newVideo = function() {
+        if (AuthSvc.authenticated()) {
+            $state.go('app.home.video-create');
+        } else {
+            $ionicLoading.show({template: "You are not logged in!", duration: 1000});
+        }
+    }
+    
     $scope.loadMore = function() {
         VideoListSvc.loadVideos(null, null, $scope.next, "video-list");
     }
@@ -892,7 +900,7 @@ angular.module('starter.controllers', [])
 
     TagListSvc.loadTags();
     VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
-}])
+})
 
 .controller("VideoSearchCtrl", ["$scope", "VideoListSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "TagPopupSvc", function($scope, VideoListSvc, TagListSvc, $ionicPopup, $ionicLoading, TagPopupSvc) {
     $scope.search = { text: "" };
@@ -1064,6 +1072,10 @@ angular.module('starter.controllers', [])
     $scope.hideOptions = function() {
         $ionicListDelegate.closeOptionButtons();
     }
+    $scope.collapseclass = function(collapse) {
+        if (collapse) return "ion-chevron-down";
+        else return "ion-chevron-up";
+    }
     
     $scope.tabs = [
     { selected: true, ngclass: "active" },
@@ -1178,6 +1190,40 @@ angular.module('starter.controllers', [])
 
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
+
+.controller("VideoCreateCtrl", function($scope, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, VideoSvc, TagListSvc) {
+    $scope.video = {title:"", videolink:"", summary:"", speaker:"", tags:[]};
+    $scope.taglist = [];
+
+    $scope.submit = function() {
+        VideoSvc.newVideo($scope.video, $scope.taglist);
+        $ionicLoading.show({template: "Submitting video..."});
+    }
+
+    $scope.$on("video-submit-success", function(_, __) {
+        $ionicLoading.show({template: "Video submitted!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+
+    $scope.$on("video-submit-error", function(_, data) {
+        $ionicLoading.show({template: "Failed to submit video.", duration: 1000});
+    });
+
+    $scope.$on("taglist", function(_, data) {
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
+            });
+        }
+    });
+
+    TagListSvc.loadTags();
+})
+
 
 .controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
     $ionicLoading.show({template: "Loading videos..."});

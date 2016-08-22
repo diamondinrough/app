@@ -159,8 +159,6 @@ class VideoSerializer(ModelSerializer):
 
 
 class VideoCreateSerializer(ModelSerializer):
-    dt_created = DateTimeField(format='%m/%d/%y')
-
     class Meta:
         model = Video
         fields = ('id', 'title', 'videolink', 'summary', 'speaker', 'poster', 'tags')

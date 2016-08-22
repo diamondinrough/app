@@ -42,7 +42,7 @@
               <p class="item-author">{{comment.poster}}</p>
               <div style="clear: both; margin-bottom:8px;"></div>
              <ion-option-button class="button-positive" ng-click="comment.collapse=!comment.collapse;hideOptions();">
-               Collapse
+               <i ng-class="collapseclass(comment.collapse)" class="button button-icon icon collapse-icon"></i>
              </ion-option-button>
               <div ng-if="authenticated">
                 <div ng-if="comment.poster_username == currentuser">

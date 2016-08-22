@@ -167,7 +167,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
-  .state('app.home.video', {
+  .state('app.home.video-create', {
+    url: '/videos/create',
+    views: {
+      'home.videos': {
+        templateUrl: 'templates/video-create.html',
+        controller: 'VideoCreateCtrl'
+      }
+    }
+  })
+
+ .state('app.home.video', {
     url: '/video/:id',
     views: {
       'home.videos': {
