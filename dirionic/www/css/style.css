@@ -191,12 +191,22 @@ a.video-tab {
 }
 
 
-
-.avatar {
+.avatar-container {
   float: left;
-  max-width: 125px;
-  max-height: 125px;
-  border-radius: 62px;
+  display: block;
+  height: 150px;
+  width: 150px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.avatar {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
 }
 .profile-name {
   padding-left: 25px;
@@ -210,26 +220,42 @@ a.video-tab {
 
 
 .hot-group-row {
-  height: 120px;
+  height: 180px;
+}
+.hot-group-letter-container {
+  transform: translate(25%, 0);
 }
 .hot-group-letter {
-  padding-top: 10px;
-  margin-left: 20%;
-  height: 40px !important;
-  width: 40px !important;
-  text-align: center;
-  font-size: 18px !important;
+  position: relative;
+  display: inline-block;
+  width: 50%;
+  height: 0;
+  padding: 25% 0;
+  border-radius: 50%;
+  background: #38A9E4;
   color: white !important;
-  background-color: #C336D6;
-  height: 100%;
-  width: 100%;
-  border-radius: 20px;
+  font-size: 24px !important;
+  line-height: 0;
+  text-align: center;
 }
 .hot-group-name {
   text-align: center;
   margin-top: 10px;
 }
 
+
+.team-letter {
+  float: left;
+  margin: 10px 40px 10px 5px;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  padding-top: 15px;
+  background-color: #38A9E4;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+}
 
 
 .comment {
@@ -239,4 +265,7 @@ a.video-tab {
 }
 .childcomment {
   margin-left: 30px;
+}
+.collapse-icon {
+    color: white;
 }

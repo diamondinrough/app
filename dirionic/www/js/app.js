@@ -167,7 +167,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
-  .state('app.home.video', {
+  .state('app.home.video-create', {
+    url: '/videos/create',
+    views: {
+      'home.videos': {
+        templateUrl: 'templates/video-create.html',
+        controller: 'VideoCreateCtrl'
+      }
+    }
+  })
+
+ .state('app.home.video', {
     url: '/video/:id',
     views: {
       'home.videos': {
@@ -177,17 +187,47 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
-  .state('app.group-dash', {
-    url: '/group-dash',
+  .state('app.team-dash', {
+    url: '/team-dash',
     views: {
-      'groups': {
-        templateUrl: 'templates/group-dash.html',
-        controller: 'GroupDashCtrl'
+      'teams': {
+        templateUrl: 'templates/team-dash.html',
+        controller: 'TeamDashCtrl'
       }
     }
   })
 
-  .state('app.profile', {
+  .state('app.team-create', {
+    url: '/team-create',
+    views: {
+      'teams': {
+        templateUrl: 'templates/team-create.html',
+        controller: 'TeamCreateCtrl'
+      }
+    }
+  })
+
+  .state('app.team-list', {
+    url: '/team-list',
+    views: {
+      'teams': {
+        templateUrl: 'templates/team-list.html',
+        controller: 'TeamListCtrl'
+      }
+    }
+  })
+
+  .state('app.team', {
+    url: '/team/:id',
+    views: {
+      'teams': {
+        templateUrl: 'templates/team.html',
+        controller: 'TeamCtrl'
+      }
+    }
+  })
+
+.state('app.profile', {
     url: '/profile',
     views: {
       'profile': {

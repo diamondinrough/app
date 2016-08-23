@@ -441,10 +441,73 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller("GroupDashCtrl", function($scope, $ionicLoading) {
+.controller("TeamDashCtrl", function($scope, AuthSvc, $state, $ionicLoading) {
     //$ionicLoading.show({template: "Loading group dashboard..."});
+
+    $scope.newTeam = function() {
+        if (AuthSvc.authenticated()) {
+            $state.go('app.team-create');
+        } else {
+            $ionicLoading.show({template: "You are not logged in!", duration: 1000});
+        }
+    }
+ 
 })
 
+.controller("TeamCreateCtrl", function($scope, $ionicHistory, $ionicLoading, TeamSvc) {
+    $scope.team = {name:""};
+
+    $scope.submit = function() {
+        TeamSvc.newTeam($scope.team);
+        $ionicLoading.show({template: "Creating team..."});
+    }
+
+    $scope.$on("team-create-success", function() {
+        $ionicLoading.show({template: "Team created!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+
+    $scope.$on("team-create-error", function() {
+        $ionicLoading.show({template: "Failed to create team.", duration: 1000});
+    });
+})
+
+.controller("TeamListCtrl", function($scope, TeamListSvc, $ionicLoading) {
+    $scope.teams = [];
+
+    $scope.$on("team-list", function(_, data) {
+        $scope.teams = [];
+        data.forEach(function(team) {
+            $scope.teams.push({
+                id: team.id,
+                name: team.name,
+                leader_name: get_name(team.leader),
+                members: team.members,
+                description: team.description,
+                summary: team.summary
+            });
+        });
+    });
+
+    TeamListSvc.loadTeams("team-list");
+})
+
+.controller("TeamCtrl", function($scope, TeamSvc, $ionicLoading, $stateParams) {
+    $scope.team = null;
+
+    $scope.$on("team", function(_, data) {
+        $scope.team = { 
+            id: data.id,
+            name: data.name,
+            leader_name: get_name(data.leader),
+            members: data.members,
+            description: data.description,
+            summary: data.summary
+        };
+    });
+
+    TeamSvc.loadTeam($stateParams.id, "team");
+})
 
 .controller("ArticleListCtrl", function($scope, $state, $ionicLoading, AuthSvc, ArticleListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
     $ionicLoading.show({template: "Loading articles..."});
@@ -565,7 +628,8 @@ angular.module('starter.controllers', [])
                 poster_username: comment.poster.username,
                 edited: comment.edited,
                 dt_created: comment.dt_created,
-                childcomments: childcomments
+                childcomments: childcomments,
+                collapse: false
             });
         });
         ViewCountSvc.viewed("Article", data.id);
@@ -592,10 +656,19 @@ angular.module('starter.controllers', [])
                 poster_username: comment.poster.username,
                 edited: comment.edited,
                 dt_created: comment.dt_created,
-                childcomments: childcomments
+                childcomments: childcomments,
+                collapse: false
             });
         });
     })
+
+    $scope.hideOptions = function() {
+        $ionicListDelegate.closeOptionButtons();
+    }
+    $scope.collapseclass = function(collapse) {
+        if (collapse) return "ion-chevron-down";
+        else return "ion-chevron-up";
+    }
 
     $scope.input = {};
 
@@ -775,7 +848,7 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("ArticleCreateCtrl", function($scope, $ionicLoading, $ionicHistory, AuthSvc, ArticleSvc, TagListSvc) {
+.controller("ArticleCreateCtrl", function($scope, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, ArticleSvc, TagListSvc) {
     $scope.article = {title:"", content:"", summary:"", tags:[]};
     $scope.taglist = [];
 
@@ -805,10 +878,18 @@ angular.module('starter.controllers', [])
         }
     });
 
+    $scope.preview = function() {
+        var previewalert = $ionicPopup.alert({
+            title: 'Article Preview',
+            template: '<p ng-bind-html="article.content"></p>',
+            scope: $scope
+        });
+    };
+
     TagListSvc.loadTags();
 })
 
-.controller("VideoListCtrl", ["$scope", "$ionicLoading", "VideoListSvc", "TagListSvc", "$ionicPopup", "TagPopupSvc", function($scope, $ionicLoading, VideoListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
+.controller("VideoListCtrl", function($scope, AuthSvc, $ionicLoading, VideoListSvc, $state, TagListSvc, $ionicPopup, TagPopupSvc) {
 	$ionicLoading.show({template: "Loading videos..."});
 
 	$scope.videos = [];
@@ -861,6 +942,14 @@ angular.module('starter.controllers', [])
         var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
     }
     
+    $scope.newVideo = function() {
+        if (AuthSvc.authenticated()) {
+            $state.go('app.home.video-create');
+        } else {
+            $ionicLoading.show({template: "You are not logged in!", duration: 1000});
+        }
+    }
+    
     $scope.loadMore = function() {
         VideoListSvc.loadVideos(null, null, $scope.next, "video-list");
     }
@@ -874,7 +963,7 @@ angular.module('starter.controllers', [])
 
     TagListSvc.loadTags();
     VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
-}])
+})
 
 .controller("VideoSearchCtrl", ["$scope", "VideoListSvc", "TagListSvc", "$ionicPopup", "$ionicLoading", "TagPopupSvc", function($scope, VideoListSvc, TagListSvc, $ionicPopup, $ionicLoading, TagPopupSvc) {
     $scope.search = { text: "" };
@@ -1008,7 +1097,8 @@ angular.module('starter.controllers', [])
                 poster_username: comment.poster.username,
                 edited: comment.edited,
                 dt_created: comment.dt_created,
-                childcomments: childcomments
+                childcomments: childcomments,
+                collapse: false
             });
         });
 
@@ -1036,10 +1126,19 @@ angular.module('starter.controllers', [])
                 poster_username: comment.poster.username,
                 edited: comment.edited,
                 dt_created: comment.dt_created,
-                childcomments: childcomments
+                childcomments: childcomments,
+                collapse: false
             });
         });
     })
+
+    $scope.hideOptions = function() {
+        $ionicListDelegate.closeOptionButtons();
+    }
+    $scope.collapseclass = function(collapse) {
+        if (collapse) return "ion-chevron-down";
+        else return "ion-chevron-up";
+    }
     
     $scope.tabs = [
     { selected: true, ngclass: "active" },
@@ -1154,6 +1253,40 @@ angular.module('starter.controllers', [])
 
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
+
+.controller("VideoCreateCtrl", function($scope, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, VideoSvc, TagListSvc) {
+    $scope.video = {title:"", videolink:"", summary:"", speaker:"", tags:[]};
+    $scope.taglist = [];
+
+    $scope.submit = function() {
+        VideoSvc.newVideo($scope.video, $scope.taglist);
+        $ionicLoading.show({template: "Submitting video..."});
+    }
+
+    $scope.$on("video-submit-success", function(_, __) {
+        $ionicLoading.show({template: "Video submitted!", duration: 1000});
+        $ionicHistory.goBack();
+    });
+
+    $scope.$on("video-submit-error", function(_, data) {
+        $ionicLoading.show({template: "Failed to submit video.", duration: 1000});
+    });
+
+    $scope.$on("taglist", function(_, data) {
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
+            });
+        }
+    });
+
+    TagListSvc.loadTags();
+})
+
 
 .controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
     $ionicLoading.show({template: "Loading videos..."});
@@ -1320,11 +1453,11 @@ angular.module('starter.controllers', [])
     }
 
     $scope.$on("feedback-success", function(_, __) {
-        $ionicLoading.show({template: "Feedback Successful!", duration: 2000});
+        $ionicLoading.show({template: "Feedback Successful!", duration: 1000});
         $ionicHistory.goBack();
-    });
+    })
 
     $scope.$on("feedback-error", function(_, __) {
-        $ionicLoading.show({template: "Feedback Failed<br>Please fill out all fields", duration: 2000});
+        $ionicLoading.show({template: "Feedback Failed<br>Please fill out all fields", duration: 1000});
     })
 }]);

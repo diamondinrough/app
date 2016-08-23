@@ -1,4 +1,4 @@
-<ion-view title="New Article" class="has-tabs">
+<ion-view title="New Video" class="has-tabs">
   <style>
     .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
         float: right;
@@ -12,15 +12,19 @@
     <div class="list">
       <label class="item item-input item-stacked-label">
         <span class="input-label">Title</span>
-        <input ng-model="article.title" type="text">
+        <input ng-model="video.title" type="text">
       </label>
       <label class="item item-input item-stacked-label">
-        <span class="input-label">Content</span>
-        <textarea ng-model="article.content" rows="14"></textarea>
+        <span class="input-label">Video Link</span>
+        <input ng-model="video.videolink" type="text">
       </label>
       <label class="item item-input item-stacked-label">
         <span class="input-label">Summary</span>
-        <input ng-model="article.summary" type="text">
+        <input ng-model="video.summary" type="text">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Speaker</span>
+        <input ng-model="video.speaker" type="text">
       </label>
       <label class="item item-stacked-label" style="padding:5px 16px;">
         <span class="input-label" style="margin-bottom:5px;">Tags</span>
@@ -34,13 +38,8 @@
         </div>
       </label>
       <label class="item">
-        <button class="button button-block button-energized" type="button" ng-click="preview()">
-          Preview Article
-        </button>
-      </label>
-      <label class="item">
         <button class="button button-block button-positive" type="submit">
-          Submit Article
+          Submit Video
         </button>
       </label>
     </div>

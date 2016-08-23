@@ -1,6 +1,8 @@
 from django.db import models
 
 from django.contrib.auth.models import User as AuthUser
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 
 from colorfield.fields import ColorField
 
@@ -50,8 +52,12 @@ class Team(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
 
-    members = models.ManyToManyField(User, blank=False, related_name='teammembers')
+    leader = models.ForeignKey(AuthUser, blank=False, related_name='teamleaders')
+    members = models.ManyToManyField(AuthUser, blank=False, related_name='teammembers')
 
+    description = models.TextField(blank=True)
+    summary = models.CharField(blank=True, max_length=300)
+    
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
     dt_updated = models.DateTimeField(auto_now=True)
 
@@ -81,6 +87,32 @@ class IndexSlide(models.Model):
     order = models.IntegerField(default=0)
 
 
+class Comment(models.Model):
+    text = models.CharField(max_length=200)
+    poster = models.ForeignKey(AuthUser, null=True, related_name='comments')
+    edited = models.BooleanField(default=False)
+    dt_created = models.DateTimeField(auto_now_add=True, editable=False)
+    
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ['-dt_created']
+
+
+class ChildComment(models.Model):
+    text = models.CharField(max_length=200)
+    poster = models.ForeignKey(AuthUser, null=True, related_name='childcomments')
+    edited = models.BooleanField(default=False)
+    dt_created = models.DateTimeField(auto_now_add=True, editable=False)
+    
+    parent = models.ForeignKey(Comment, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['dt_created']
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=20, primary_key=True)
 
@@ -103,6 +135,7 @@ class Article(models.Model):
     image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.png')
     views = models.IntegerField(default=0)
 
+    comments = GenericRelation(Comment)
     tags = models.ManyToManyField(Tag, blank=True, related_name='articletag')
 
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
@@ -132,7 +165,7 @@ class ArticleLink(models.Model):
 
 class Video(models.Model):
     id = models.AutoField(primary_key=True)
-    poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='uservideos')
+    poster = models.ForeignKey(AuthUser, null=True, on_delete=models.SET_NULL, related_name='uservideos')
     
     title = models.CharField(max_length=200)
     videolink = models.URLField(max_length=500)
@@ -140,6 +173,7 @@ class Video(models.Model):
     speaker = models.CharField(max_length=50, null=True)
     views = models.IntegerField(default=0)
 
+    comments = GenericRelation(Comment)
     tags = models.ManyToManyField(Tag, blank=False, related_name='videotag')
 
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
@@ -160,6 +194,7 @@ class Resource(models.Model):
     views = models.IntegerField(default=0)
     downloads = models.IntegerField(default=0)
 
+    comments = GenericRelation(Comment)
     tags = models.ManyToManyField(Tag, blank=False, related_name='resourcetag')
 
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
