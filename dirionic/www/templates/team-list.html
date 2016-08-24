@@ -3,7 +3,7 @@
     <ion-refresher pulling-text="Reload videos" on-refresh=""></ion-refresher>
     <ion-list>
       <ion-item ng-repeat="team in teams" class="compact item-icon-right">
-        <div class="team-letter">
+        <div class="team-letter" style="background-color:{{team.color}}">
           {{team.name[0]}}
         </div>
         <h2 class="item-title">

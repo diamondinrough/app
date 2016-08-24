@@ -28,6 +28,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   $stateProvider
 
+  .state('cover', {
+    url: '/cover',
+    abstract: true,
+    templateUrl: 'templates/cover.html',
+  })
+
+  .state('cover.title', {
+    url: '/title',
+    views: {
+      'cover': {
+        templateUrl: 'templates/title.html'
+      }
+    }
+  })
+
+  .state('cover.login', {
+    url: '/login',
+    views: {
+      'cover': {
+        templateUrl: 'templates/login.html',
+        controller: 'LoginCtrl'
+      }
+    }
+  })
+
+  .state('cover.register', {
+    url: '/register',
+    views: {
+      'cover': {
+        templateUrl: 'templates/register.html',
+        controller: 'RegisterCtrl'
+      }
+    }
+  })
+
+  /*
   .state('title', {
     url: '/title',
     templateUrl: 'templates/title.html'
@@ -50,6 +86,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     templateUrl: 'templates/logout.html',
     controller: 'LogoutCtrl'
   })
+  */
 
   .state('app', {
     url: '/app',
@@ -315,7 +352,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
-  $urlRouterProvider.otherwise('/title');
+  $urlRouterProvider.otherwise('/cover/title');
 
   $ionicConfigProvider.tabs.position('bottom');
 

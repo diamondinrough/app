@@ -40,7 +40,7 @@ angular.module('starter.controllers', [])
     };
     $scope.$on("unauthorize-success", function() {
         $ionicLoading.show({template: "Logged out!", duration: 1000});
-        $state.go("title");
+        $state.go("cover.title");
     });
 
     $scope.logoutbutton = function() {
@@ -484,7 +484,8 @@ angular.module('starter.controllers', [])
                 leader_name: get_name(team.leader),
                 members: team.members,
                 description: team.description,
-                summary: team.summary
+                summary: team.summary,
+                color: team.color
             });
         });
     });
@@ -502,7 +503,8 @@ angular.module('starter.controllers', [])
             leader_name: get_name(data.leader),
             members: data.members,
             description: data.description,
-            summary: data.summary
+            summary: data.summary,
+            color: data.color
         };
     });
 

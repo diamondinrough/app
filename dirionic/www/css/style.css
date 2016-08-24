@@ -72,13 +72,10 @@ h2.item-title {
 li.tag {
   display: inline;
   color: white;
-  padding: 1px 5px;
-  margin-right: 5px;
+  padding: 1px 2px;
+  margin: 0 2px;
   border-radius: .25em;
   font-size: 14px;
-}
-.tags {
-  margin: 10px 0px;
 }
 .item-img-container {
   display: block;
@@ -251,10 +248,14 @@ a.video-tab {
   height: 60px;
   text-align: center;
   padding-top: 15px;
-  background-color: #38A9E4;
   border-radius: 50%;
   color: white;
   font-size: 24px;
+}
+.team-info {
+  display: inline;
+  color: white;
+  font-size: 14px;
 }
 
 
