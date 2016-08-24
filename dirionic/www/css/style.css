@@ -72,10 +72,12 @@ h2.item-title {
 li.tag {
   display: inline;
   color: white;
-  padding: 1px 2px;
+  padding: 1px 10px 1px 3px;
   margin: 0 2px;
-  border-radius: .25em;
   font-size: 14px;
+  background: url('../img/tagborder.png');
+  background-repeat: no-repeat;
+  background-position: center right;
 }
 .item-img-container {
   display: block;
@@ -86,6 +88,7 @@ li.tag {
   max-width: 50%;
   overflow: hidden;
   border-radius: 5px;
+  overflow: hidden;
 }
 .item-img {
   height: 100%;
