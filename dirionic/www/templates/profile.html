@@ -11,7 +11,7 @@
           </div>
           <h2 class="profile-name">{{user.info.fullname}}</h2>
           <p class="profile-contact">Email: {{user.info.email}}</p>
-          <p class="profile-contact">Wechat: {{user.info.wechat}}</p>
+          <p ng-if="user.info.wechat" class="profile-contact">Wechat: {{user.info.wechat}}</p>
         </div>
         <div class="item item-divider">
           My Groups
