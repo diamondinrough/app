@@ -123,17 +123,29 @@ class TagSerializer(ModelSerializer):
 class TeamSerializer(ModelSerializer):
     leader = AuthUserSerializer()
     members = AuthUserSerializer(many=True)
+    color = CharField()
     dt_created = DateTimeField(format='%m/%d/%y')
 
     class Meta:
         model = Team
-        fields = ('id', 'name', 'leader', 'members', 'description', 'summary', 'dt_created')
+        fields = ('id', 'name', 'leader', 'members', 'description', 'summary', 'color', 'dt_created')
 
 
 class TeamCreateSerializer(ModelSerializer):
     class Meta:
         model = Team
-        fields = ('name', 'description', 'summary')
+        fields = ('name', 'color', 'description', 'summary')
+
+
+class TaskSerializer(ModelSerializer):
+    team = TeamSerializer()
+    leader = AuthUserSerializer()
+    members = AuthUserSerializer(many=True)
+    dt_created = DateTimeField(format='%m/%d/%y')
+
+    class Meta:
+        model = Task
+        fields = ('id', 'team', 'name', 'leader', 'members', 'description', 'dt_created')
 
 
 class IndexSlideSerializer(ModelSerializer):

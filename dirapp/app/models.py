@@ -53,7 +53,8 @@ class Info(models.Model):
 
 class Team(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
+    color = ColorField(default='#000000')
 
     leader = models.ForeignKey(AuthUser, blank=False, related_name='teamleaders')
     members = models.ManyToManyField(AuthUser, blank=False, related_name='teammembers')
@@ -70,8 +71,9 @@ class Team(models.Model):
 
 class Task(models.Model):
     id = models.AutoField(primary_key=True)
-    leader = models.ForeignKey(User, related_name='taskleaders')
-    members = models.ManyToManyField(User, blank=False, related_name='taskmembers')
+    team = models.ForeignKey(Team, blank=False)
+    leader = models.ForeignKey(AuthUser, blank=False, related_name='taskleaders')
+    members = models.ManyToManyField(AuthUser, blank=False, related_name='taskmembers')
     
     name = models.CharField(max_length=100)
     description = models.TextField()

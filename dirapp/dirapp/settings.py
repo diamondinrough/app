@@ -95,7 +95,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': '/opt/dir/etc/mysql.cnf'
+            'read_default_file': '/opt/dir/etc/mysql.cnf',
+            'init_command': 'SET foreign_key_checks = 0;',
         },
     } 
 }

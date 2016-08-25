@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^app/team/(?P<id>[0-9]+)/', views.TeamView.as_view()),
     url(r'^app/teams/create', views.TeamCreate.as_view()),
     url(r'^app/teams/', views.TeamList.as_view()),
+    url(r'^app/tasks/', views.TaskList.as_view()),
     url(r'^app/viewcount/', views.ViewCount.as_view(), name='api-view-count'),
     url(r'^app/tags/', views.TagListView.as_view(), name='api-tag-list-view'),
     url(r'^app/article/(?P<id>[0-9]+)/comment/create', views.ArticleCommentCreateView.as_view()),
