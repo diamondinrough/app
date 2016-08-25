@@ -5,8 +5,9 @@
 .login-title {
   color: white;
   text-align: center;
-  font-size: 36px;
+  font-size: 28px;
   margin-top: 100px;
+  line-height: 28px;
 }
 
 .login-link {
@@ -219,18 +220,36 @@ a.video-tab {
 }
 
 
+.mini-avatar-container {
+  float: left;
+  display: block;
+  height: 40px;
+  width: 40px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.mini-avatar {
+  position: absolute;
+  width: 40px;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+
 .hot-group-row {
   height: 180px;
 }
 .hot-group-letter-container {
-  transform: translate(25%, 0);
+  transform: translate(10%, 0);
 }
 .hot-group-letter {
   position: relative;
   display: inline-block;
-  width: 50%;
+  width: 80%;
   height: 0;
-  padding: 25% 0;
+  padding: 40% 0;
   border-radius: 50%;
   background: #38A9E4;
   color: white !important;
@@ -254,6 +273,9 @@ a.video-tab {
   border-radius: 50%;
   color: white;
   font-size: 24px;
+}
+.team-name {
+  color: white;
 }
 .team-info {
   display: inline;

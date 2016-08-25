@@ -455,7 +455,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller("TeamCreateCtrl", function($scope, $ionicHistory, $ionicLoading, TeamSvc) {
-    $scope.team = {name:""};
+    $scope.team = {name:"",description:"",summary:""};
 
     $scope.submit = function() {
         TeamSvc.newTeam($scope.team);
@@ -493,20 +493,67 @@ angular.module('starter.controllers', [])
     TeamListSvc.loadTeams("team-list");
 })
 
-.controller("TeamCtrl", function($scope, TeamSvc, $ionicLoading, $stateParams) {
+.controller("TeamCtrl", function($scope, TeamSvc, TeamPopupSvc, AuthSvc, $rootScope, $ionicPopup, $ionicLoading, $stateParams) {
+    $scope.authenticated = AuthSvc.authenticated();
+    $scope.currentuser = AuthSvc.currentuser();
+    $rootScope.$on("authorize-success", function() {
+        $scope.authenticated = true;
+        $scope.currentuser = AuthSvc.currentuser();
+    });
+    $rootScope.$on("unauthorize-success", function() {
+        $scope.authenticated = false;
+        $scope.currentuser = null;
+    });
+
     $scope.team = null;
+    $scope.inteam = false;
+    $scope.newleader = {username:""};
+    $scope.tasks = [];
 
     $scope.$on("team", function(_, data) {
         $scope.team = { 
             id: data.id,
             name: data.name,
+            leader: data.leader,
             leader_name: get_name(data.leader),
             members: data.members,
             description: data.description,
             summary: data.summary,
             color: data.color
         };
+        $scope.inteam = false;
+        $scope.team.members.forEach(function(member) {
+            if (member.username == $scope.currentuser) $scope.inteam = true;
+        });
     });
+
+    $scope.$on("team-members", function(_, data) {
+        $scope.team.members = data.members;
+        $scope.inteam = false;
+        $scope.team.members.forEach(function(member) {
+            if (member.username == $scope.currentuser) $scope.inteam = true;
+        });
+    });
+
+    $scope.$on("join-team-success", function() {
+        TeamSvc.loadTeam($stateParams.id, "team-members");
+    });
+
+    $scope.$on("leave-team-success", function() {
+        TeamSvc.loadTeam($stateParams.id, "team-members");
+    });
+
+    $scope.joinTeam = function() {
+        var popup = $ionicPopup.show(TeamPopupSvc.joinTeam($scope.team.id));
+    }
+
+    $scope.leaveTeam = function() {
+        if ($scope.team.leader.username != $scope.currentuser) {
+            var popup = $ionicPopup.show(TeamPopupSvc.leaveTeam($scope, $scope.team.id, false, null));
+        } else {
+            var popup = $ionicPopup.show(TeamPopupSvc.leaveTeam($scope, $scope.team.id, true, $scope.team.members.length)); 
+        }
+    }
 
     TeamSvc.loadTeam($stateParams.id, "team");
 })
