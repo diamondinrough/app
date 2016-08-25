@@ -1,11 +1,17 @@
-<ion-view title="{{team.name}}">
+<ion-view view-title="Team Detail" class="has-tabs">
+  <ion-nav-buttons side="right">
+    <div ng-if="authenticated">
+      <a class="button button-icon ion-plus" ng-if="!inteam" ng-click="joinTeam()"></a>
+      <a class="button button-icon ion-minus" ng-if="inteam" ng-click="leaveTeam()"></a>
+    </div>
+  </ion-nav-buttons>
   <ion-content>
     <div class="list" style="padding:0;">
       <div class="item compact" style="background-color:#5C5C5C;">
         <div class="team-letter" style="background-color:{{team.color}}">
           {{team.name[0]}}
         </div>
-        <h2 class="item-title" style="color:white;margin-bottom:20px;">
+        <h2 class="item-title team-name" style="margin:5px 0 10px 0;">
           {{team.name}}
         </h2>
         <ul>
@@ -14,11 +20,11 @@
           </li>
           <p class="team-info" style="color:white;">|</p>
           <li class="team-info">
-            New Tasks: {{team.tasks.length}}
+            New Tasks: {{tasks.length}}
           </li>
           <p class="team-info" style="color:white;">|</p>
           <li class="team-info">
-            All Tasks: {{team.tasks.length}}
+            All Tasks: {{tasks.length}}
           </li>
         </ul>
       </div>
@@ -37,12 +43,19 @@
       <div class="item">
         <div class="row" style="flex-wrap: wrap;">
           <div class="col col-33" ng-repeat="member in team.members">
-            {{member.info.fullname}}
+            <div class="mini-avatar-container" style="margin-right:5px;">
+              <img class="mini-avatar" src="http://www.w3schools.com/w3css/img_avatar2.png" alt="pic">
+            </div>
+            <div class="item-text-wrap">
+              {{member.info.fullname}}
+            </div>
           </div>
         </div>
       </div>
       <div class="item item-divider">
         Tasks
+      </div>
+      <div class="item" ng-repeat="task in tasks">
       </div>
     </div>
   </ion-content>

@@ -135,6 +135,80 @@ angular.module('starter.services', [])
     }
 }])
 
+.service("TeamPopupSvc", function(TeamSvc, $ionicHistory) {
+    this.joinTeam = function(id) {
+        return {
+            title: 'Join Team?',
+            buttons: [
+                {
+                    text: 'No',
+                    type: 'button-stable'
+                },
+                {
+                    text: 'Yes',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        TeamSvc.joinTeam(id);
+                    }
+                }
+            ]
+        }
+    }
+
+    this.leaveTeam = function($scope, id, leader, members) {
+        if (!leader || (leader && members == 1)) {
+            return {
+                title: 'Leave Team?',
+                buttons: [
+                    {
+                        text: 'No',
+                        type: 'button-stable'
+                    },
+                    {
+                        text: 'Yes',
+                        type: 'button-assertive',
+                        onTap: function(e) {
+                            TeamSvc.leaveTeam(id, false, null);
+                            $ionicHistory.goBack();
+                        }
+                    }
+                ]
+            }
+        } else {
+            return {
+                title: 'Leave Team?',
+                template: 
+                   '<div class="list"> \
+                   <label class="item item-input item-select"> \
+                   <div class="input-label"> \
+                   New leader \
+                   </div> \
+                   <select ng-model="newleader.username"> \
+                   <option ng-repeat="member in team.members" ng-if="member.username != currentuser">{{member.info.fullname}}</option> \
+                   </select> \
+                   </label> \
+                   </div>'
+                ,
+                scope: $scope,
+                buttons: [
+                    {
+                        text: 'No',
+                        type: 'button-stable'
+                    },
+                    {
+                        text: 'Yes',
+                        type: 'button-assertive',
+                        onTap: function(e) {
+                            if ($scope.newleader.username) TeamSvc.leaveTeam(id, true, $scope.newleader.username);
+                            $ionicHistory.goBack();
+                        }
+                    }
+                ]
+            }
+        }
+    }
+})
+
 .service("AuthSvc", function($http, $rootScope) {
     var token = null;
     var isAuthenticated = false;
@@ -227,7 +301,7 @@ angular.module('starter.services', [])
     }
 }])
 
-.service("TeamSvc", function($http, $rootScope) {
+.service("TeamSvc", function($http, $rootScope, $ionicLoading) {
     this.newTeam = function(team) {
         $http.post(site + "api/app/teams/create/", team)
         .success(function() {
@@ -243,7 +317,40 @@ angular.module('starter.services', [])
         .success(function(data) {
             $rootScope.$broadcast(bcast, data);
         });
-    } 
+    }
+
+    this.joinTeam = function(id) {
+        $http.post(site + "api/app/team/" + id + "/join/")
+        .success(function() {
+            $ionicLoading.show({template: "Joined team!", duration: 1000});
+            $rootScope.$broadcast("join-team-success");
+        })
+        .error(function() {
+            $ionicLoading.show({template: "Failed to join team.", duration: 1000});
+        });
+    }
+
+    this.leaveTeam = function(id, leader, newleader) {
+        if (!leader) {
+            $http.post(site + "api/app/team/" + id + "/leave/")
+            .success(function() {
+                $ionicLoading.show({template: "Left team!", duration: 1000});
+                $rootScope.$broadcast("leave-team-success");
+            })
+            .error(function() {
+                $ionicLoading.show({template: "Failed to leave team.", duration: 1000});
+            });
+        } else {
+            $http.post(site + "api/app/team/" + id + "/leave/", {newleader:newleader})
+            .success(function() {
+                $ionicLoading.show({template: "Left team!", duration: 1000});
+                $rootScope.$broadcast("leave-team-success");
+            })
+            .error(function() {
+                $ionicLoading.show({template: "Failed to leave team.", duration: 1000});
+            });
+        }
+    }
 })
 
 .service("TeamListSvc", function($http, $rootScope, $ionicLoading) {
