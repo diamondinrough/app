@@ -104,7 +104,7 @@ class UserView(RetrieveAPIView):
 
 class TeamList(ListAPIView):
     serializer_class = TeamSerializer
-    queryset = Team.objects.all()
+    queryset = Team.objects.all().order_by('name')
 
 
 class TeamView(RetrieveAPIView):
@@ -121,14 +121,14 @@ class TeamCreate(CreateAPIView):
     permission_classes = (IsAuthenticatedOrOptions,)
     
     def perform_create(self, serializer):
-        serializer.save(leader=self.request.user)
+        serializer.save(leader=self.request.user,members=[self.request.user,])
 
 
 class TeamJoin(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticatedOrOptions,)
     
-    def post(self, request, format=None):
+    def post(self, request, id=None, format=None):
         if request.user.is_authenticated():
             team = Team.objects.get(id=id)
             team.members.add(request.user)
@@ -140,12 +140,67 @@ class TeamLeave(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticatedOrOptions,)
     
-    def post(self, request, format=None):
+    def post(self, request, id=None, format=None):
         if request.user.is_authenticated():
             team = Team.objects.get(id=id)
-            team.members.remove(request.user)
+            if team.leader != request.user:
+                team.members.remove(request.user)
+                return Response(status=status.HTTP_200_OK)
+            else:
+                if team.members.count() == 1:
+                    team.delete()
+                else:
+                    try:
+                        newleader = request.data.get('newleader')
+                        if newleader == request.user.username:
+                            return Response('Can\'t choose yourself!', status=status.HTTP_400_BAD_REQUEST)
+                        newleaderuser = AuthUser.objects.get(username=newleader)
+                    except:
+                        return Response('Can\'t get new leader!', status=status.HTTP_400_BAD_REQUEST)
+                    team.leader = newleaderuser
+                    team.save()
+                    team.members.remove(request.user)
+                return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class TeamLeader(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def post(self, request, id=None, format=None):
+        if request.user.is_authenticated():
+            team = Team.objects.get(id=id)
+            if (team.leader != request.user):
+                return Response('You are not the team leader!', status=status.HTTP_400_BAD_REQUEST)
+            try:
+                newleader = request.data.get('newleader')
+                if newleader == request.user.username:
+                    return Response('Can\'t choose yourself!', status=status.HTTP_400_BAD_REQUEST)
+                newleaderuser = AuthUser.objects.get(username=newleader)
+            except:
+                return Response('Can\'t get new leader!', status=status.HTTP_400_BAD_REQUEST)
+            team.leader = newleaderuser
+            team.save()
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class TaskList(ListAPIView):
+    serializer_class = TaskSerializer
+    queryset = Task.objects.all()
+
+    def get_queryset(self):
+        qset = Task.objects.all().order_by('-dt_created')
+        '''
+        if 'tags' in self.request.query_params:
+            tags = self.request.query_params.get('tags').split(',')
+            for tag in tags:
+                qset = qset.filter(tags__name=tag)
+        '''
+        if 'team' in self.request.query_params:
+            qset = qset.filter(team__name=self.request.query_params.get('team'))
+        return qset
 
 
 class IndexView(MultipleModelAPIView):

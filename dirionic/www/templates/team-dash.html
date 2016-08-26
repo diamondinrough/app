@@ -14,29 +14,11 @@
           </div>
         </div>
         <div class="row hot-group-row item-text-wrap">
-          <div class="col col-25">
+          <div ng-repeat="team in hotteams" class="col col-25">
             <div class="hot-group-letter-container">
-              <p class="hot-group-letter">A</p>
+              <a class="hot-group-letter" style="text-decoration:none;background-color:{{team.color}};" href="#/app/team/{{team.id}}">{{team.name[0]}}</a>
             </div>
-            <p class="hot-group-name">ASDFASDFASDFASDFASDF</p>
-          </div>
-          <div class="col col-25">
-            <div class="hot-group-letter-container">
-              <p class="hot-group-letter">A</p>
-            </div>
-            <p class="hot-group-name">ASDF</p>
-          </div>
-          <div class="col col-25">
-            <div class="hot-group-letter-container">
-              <p class="hot-group-letter">A</p>
-            </div>
-            <p class="hot-group-name">ASDF</p>
-          </div>
-          <div class="col col-25">
-            <div class="hot-group-letter-container">
-              <p class="hot-group-letter">A</p>
-            </div>
-           <p class="hot-group-name">ASDF</p>
+            <p class="hot-group-name">{{team.name}}</p>
           </div>
         </div>
       </div>

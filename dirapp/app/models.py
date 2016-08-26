@@ -40,17 +40,21 @@ class User(models.Model):
         return self.username
 
 
+def info_img_upload(instance, filename):
+    return '/'.join(['images', 'users', str(instance.user.username) + '.' + filename.split('.')[-1]])
+
 class Info(models.Model):
     user = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
     fullname = models.CharField(max_length=100)
     email = models.EmailField()
     wechat = models.CharField(max_length=50, blank=True)
-    image = models.ImageField(upload_to='users/images', default='users/images/default.jpg')
+    image = models.ImageField(upload_to=info_img_upload, default='images/users/no_image.png')
 
 
 class Team(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
+    color = ColorField(default='#000000')
 
     leader = models.ForeignKey(AuthUser, blank=False, related_name='teamleaders')
     members = models.ManyToManyField(AuthUser, blank=False, related_name='teammembers')
@@ -67,8 +71,9 @@ class Team(models.Model):
 
 class Task(models.Model):
     id = models.AutoField(primary_key=True)
-    leader = models.ForeignKey(User, related_name='taskleaders')
-    members = models.ManyToManyField(User, blank=False, related_name='taskmembers')
+    team = models.ForeignKey(Team, blank=False)
+    leader = models.ForeignKey(AuthUser, blank=False, related_name='taskleaders')
+    members = models.ManyToManyField(AuthUser, blank=False, related_name='taskmembers')
     
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -125,6 +130,9 @@ class Tag(models.Model):
         ordering = ['name']
 
 
+def article_img_upload(instance, filename):
+    return '/'.join(['images', 'articles', str(instance.pk) + '.' + filename.split('.')[-1]])
+
 class Article(models.Model):
     id = models.AutoField(primary_key=True)
     poster = models.ForeignKey(AuthUser, null=True, on_delete=models.SET_NULL, related_name='userarticles')
@@ -132,7 +140,7 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=500, null=True)
-    image = models.ImageField(upload_to='articles/images/', default='articles/images/noimage.png')
+    image = models.ImageField(upload_to=article_img_upload, default='images/articles/no_image.png')
     views = models.IntegerField(default=0)
 
     comments = GenericRelation(Comment)
