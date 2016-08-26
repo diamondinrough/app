@@ -188,7 +188,6 @@ class TeamLeader(APIView):
 
 class TaskList(ListAPIView):
     serializer_class = TaskSerializer
-    queryset = Task.objects.all()
 
     def get_queryset(self):
         qset = Task.objects.all().order_by('-dt_created')
@@ -201,6 +200,91 @@ class TaskList(ListAPIView):
         if 'team' in self.request.query_params:
             qset = qset.filter(team__name=self.request.query_params.get('team'))
         return qset
+
+
+class TaskView(RetrieveAPIView):
+    serializer_class = TaskSerializer
+    queryset = Task.objects.all()
+    lookup_field = 'id'
+
+
+class TaskCreate(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def post(self, request, format=None):
+        serializer = TaskCreateSerializer(data=request.data)
+        team = Team.objects.get(id=request.data.get('team'))
+        if team.leader != self.request.user:
+            return Response('You are not the team leader!', status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            serializer.save(leader=self.request.user)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TaskJoin(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def post(self, request, id=None, format=None):
+        if request.user.is_authenticated():
+            task = Task.objects.get(id=id)
+            if request.user not in task.team.members.all():
+                return Response('You are not part of this task\'s team!', status=status.HTTP_400_BAD_REQUEST)
+            task.members.add(request.user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class TaskLeave(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def post(self, request, id=None, format=None):
+        if request.user.is_authenticated():
+            task = Team.objects.get(id=id)
+            if task.leader != request.user:
+                task.members.remove(request.user)
+                return Response(status=status.HTTP_200_OK)
+            else:
+                if task.members.count() == 1:
+                    task.delete()
+                else:
+                    try:
+                        newleader = request.data.get('newleader')
+                        if newleader == request.user.username:
+                            return Response('Can\'t choose yourself!', status=status.HTTP_400_BAD_REQUEST)
+                        newleaderuser = AuthUser.objects.get(username=newleader)
+                    except:
+                        return Response('Can\'t get new leader!', status=status.HTTP_400_BAD_REQUEST)
+                    task.leader = newleaderuser
+                    task.save()
+                    task.members.remove(request.user)
+                return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class TaskLeader(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def post(self, request, id=None, format=None):
+        if request.user.is_authenticated():
+            task = Team.objects.get(id=id)
+            if task.leader != request.user:
+                return Response('You are not the task leader!', status=status.HTTP_400_BAD_REQUEST)
+            try:
+                newleader = request.data.get('newleader')
+                if newleader == request.user.username:
+                    return Response('Can\'t choose yourself!', status=status.HTTP_400_BAD_REQUEST)
+                newleaderuser = AuthUser.objects.get(username=newleader)
+            except:
+                return Response('Can\'t get new leader!', status=status.HTTP_400_BAD_REQUEST)
+            task.leader = newleaderuser
+            task.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class IndexView(MultipleModelAPIView):

@@ -432,6 +432,9 @@ angular.module('starter.services', [])
     }
 })
 
+.service("TaskSvc", function($http, $rootScope, $ionicLoading) {
+})
+
 .service("IndexSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadItems = function(taglist, searches, next, bcast) {
         if (next == null) {
