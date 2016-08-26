@@ -1,8 +1,7 @@
 <ion-view view-title="Team Detail" class="has-tabs">
   <ion-nav-buttons side="right">
     <div ng-if="authenticated">
-      <a class="button button-icon ion-plus" ng-if="!inteam" ng-click="joinTeam()"></a>
-      <a class="button button-icon ion-minus" ng-if="inteam" ng-click="leaveTeam()"></a>
+      <a class="button button-icon ion-gear-a" ng-if="authenticated" ng-click="teamOptions()"></a>
     </div>
   </ion-nav-buttons>
   <ion-content>

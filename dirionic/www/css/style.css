@@ -251,7 +251,6 @@ a.video-tab {
   height: 0;
   padding: 40% 0;
   border-radius: 50%;
-  background: #38A9E4;
   color: white !important;
   font-size: 24px !important;
   line-height: 0;
@@ -269,7 +268,7 @@ a.video-tab {
   width: 60px;
   height: 60px;
   text-align: center;
-  padding-top: 15px;
+  padding-top: 20px;
   border-radius: 50%;
   color: white;
   font-size: 24px;

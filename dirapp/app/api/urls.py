@@ -17,6 +17,7 @@ urlpatterns = [
 #   url(r'^app/users/', views.UserListView.as_view(), name='api-user-list-view'),
     url(r'^app/team/(?P<id>[0-9]+)/join', views.TeamJoin.as_view()),
     url(r'^app/team/(?P<id>[0-9]+)/leave', views.TeamLeave.as_view()),
+    url(r'^app/team/(?P<id>[0-9]+)/leader', views.TeamLeader.as_view()),
     url(r'^app/team/(?P<id>[0-9]+)/', views.TeamView.as_view()),
     url(r'^app/teams/create', views.TeamCreate.as_view()),
     url(r'^app/teams/', views.TeamList.as_view()),

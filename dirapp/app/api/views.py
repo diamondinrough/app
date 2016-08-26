@@ -164,6 +164,28 @@ class TeamLeave(APIView):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
+class TeamLeader(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrOptions,)
+    
+    def post(self, request, id=None, format=None):
+        if request.user.is_authenticated():
+            team = Team.objects.get(id=id)
+            if (team.leader != request.user):
+                return Response('You are not the team leader!', status=status.HTTP_400_BAD_REQUEST)
+            try:
+                newleader = request.data.get('newleader')
+                if newleader == request.user.username:
+                    return Response('Can\'t choose yourself!', status=status.HTTP_400_BAD_REQUEST)
+                newleaderuser = AuthUser.objects.get(username=newleader)
+            except:
+                return Response('Can\'t get new leader!', status=status.HTTP_400_BAD_REQUEST)
+            team.leader = newleaderuser
+            team.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
 class TaskList(ListAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()

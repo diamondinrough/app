@@ -140,7 +140,7 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=500, null=True)
-    image = models.ImageField(upload_to=article_img_upload, default='images/article/no_image.png')
+    image = models.ImageField(upload_to=article_img_upload, default='images/articles/no_image.png')
     views = models.IntegerField(default=0)
 
     comments = GenericRelation(Comment)

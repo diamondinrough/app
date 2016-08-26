@@ -169,7 +169,7 @@ angular.module('starter.services', [])
                         type: 'button-assertive',
                         onTap: function(e) {
                             TeamSvc.leaveTeam(id, false, null);
-                            $ionicHistory.goBack();
+                            //$ionicHistory.goBack();
                         }
                     }
                 ]
@@ -181,10 +181,9 @@ angular.module('starter.services', [])
                    '<div class="list"> \
                    <label class="item item-input item-select"> \
                    <div class="input-label"> \
-                   New leader \
+                   New Leader \
                    </div> \
-                   <select ng-model="newleader.username"> \
-                   <option ng-repeat="member in team.members" ng-if="member.username != currentuser">{{member.info.fullname}}</option> \
+                   <select ng-options="member.info.fullname disable when (member.username==currentuser) for member in team.members track by member.username" ng-model="newleader.user"> \
                    </select> \
                    </label> \
                    </div>'
@@ -199,12 +198,69 @@ angular.module('starter.services', [])
                         text: 'Yes',
                         type: 'button-assertive',
                         onTap: function(e) {
-                            if ($scope.newleader.username) TeamSvc.leaveTeam(id, true, $scope.newleader.username);
-                            $ionicHistory.goBack();
+                            if ($scope.newleader.user.username) TeamSvc.leaveTeam(id, true, $scope.newleader.user.username);
+                            //$ionicHistory.goBack();
                         }
                     }
                 ]
             }
+        }
+    }
+
+    this.changeLeader = function($scope, id) {
+        return {
+            title: 'Change Leader',
+            template: 
+               '<div class="list"> \
+               <label class="item item-input item-select"> \
+               <div class="input-label"> \
+               New Leader \
+               </div> \
+               <select ng-options="member.info.fullname disable when (member.username==currentuser) for member in team.members track by member.username" ng-model="changeleader.user"> \
+               </select> \
+               </label> \
+               </div>'
+            ,
+            scope: $scope,
+            buttons: [
+                {
+                    text: 'No',
+                    type: 'button-stable'
+                },
+                {
+                    text: 'Yes',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        console.log($scope.changeleader.user);
+                        if ($scope.changeleader.user.username) TeamSvc.changeLeader(id, $scope.changeleader.user.username);
+                    }
+                }
+            ]
+        }
+    } 
+
+    this.teamOptions = function($scope) {
+        return {
+            title: 'Team Options',
+            template:
+                '<div class="list"> \
+                <button ng-if="team.leader.username == currentuser" class="button button-block button-royal" ng-click="changeLeader()"> \
+                Change Leader \
+                </button> \
+                <button ng-if="inteam" class="button button-block button-assertive" ng-click="leaveTeam()"> \
+                Leave Team \
+                </button> \
+                <button ng-if="!inteam" class="button button-block button-positive" ng-click="joinTeam()"> \
+                Join Team \
+                </button>'
+            ,
+            scope: $scope,
+            buttons: [
+                {
+                    text: 'Close',
+                    type: 'button-stable'
+                }
+            ]
         }
     }
 })
@@ -350,6 +406,17 @@ angular.module('starter.services', [])
                 $ionicLoading.show({template: "Failed to leave team.", duration: 1000});
             });
         }
+    }
+
+    this.changeLeader = function(id, newleader) {
+        $http.post(site + "api/app/team/" + id + "/leader/", {newleader:newleader})
+        .success(function() {
+            $ionicLoading.show({template: "Changed leader!", duration: 1000});
+            $rootScope.$broadcast("change-leader-team-success");
+        })
+        .error(function() {
+            $ionicLoading.show({template: "Failed to change leader.", duration: 1000});
+        });
     }
 })
 
