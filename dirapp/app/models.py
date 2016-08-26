@@ -131,7 +131,7 @@ class Tag(models.Model):
 
 
 def article_img_upload(instance, filename):
-    return '/'.join(['images', 'articles', str(instance.pk) + '.' + filename.split('.')[-1]])
+    return '/'.join(['images', 'articles', str(instance.id) + '.' + filename.split('.')[-1]])
 
 class Article(models.Model):
     id = models.AutoField(primary_key=True)
@@ -148,6 +148,14 @@ class Article(models.Model):
 
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
     dt_updated = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            saved_image = self.image
+            self.image = None
+            super(Article, self).save(*args, **kwargs)
+            self.image = saved_image
+        super(Article, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title

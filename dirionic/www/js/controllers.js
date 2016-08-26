@@ -594,6 +594,9 @@ angular.module('starter.controllers', [])
     TeamSvc.loadTeam($stateParams.id, "team");
 })
 
+.controller("TaskCreateCtrl", function($scope, TaskSvc, $ionicHistory) {
+})
+
 .controller("ArticleListCtrl", function($scope, $state, $ionicLoading, AuthSvc, ArticleListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
     $ionicLoading.show({template: "Loading articles..."});
 

@@ -148,6 +148,25 @@ class TaskSerializer(ModelSerializer):
         fields = ('id', 'team', 'name', 'leader', 'members', 'description', 'dt_created')
 
 
+class TaskCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ('team', 'name', 'description', 'members')
+
+    '''
+    def create(self, instance, validated_data):
+        instance.name = validated_data.get('name')
+        instance.description = validated_data.get('description')
+        team = Team.objects.get(id=validated_data.get('team'))
+        instance.team = team
+        members = []
+        for member in validated_data.get('members'):
+            members.append(AuthUser.objects.get(username=member)
+        instance.members = members;
+        instance.save()
+    '''
+
+
 class IndexSlideSerializer(ModelSerializer):
     class Meta:
         model = IndexSlide

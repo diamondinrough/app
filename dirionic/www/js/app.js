@@ -264,7 +264,18 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers',
     }
   })
 
-.state('app.profile', {
+  .state('app.task-create', {
+    url: '/tasks/create',
+    views: {
+      'teams': {
+        templateUrl: 'templates/task-create.html',
+        controller: 'TaskCreateCtrl'
+      }
+    }
+  })
+
+
+  .state('app.profile', {
     url: '/profile',
     views: {
       'profile': {
