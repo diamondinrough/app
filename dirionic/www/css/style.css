@@ -283,6 +283,17 @@ a.video-tab {
 }
 
 
+
+.task-leader {
+  float: left;
+  top: auto;
+  right: auto;
+  position: static;
+  font-size: 14px;
+  color: #666666;
+}
+
+
 .comment {
   color: black !important;
   font-size: 15px;
