@@ -155,7 +155,8 @@ class Article(models.Model):
             self.image = None
             super(Article, self).save(*args, **kwargs)
             self.image = saved_image
-        super(Article, self).save(*args, **kwargs)
+        else:
+            super(Article, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -190,7 +191,7 @@ class Video(models.Model):
     views = models.IntegerField(default=0)
 
     comments = GenericRelation(Comment)
-    tags = models.ManyToManyField(Tag, blank=False, related_name='videotag')
+    tags = models.ManyToManyField(Tag, blank=True, related_name='videotag')
 
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
 

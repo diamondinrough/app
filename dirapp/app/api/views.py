@@ -213,14 +213,25 @@ class TaskCreate(APIView):
     permission_classes = (IsAuthenticatedOrOptions,)
     
     def post(self, request, format=None):
-        serializer = TaskCreateSerializer(data=request.data)
-        team = Team.objects.get(id=request.data.get('team'))
-        if team.leader != self.request.user:
-            return Response('You are not the team leader!', status=status.HTTP_400_BAD_REQUEST)
-        if serializer.is_valid():
-            serializer.save(leader=self.request.user)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated():
+            serializer = TaskCreateSerializer(data=request.data)
+            team = Team.objects.get(id=request.data.get('team'))
+            if team.leader != self.request.user:
+                return Response('You are not the team leader!', status=status.HTTP_400_BAD_REQUEST)
+            if 'members' not in request.data:
+                return Response('No members provided!', status=status.HTTP_400_BAD_REQUEST)
+            for member in request.data.get('members'):
+                try:
+                    memberuser = AuthUser.objects.get(pk=member)
+                    if memberuser not in team.members.all():
+                        return Response('Member not in team!', status=status.HTTP_400_BAD_REQUEST)
+                except:
+                    return Response('Can\'t get member ' + str(member) + '!', status=status.HTTP_400_BAD_REQUEST)
+            if serializer.is_valid():
+                serializer.save(leader=self.request.user)
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class TaskJoin(APIView):
