@@ -17,7 +17,6 @@ function get_name(poster) {
 angular.module('starter.controllers', [])
 
 .controller("IndexCtrl", function($rootScope, $scope, $state, $ionicPopup, AuthSvc, $ionicLoading, AuthSvc, IndexSlideSvc, IndexArticleSvc, IndexVideoSvc, IndexResourceSvc, $ionicSlideBoxDelegate, $sce) {
-    $ionicLoading.show({template: "Loading index..."});
     $scope.authenticated = AuthSvc.authenticated();
     $rootScope.$on("authorize-success", function() {
         $scope.authenticated = true;
@@ -56,7 +55,6 @@ angular.module('starter.controllers', [])
 
         $scope.$broadcast("scroll.refreshComplete");
         $ionicSlideBoxDelegate.update();
-        $ionicLoading.hide();
     });
 
     $scope.article = null;
@@ -115,7 +113,6 @@ angular.module('starter.controllers', [])
     });
 
     $scope.reload = function() {
-        $ionicLoading.show({template: "Loading index..."});
         $scope.slides = [];
         $scope.article = null;
         $scope.video = null;
@@ -510,7 +507,7 @@ angular.module('starter.controllers', [])
     TeamListSvc.loadTeams("team-list");
 })
 
-.controller("TeamCtrl", function($scope, TeamSvc, TeamPopupSvc, AuthSvc, $rootScope, $ionicPopup, $ionicLoading, $stateParams) {
+.controller("TeamCtrl", function($scope, $state, TeamSvc, TeamPopupSvc, TaskSvc, AuthSvc, $rootScope, $ionicPopup, $ionicLoading, $stateParams) {
     $scope.authenticated = AuthSvc.authenticated();
     $scope.currentuser = AuthSvc.currentuser();
     $rootScope.$on("authorize-success", function() {
@@ -544,6 +541,22 @@ angular.module('starter.controllers', [])
         $scope.team.members.forEach(function(member) {
             if (member.username == $scope.currentuser) $scope.inteam = true;
         });
+
+        TaskSvc.loadTasks($scope.team.name, "team-tasks");
+    });
+
+    $scope.$on("team-tasks", function(_, data) {
+        $scope.tasks = [];
+        data.forEach(function(task) {
+            $scope.tasks.push({
+                id: task.id,
+                name: task.name,
+                description: task.description,
+                leader_name: get_name(task.leader),
+                members: task.members,
+                dt_created: task.dt_created
+            });
+        });
     });
 
     $scope.$on("team-members", function(_, data) {
@@ -568,6 +581,10 @@ angular.module('starter.controllers', [])
         TeamSvc.loadTeam($stateParams.id, "team-members");
     });
 
+    $scope.$on("task-create-success", function() {
+        TaskSvc.loadTasks($scope.team.name, "team-tasks");
+    })
+
     $scope.joinTeam = function() {
         var popup = $ionicPopup.show(TeamPopupSvc.joinTeam($scope.team.id));
         $scope.teamOptionsPopup.close();
@@ -587,6 +604,11 @@ angular.module('starter.controllers', [])
         $scope.teamOptionsPopup.close();
     }
 
+    $scope.newTask = function() {
+        $scope.teamOptionsPopup.close();
+        $state.go("app.task-create", {id: $stateParams.id});
+    }
+
     $scope.teamOptions = function() {
         $scope.teamOptionsPopup = $ionicPopup.show(TeamPopupSvc.teamOptions($scope));
     }
@@ -594,12 +616,57 @@ angular.module('starter.controllers', [])
     TeamSvc.loadTeam($stateParams.id, "team");
 })
 
-.controller("TaskCreateCtrl", function($scope, TaskSvc, $ionicHistory) {
+.controller("TaskCreateCtrl", function($scope, $rootScope, TaskSvc, TeamSvc, TaskPopupSvc, AuthSvc, $ionicPopup, $stateParams, $ionicHistory) {
+    $scope.authenticated = AuthSvc.authenticated();
+    $scope.currentuser = AuthSvc.currentuser();
+    $rootScope.$on("authorize-success", function() {
+        $scope.authenticated = true;
+        $scope.currentuser = AuthSvc.currentuser();
+    });
+    $rootScope.$on("unauthorize-success", function() {
+        $scope.authenticated = false;
+        $scope.currentuser = null;
+    });
+
+    $scope.task = {name:"",description:"",team:$stateParams.id};
+    $scope.chooseleader = {user:{}};
+    $scope.teammembers = [];
+
+    $scope.$on("task-create-team", function(_, data) {
+        $scope.teammembers = data.members;
+        for (i = 0; i < $scope.teammembers.length; i++) {
+            $scope.teammembers[i]['checked'] = false;
+        }
+    });
+
+    $scope.chooseLeader = function() {
+        $scope.popup = $ionicPopup.show(TaskPopupSvc.chooseLeader($scope, $scope.teammembers));
+    }
+
+    $scope.chooseMembers = function() {
+        $scope.popup = $ionicPopup.show(TaskPopupSvc.chooseMembers($scope, $scope.teammembers));
+    }
+
+    $scope.create = function() {
+        members = [];
+        for (i = 0; i < $scope.teammembers.length; i++) {
+            if ($scope.teammembers[i].username == $scope.task.leader) {
+                members.push($scope.teammembers[i].id);
+                continue;
+            }
+            if ($scope.teammembers[i].checked) {
+                members.push($scope.teammembers[i].id);
+            }
+        }
+        $scope.task['members'] = members;
+        TaskSvc.createTask($scope.task);
+        $ionicHistory.goBack();
+    }
+
+    TeamSvc.loadTeam($stateParams.id, "task-create-team");
 })
 
 .controller("ArticleListCtrl", function($scope, $state, $ionicLoading, AuthSvc, ArticleListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
-    $ionicLoading.show({template: "Loading articles..."});
-
     $scope.articles = [];
     $scope.taglist = [];
     $scope.count = 0;
@@ -640,7 +707,6 @@ angular.module('starter.controllers', [])
 
         $scope.$broadcast("scroll.refreshComplete");
         $scope.$broadcast("scroll.infiniteScrollComplete");
-        $ionicLoading.hide();
     });
 
     $scope.newArticle = function() {
@@ -660,7 +726,6 @@ angular.module('starter.controllers', [])
     }
 
     $scope.reload = function() {
-        $ionicLoading.show({template: "Loading articles..."});
         $scope.articles = [];
         $scope.moreitems = false;
         ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
@@ -942,12 +1007,11 @@ angular.module('starter.controllers', [])
 
     $scope.submit = function() {
         ArticleSvc.newArticle($scope.article, $scope.taglist);
-        $ionicLoading.show({template: "Submitting article..."});
+        $ionicHistory.goBack();
     }
 
     $scope.$on("article-submit-success", function(_, __) {
         $ionicLoading.show({template: "Article submitted!", duration: 1000});
-        $ionicHistory.goBack();
     });
 
     $scope.$on("article-submit-error", function(_, data) {
@@ -978,8 +1042,6 @@ angular.module('starter.controllers', [])
 })
 
 .controller("VideoListCtrl", function($scope, AuthSvc, $ionicLoading, VideoListSvc, $state, TagListSvc, $ionicPopup, TagPopupSvc) {
-	$ionicLoading.show({template: "Loading videos..."});
-
 	$scope.videos = [];
     $scope.taglist = [];
     $scope.count = 0;
@@ -1043,7 +1105,6 @@ angular.module('starter.controllers', [])
     }
 
     $scope.reload = function() {
-        $ionicLoading.show({template: "Loading videos..."});
         $scope.videos = [];
         $scope.moreitems = false;
         VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
@@ -1348,12 +1409,11 @@ angular.module('starter.controllers', [])
 
     $scope.submit = function() {
         VideoSvc.newVideo($scope.video, $scope.taglist);
-        $ionicLoading.show({template: "Submitting video..."});
+        $ionicHistory.goBack();
     }
 
     $scope.$on("video-submit-success", function(_, __) {
         $ionicLoading.show({template: "Video submitted!", duration: 1000});
-        $ionicHistory.goBack();
     });
 
     $scope.$on("video-submit-error", function(_, data) {
@@ -1536,13 +1596,12 @@ angular.module('starter.controllers', [])
     $scope.feedback = { comments: "", contactinfo: "", name: "" }
 
     $scope.submit = function() {
-        $ionicLoading.show({template: "Submitting feedback..."});
         FeedbackSvc.post($scope.feedback);
+        $ionicHistory.goBack();
     }
 
     $scope.$on("feedback-success", function(_, __) {
         $ionicLoading.show({template: "Feedback Successful!", duration: 1000});
-        $ionicHistory.goBack();
     })
 
     $scope.$on("feedback-error", function(_, __) {

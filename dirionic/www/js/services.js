@@ -237,13 +237,16 @@ angular.module('starter.services', [])
                 }
             ]
         }
-    } 
+    }
 
     this.teamOptions = function($scope) {
         return {
             title: 'Team Options',
             template:
                 '<div class="list"> \
+                <button ng-if="team.leader.username == currentuser" class="button button-block button-energized" ng-click="newTask()"> \
+                New Task \
+                </button> \
                 <button ng-if="team.leader.username == currentuser" class="button button-block button-royal" ng-click="changeLeader()"> \
                 Change Leader \
                 </button> \
@@ -263,6 +266,81 @@ angular.module('starter.services', [])
             ]
         }
     }
+})
+
+.service("TaskPopupSvc", function() {
+    this.chooseLeader = function($scope) {
+        return {
+            title: 'Choose Leader',
+            template: 
+               '<div class="list"> \
+               <label class="item item-input item-select"> \
+               <div class="input-label"> \
+               Task Leader \
+               </div> \
+               <select ng-options="member.info.fullname for member in teammembers track by member.username" ng-model="chooseleader.user"> \
+               </select> \
+               </label> \
+               </div>'
+            ,
+            scope: $scope,
+            buttons: [
+                {
+                    text: 'Cancel',
+                    type: 'button-stable'
+                },
+                {
+                    text: 'Yes',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        if ($scope.chooseleader.user.username) $scope.task.leader = $scope.chooseleader.user.username;
+                    }
+                }
+            ]
+        }
+    }
+
+    this.chooseMembers = function($scope) {
+        return {
+            template: 
+               '<style> \
+                    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon { \
+                        float: right; \
+                    } \
+                    .item-checkbox.item-checkbox-right { \
+                        padding: 15px; \
+                    } \
+                </style> \
+                <div ng-if="task.leader"> \
+                <ion-checkbox ng-repeat="member in teammembers" ng-if="member.username != task.leader" ng-model="member.checked" ng-checked="member.checked" \
+                class="item-checkbox-right"> \
+                <p>{{member.info.fullname}}</p> \
+                </ion-checkbox> \
+                </div> \
+                <div ng-if="!task.leader"> \
+                <p>Please choose a leader.</p> \
+                </div>'
+            ,
+            title: 'Choose Additional Members',
+            scope: $scope,
+            buttons: [
+                {
+                    text: '<b>Reset</b>',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        for (i = 0; i < $scope.teammembers.length; i++) {
+                            $scope.teammembers[i].checked = false;
+                        }
+                    }
+                },
+                {
+                    text: '<b>Done</b>',
+                    type: 'button-positive'
+                }
+            ]
+        };
+    }
+
 })
 
 .service("AuthSvc", function($http, $rootScope) {
@@ -433,6 +511,28 @@ angular.module('starter.services', [])
 })
 
 .service("TaskSvc", function($http, $rootScope, $ionicLoading) {
+    this.loadTasks = function(team, bcast) {
+        params = {team:""};
+        if (team != null) {
+            params['team'] = encodeURI(team);
+        }
+        $http.get(site + "api/app/tasks/?" + params.team)
+        .success(function(data) {
+            $rootScope.$broadcast(bcast, data);
+        });
+    }
+
+    this.createTask = function(task) {
+        $http.post(site + "api/app/tasks/create/", task)
+        .success(function() {
+            $ionicLoading.show({template: "Task created!", duration: 1000});
+            $rootScope.$broadcast("task-create-success");
+        })
+        .error(function(data) {
+            console.log('TASK ERROR:\n' + data);
+            $ionicLoading.show({template: "Failed to create task.", duration: 1000});
+        });
+    }
 })
 
 .service("IndexSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
