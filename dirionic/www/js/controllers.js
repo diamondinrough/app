@@ -825,95 +825,40 @@ angular.module('starter.controllers', [])
 
     $scope.input = {};
 
-    $scope.submitcomment = function(text) {
-        ArticleSvc.submitComment($stateParams.id, text);
-        $ionicLoading.show({template: "Submitting comment..."});
-    }
-
-    $scope.submitreply = function(text, parent) {
-        ArticleSvc.submitReply($stateParams.id, text, parent);
-        $ionicLoading.show({template: "Submitting comment..."});
-    }
-
     $scope.$on("article-comment-create-success", function(data) {
-        $ionicLoading.show({template: "Comment successful!", duration: 1000});
         ArticleSvc.loadArticle($stateParams.id, "article-comments");
     });
 
     $scope.$on("article-reply-create-success", function(data) {
-        $ionicLoading.show({template: "Comment successful!", duration: 1000});
         ArticleSvc.loadArticle($stateParams.id, "article-comments");
     });
 
-    $scope.$on("article-reply-create-error", function() {
-        $ionicLoading.show({template: "Comment failed.", duration: 1000});
-    });
-
-    $scope.$on("article-comment-create-error", function() {
-        $ionicLoading.show({template: "Comment failed.", duration: 1000});
-    });
-
-    $scope.commentcreatepopup = function() {
-        var popup = $ionicPopup.show(CommentPopupSvc.commentcreate($scope));
-    }
-    $scope.replycreatepopup = function(parent) {
-        var popup = $ionicPopup.show(CommentPopupSvc.replycreate($scope, parent));
-    }
-
     $scope.addcomment = function() {
         $ionicListDelegate.closeOptionButtons();
-        $scope.commentcreatepopup();
+        var popup = $ionicPopup.show(CommentPopupSvc.commentcreate($scope, $stateParams.id, 'article'));
     };
 
     $scope.addreply = function(parent) {
         $ionicListDelegate.closeOptionButtons();
-        $scope.replycreatepopup(parent);
+        var popup = $ionicPopup.show(CommentPopupSvc.replycreate($scope, parent, $stateParams.id, 'article'));
     };
 
     $scope.$on("article-comment-delete-success", function(data) {
-        $ionicLoading.show({template: "Delete successful!", duration: 1000});
         ArticleSvc.loadArticle($stateParams.id, "article-comments");
     });
 
     $scope.$on("article-reply-delete-success", function(data) {
-        $ionicLoading.show({template: "Delete successful!", duration: 1000});
         ArticleSvc.loadArticle($stateParams.id, "article-comments");
     });
 
-    $scope.$on("article-reply-delete-error", function() {
-        $ionicLoading.show({template: "Delete failed.", duration: 1000});
-    });
-
-    $scope.$on("article-comment-delete-error", function() {
-        $ionicLoading.show({template: "Delete failed.", duration: 1000});
-    });
-
-    $scope.deletecomment = function(comment_id) {
-        ArticleSvc.deleteComment($stateParams.id, comment_id);
-        $ionicLoading.show({template: "Deleting comment..."});
-    }
-
-    $scope.deletereply = function(reply_id) {
-        ArticleSvc.deleteReply($stateParams.id, reply_id);
-        $ionicLoading.show({template: "Deleting comment..."});
-    }
-
-    $scope.commentdeletepopup = function(comment_id) {
-        var popup = $ionicPopup.show(CommentPopupSvc.commentdelete($scope, comment_id));
-    }
-
-    $scope.replydeletepopup = function(reply_id) {
-        var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id));
-    }
-
     $scope.removecomment = function(comment_id) {
         $ionicListDelegate.closeOptionButtons();
-        $scope.commentdeletepopup(comment_id);
+        var popup = $ionicPopup.show(CommentPopupSvc.commentdelete($scope, comment_id, $stateParams.id, 'article'));
     };
 
     $scope.removereply = function(reply_id) {
         $ionicListDelegate.closeOptionButtons();
-        $scope.replydeletepopup(reply_id);
+        var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, 'article'));
     };
     
     ArticleSvc.loadArticle($stateParams.id, "article");
@@ -1309,95 +1254,40 @@ angular.module('starter.controllers', [])
 
     $scope.input = {};
 
-    $scope.submitcomment = function(text) {
-        VideoSvc.submitComment($stateParams.id, text);
-        $ionicLoading.show({template: "Submitting comment..."});
-    }
-
-    $scope.submitreply = function(text, parent) {
-        VideoSvc.submitReply($stateParams.id, text, parent);
-        $ionicLoading.show({template: "Submitting comment..."});
-    }
-
     $scope.$on("video-comment-create-success", function(data) {
-        $ionicLoading.show({template: "Comment successful!", duration: 1000});
         VideoSvc.loadVideo($stateParams.id, "video-comments");
     });
 
     $scope.$on("video-reply-create-success", function(data) {
-        $ionicLoading.show({template: "Comment successful!", duration: 1000});
         VideoSvc.loadVideo($stateParams.id, "video-comments");
     });
 
-    $scope.$on("video-reply-create-error", function() {
-        $ionicLoading.show({template: "Comment failed.", duration: 1000});
-    });
-
-    $scope.$on("video-comment-create-error", function() {
-        $ionicLoading.show({template: "Comment failed.", duration: 1000});
-    });
-
-    $scope.commentcreatepopup = function() {
-        var popup = $ionicPopup.show(CommentPopupSvc.commentcreate($scope));
-    }
-    $scope.replycreatepopup = function(parent) {
-        var popup = $ionicPopup.show(CommentPopupSvc.replycreate($scope, parent));
-    }
-
     $scope.addcomment = function() {
         $ionicListDelegate.closeOptionButtons();
-        $scope.commentcreatepopup();
+        var popup = $ionicPopup.show(CommentPopupSvc.commentcreate($scope, $stateParams.id, "video"));
     };
 
     $scope.addreply = function(parent) {
         $ionicListDelegate.closeOptionButtons();
-        $scope.replycreatepopup(parent);
+        var popup = $ionicPopup.show(CommentPopupSvc.replycreate($scope, parent, $stateParams.id, "video"));
     };
 
     $scope.$on("video-comment-delete-success", function(data) {
-        $ionicLoading.show({template: "Delete successful!", duration: 1000});
         VideoSvc.loadVideo($stateParams.id, "video-comments");
     });
 
     $scope.$on("video-reply-delete-success", function(data) {
-        $ionicLoading.show({template: "Delete successful!", duration: 1000});
         VideoSvc.loadVideo($stateParams.id, "video-comments");
     });
 
-    $scope.$on("video-reply-delete-error", function() {
-        $ionicLoading.show({template: "Delete failed.", duration: 1000});
-    });
-
-    $scope.$on("video-comment-delete-error", function() {
-        $ionicLoading.show({template: "Delete failed.", duration: 1000});
-    });
-
-    $scope.deletecomment = function(comment_id) {
-        VideoSvc.deleteComment($stateParams.id, comment_id);
-        $ionicLoading.show({template: "Deleting comment..."});
-    }
-
-    $scope.deletereply = function(reply_id) {
-        VideoSvc.deleteReply($stateParams.id, reply_id);
-        $ionicLoading.show({template: "Deleting comment..."});
-    }
-
-    $scope.commentdeletepopup = function(comment_id) {
-        var popup = $ionicPopup.show(CommentPopupSvc.commentdelete($scope, comment_id));
-    }
-
-    $scope.replydeletepopup = function(reply_id) {
-        var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id));
-    }
-
     $scope.removecomment = function(comment_id) {
         $ionicListDelegate.closeOptionButtons();
-        $scope.commentdeletepopup(comment_id);
+        var popup = $ionicPopup.show(CommentPopupSvc.commentdelete($scope, comment_id, $stateParams.id, "video"));
     };
 
     $scope.removereply = function(reply_id) {
         $ionicListDelegate.closeOptionButtons();
-        $scope.replydeletepopup(reply_id);
+        var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, "video"));
     };
 
 	VideoSvc.loadVideo($stateParams.id, "video");

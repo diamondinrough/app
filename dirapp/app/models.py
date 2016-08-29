@@ -48,7 +48,7 @@ class Info(models.Model):
     fullname = models.CharField(max_length=100)
     email = models.EmailField()
     wechat = models.CharField(max_length=50, blank=True)
-    image = models.ImageField(upload_to=info_img_upload, default='images/users/no_image.png')
+    image = models.ImageField(upload_to=info_img_upload, blank=True)
 
 
 class Team(models.Model):
@@ -140,7 +140,7 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=500, null=True)
-    image = models.ImageField(upload_to=article_img_upload, default='images/articles/no_image.png')
+    image = models.ImageField(upload_to=article_img_upload, blank=True)
     views = models.IntegerField(default=0)
 
     comments = GenericRelation(Comment)
