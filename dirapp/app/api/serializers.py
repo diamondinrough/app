@@ -73,15 +73,6 @@ class AuthUserCreateSerializer(ModelSerializer):
         return validated_data
 
 
-class UserSerializer(ModelSerializer):
-    dt_created = DateTimeField(format='%m/%d/%y')
-    dt_updated = DateTimeField(format='%m/%d/%y')
-    
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'image', 'position', 'email', 'wechat', 'dt_created', 'dt_updated')
-
-
 class ChildCommentSerializer(ModelSerializer):
     poster = AuthUserSerializer()
     dt_created = DateTimeField(format='%m/%d/%y')
@@ -212,7 +203,7 @@ class VideoCreateSerializer(ModelSerializer):
 
 
 class ResourceSerializer(ModelSerializer):
-    poster = UserSerializer()
+    poster = AuthUserSerializer()
     tags = TagSerializer(many=True)
 
     dt_created = DateTimeField(format='%m/%d/%y')
@@ -223,7 +214,7 @@ class ResourceSerializer(ModelSerializer):
         
 
 class HelpSerializer(ModelSerializer):
-    poster = UserSerializer()
+    poster = AuthUserSerializer()
     
     dt_created = DateTimeField(format='%m/%d/%y')
 
@@ -237,8 +228,9 @@ class FeedbackSerializer(ModelSerializer):
         model = Feedback
         fields = ('id', 'comments', 'contactinfo', 'name')
 
-
+'''
 class HeadOfInfoSerializer(ModelSerializer):
     class Meta:
         model = HeadOfInfo
         fields = ('person', 'position', 'name', 'wechat', 'email')
+'''
