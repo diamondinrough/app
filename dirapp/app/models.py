@@ -19,7 +19,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 #end token stuff
 
-
+'''
 class User(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=30)
@@ -38,7 +38,7 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
-
+'''
 
 def info_img_upload(instance, filename):
     return '/'.join(['images', 'users', str(instance.user.username) + '.' + filename.split('.')[-1]])
@@ -48,7 +48,7 @@ class Info(models.Model):
     fullname = models.CharField(max_length=100)
     email = models.EmailField()
     wechat = models.CharField(max_length=50, blank=True)
-    image = models.ImageField(upload_to=info_img_upload, default='images/users/no_image.png')
+    image = models.ImageField(upload_to=info_img_upload, blank=True)
 
 
 class Team(models.Model):
@@ -140,7 +140,7 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     summary = models.CharField(max_length=500, null=True)
-    image = models.ImageField(upload_to=article_img_upload, default='images/articles/no_image.png')
+    image = models.ImageField(upload_to=article_img_upload, blank=True)
     views = models.IntegerField(default=0)
 
     comments = GenericRelation(Comment)
@@ -155,12 +155,14 @@ class Article(models.Model):
             self.image = None
             super(Article, self).save(*args, **kwargs)
             self.image = saved_image
-        super(Article, self).save(*args, **kwargs)
+        else:
+            super(Article, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
 
 
+'''
 class ArticleLink(models.Model):
     id = models.AutoField(primary_key=True)
     poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='userarticlelinks')    
@@ -177,7 +179,7 @@ class ArticleLink(models.Model):
 
     def __str__(self):
         return self.title
-
+'''
 
 class Video(models.Model):
     id = models.AutoField(primary_key=True)
@@ -190,7 +192,7 @@ class Video(models.Model):
     views = models.IntegerField(default=0)
 
     comments = GenericRelation(Comment)
-    tags = models.ManyToManyField(Tag, blank=False, related_name='videotag')
+    tags = models.ManyToManyField(Tag, blank=True, related_name='videotag')
 
     dt_created = models.DateTimeField(auto_now_add=True, editable=False)
 
@@ -200,7 +202,7 @@ class Video(models.Model):
 
 class Resource(models.Model):
     id = models.AutoField(primary_key=True)
-    poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='userresources')
+    poster = models.ForeignKey(AuthUser, null=True, on_delete=models.SET_NULL, related_name='userresources')
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='teamresources')
     image = models.ImageField(upload_to='resources/images/')
     title = models.CharField(max_length=200)
@@ -221,7 +223,7 @@ class Resource(models.Model):
 
 class Help(models.Model):
     id = models.AutoField(primary_key=True)
-    poster = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='helpresources')
+    poster = models.ForeignKey(AuthUser, null=True, on_delete=models.SET_NULL, related_name='helpresources')
     question = models.CharField(max_length=200)
     detail = models.TextField()
     faq = models.BooleanField(default=False)
@@ -246,5 +248,7 @@ class Feedback(models.Model):
         return self.name + ' feedback'
 
 
+'''
 class HeadOfInfo(models.Model):
     person = models.ForeignKey(User)
+'''

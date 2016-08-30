@@ -44,8 +44,8 @@ angular.module('starter.services', [])
     }
 }])
 
-.service("CommentPopupSvc", [function() {
-    this.commentcreate = function($scope) {
+.service("CommentPopupSvc", function(ArticleSvc, VideoSvc) {
+    this.commentcreate = function($scope, id, type) {
         return {
             template: '<textarea type=text rows="5" ng-model="input.text">',
             title: 'Enter comment',
@@ -62,14 +62,16 @@ angular.module('starter.services', [])
                     text: 'Submit',
                     type: 'button-positive',
                     onTap: function(e) {
-                        $scope.submitcomment($scope.input.text);
+                        if (type == 'article') ArticleSvc.submitComment(id, $scope.input.text);
+                        else if (type == 'video') VideoSvc.submitComment(id, $scope.input.text);
+                        else console.error('Unknown type: ' + type);
                         $scope.input.text = "";
                     }
                 }
             ]
         };
     }
-    this.replycreate = function($scope, parent) {
+    this.replycreate = function($scope, parent, id, type) {
         return {
             template: '<textarea type=text rows="5" ng-model="input.text">',
             title: 'Enter comment',
@@ -86,14 +88,16 @@ angular.module('starter.services', [])
                     text: 'Submit',
                     type: 'button-positive',
                     onTap: function(e) {
-                        $scope.submitreply($scope.input.text, parent);
+                        if (type == 'article') ArticleSvc.submitReply(id, $scope.input.text, parent);
+                        else if (type == 'video') VideoSvc.submitReply(id, $scope.input.text, parent);
+                        else console.error('Unknown type: ' + type);
                         $scope.input.text = "";
                     }
                 }
             ]
         };
     }
-    this.commentdelete = function($scope, comment_id) {
+    this.commentdelete = function($scope, comment_id, id, type) {
         return {
             title: 'Delete Comment',
             template: 'Are you sure you want to delete this comment?',
@@ -107,13 +111,15 @@ angular.module('starter.services', [])
                     text: 'Yes',
                     type: 'button-assertive',
                     onTap: function(e) {
-                        $scope.deletecomment(comment_id);
+                        if (type == 'article') ArticleSvc.deleteComment(id, comment_id);
+                        else if (type == 'video') VideoSvc.deleteComment(id, comment_id);
+                        else console.error('Unknown type: ' + type);
                     }
                 }
             ]
         }
     }
-    this.replydelete = function($scope, reply_id) {
+    this.replydelete = function($scope, reply_id, id, type) {
         return {
             title: 'Delete Comment',
             template: 'Are you sure you want to delete this comment?',
@@ -127,13 +133,15 @@ angular.module('starter.services', [])
                     text: 'Yes',
                     type: 'button-assertive',
                     onTap: function(e) {
-                        $scope.deletereply(reply_id);
+                        if (type == 'article') ArticleSvc.deleteReply(id, comment_id);
+                        else if (type == 'video') VideoSvc.deleteReply(id, comment_id);
+                        else console.error('Unknown type: ' + type);
                     }
                 }
             ]
         }
     }
-}])
+})
 
 .service("TeamPopupSvc", function(TeamSvc, $ionicHistory) {
     this.joinTeam = function(id) {
@@ -665,7 +673,7 @@ angular.module('starter.services', [])
     }
 }])
 
-.service("ArticleSvc", ["$http", "$rootScope", function($http, $rootScope) {
+.service("ArticleSvc", function($http, $rootScope, $ionicLoading) {
     this.loadArticle = function(id, bcast) {
         $http.get(site + "api/app/article/" + id + "/?format=json")
         .success(function(data) {
@@ -696,9 +704,11 @@ angular.module('starter.services', [])
         $http.post(site + "api/app/article/" + id + "/comment/create/", {text: text, object_id: id})
         .success(function(data) {
             $rootScope.$broadcast("article-comment-create-success", data);
+            $ionicLoading.show({template:"Comment success!", duration:1000});
         })
         .error(function() {
             $rootScope.$broadcast("article-comment-create-error");
+            $ionicLoading.show({template:"Comment failed.", duration:1000});
         })
     }
 
@@ -706,9 +716,11 @@ angular.module('starter.services', [])
         $http.post(site + "api/app/article/" + id + "/reply/create/", {text: text, object_id: id, parent: parent})
         .success(function(data) {
             $rootScope.$broadcast("article-reply-create-success", data);
+            $ionicLoading.show({template:"Comment success!", duration:1000});
         })
         .error(function() {
             $rootScope.$broadcast("article-reply-create-error");
+            $ionicLoading.show({template:"Comment failed.", duration:1000});
         })
     }
 
@@ -716,9 +728,11 @@ angular.module('starter.services', [])
         $http.delete(site + "api/app/article/" + id + "/comment/delete/" + comment_id + "/")
         .success(function() {
             $rootScope.$broadcast("article-comment-delete-success");
+            $ionicLoading.show({template:"Comment removed!", duration:1000});
         })
         .error(function() {
             $rootScope.$broadcast("article-comment-delete-error");
+            $ionicLoading.show({template:"Failed to remove comment.", duration:1000});
         })
     }
 
@@ -726,12 +740,14 @@ angular.module('starter.services', [])
         $http.delete(site + "api/app/article/" + id + "/comment/delete/" + reply_id + "/")
         .success(function() {
             $rootScope.$broadcast("article-reply-delete-success");
+            $ionicLoading.show({template:"Comment removed!", duration:1000});
         })
         .error(function() {
             $rootScope.$broadcast("article-reply-delete-error");
+            $ionicLoading.show({template:"Failed to remove comment.", duration:1000});
         })
     }
-}])
+})
 
 .service("VideoListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadVideos = function(taglist, searches, next, bcast) {
@@ -774,7 +790,7 @@ angular.module('starter.services', [])
     }
 }])
 
-.service("VideoSvc", ["$http", "$rootScope", function($http, $rootScope) {
+.service("VideoSvc", function($http, $rootScope, $ionicLoading) {
     this.loadVideo = function(id, bcast) {
         $http.get(site + "api/app/video/" + id + "/?format=json")
         .success(function(data) {
@@ -806,9 +822,11 @@ angular.module('starter.services', [])
         $http.post(site + "api/app/video/" + id + "/comment/create/", {text: text, object_id: id})
         .success(function(data) {
             $rootScope.$broadcast("video-comment-create-success", data);
+            $ionicLoading.show({template:"Comment success!", duration:1000});
         })
         .error(function() {
             $rootScope.$broadcast("video-comment-create-error");
+            $ionicLoading.show({template:"Comment failed.", duration:1000});
         })
     }
 
@@ -816,9 +834,11 @@ angular.module('starter.services', [])
         $http.post(site + "api/app/video/" + id + "/reply/create/", {text: text, object_id: id, parent: parent})
         .success(function(data) {
             $rootScope.$broadcast("video-reply-create-success", data);
+            $ionicLoading.show({template:"Comment success!", duration:1000});
         })
         .error(function() {
             $rootScope.$broadcast("video-reply-create-error");
+            $ionicLoading.show({template:"Comment failed.", duration:1000});
         })
     }
 
@@ -826,9 +846,11 @@ angular.module('starter.services', [])
         $http.delete(site + "api/app/video/" + id + "/comment/delete/" + comment_id + "/")
         .success(function() {
             $rootScope.$broadcast("video-comment-delete-success");
+            $ionicLoading.show({template:"Comment removed!", duration:1000});
         })
         .error(function() {
             $rootScope.$broadcast("video-comment-delete-error");
+            $ionicLoading.show({template:"Failed to remove comment.", duration:1000});
         })
     }
 
@@ -836,12 +858,14 @@ angular.module('starter.services', [])
         $http.delete(site + "api/app/video/" + id + "/comment/delete/" + reply_id + "/")
         .success(function() {
             $rootScope.$broadcast("video-reply-delete-success");
+            $ionicLoading.show({template:"Comment removed!", duration:1000});
         })
         .error(function() {
             $rootScope.$broadcast("video-reply-delete-error");
+            $ionicLoading.show({template:"Failed to remove comment.", duration:1000});
         })
     }
-}])
+})
 
 .service("ResourceListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadResources = function() {
