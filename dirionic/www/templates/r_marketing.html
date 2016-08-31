@@ -1,0 +1,62 @@
+<ion-view view-title="Resource tab: marketing" ng-controller="resourceListCtrl as vm">
+<div class="tabs-top tabs-background-stable tabs-color-calm">
+    <div class="tabs tabs-icon-left">
+        <a class="tab-item" href="#">
+            <i class="icon ion-pricetag"></i>
+            Product
+        </a>
+         <a class="tab-item" href="#">
+            <i class="icon ion-pricetag"></i>
+            Marketing
+        </a>
+          <a class="tab-item" href="#">
+            <i class="icon ion-pricetag"></i>
+            Engineering
+        </a>
+        <a class="tab-item" href="#">
+            <i class="icon ion-pricetag"></i>
+            Social
+        </a>
+        <a class="tab-item" ui-sref="#">
+            <i class="icon ion-pricetag"></i>
+            Technology
+        </a>
+        <a class="tab-item" ui-sref="#">
+            <i class="icon ion-pricetag"></i>
+            Innovation
+        </a>
+    </div>
+    <ion-content class="scroll-content ionic-scroll  has-header has-tabs-top has-tabs">
+        <ul>
+          <li class="tag" ng-repeat="tag in article.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+      <div class="list">
+        <!-- <div class="item item-icon-right" ng-repeat="resource in vm.resources"
+          ng-click="vm.selectResource(resource.id)"> -->
+
+          <div  ng-repeat="resource in vm.resources">
+            <p>id: {{resource.id}}</p>
+            <p>title:{{resource.title}}</p>
+            <img ng-src="{{resource.resourcefile}}">
+            <p>summary: {{resource.summary}}</p>
+             <p>tsgd: {{resource.tags}}</p>
+              <ul>
+               <li class="tag" ng-repeat="tag in resource.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+             <p>poster username: {{resource.poster.username}}</p> 
+              <p>poster dt_created : {{resource.poster.dt_created}}</p> 
+               <img ng-src="{{resource.poster.imgage}}">
+               <div class="item-img-container">
+                   <img class="item-img" ng-src="{{resource.poster.image}}">
+                </div>
+               
+ 
+             <p>download: {{resource.downloads}}</p>
+            <i class="icon ion-chevron-right icon-access"></i>
+          </div>  
+    </ion-content>
+  </ion-view>

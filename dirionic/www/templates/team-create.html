@@ -1,0 +1,30 @@
+<ion-view title="New Team" class="has-tabs">
+  <ion-content>
+    <form ng-submit="submit()">
+    <div class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Team Name</span>
+        <input ng-model="team.name" type="text">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Description</span>
+        <textarea ng-model="team.description" rows="12"></textarea>
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Summary</span>
+        <input ng-model="team.summary" type="text">
+      </label>
+      <label class="item">
+        <button class="button button-block button-energized" color-picker ng-model="team.color" modal-title="Choose a color" color-box="{{team.color}}" type="button">
+          {{ team.color || 'Choose a color'}}
+        </button>
+      </label>
+      <label class="item">
+        <button class="button button-block button-positive" type="submit">
+          Create Team
+        </button>
+      </label>
+    </div>
+    </form>
+  </ion-content>
+</ion-view>

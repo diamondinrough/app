@@ -1,0 +1,74 @@
+<ion-view view-title="Team Detail" class="">
+  <ion-nav-buttons side="right">
+    <div ng-if="authenticated">
+      <a class="button button-icon ion-gear-a" ng-if="authenticated" ng-click="teamOptions()"></a>
+    </div>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="list" style="padding:0;">
+      <div class="item compact" style="background-color:#5C5C5C;">
+        <div class="team-letter" style="background-color:{{team.color}}">
+          {{team.name[0]}}
+        </div>
+        <h2 class="item-title team-name" style="margin:5px 0 10px 0;">
+          {{team.name}}
+        </h2>
+        <ul>
+          <li class="team-info">
+            Members: {{team.members.length}}
+          </li>
+          <p class="team-info" style="color:white;">|</p>
+          <li class="team-info">
+            New Tasks: {{tasks.length}}
+          </li>
+          <p class="team-info" style="color:white;">|</p>
+          <li class="team-info">
+            All Tasks: {{tasks.length}}
+          </li>
+        </ul>
+      </div>
+      <div class="item">
+        Leader: {{team.leader_name}}
+      </div>
+      <div class="item item-divider">
+        Description
+      </div>
+      <div class="item item-text-wrap">
+        {{team.description}}
+      </div>
+      <div class="item item-divider">
+        Members
+      </div>
+      <div class="item">
+        <div class="row" style="flex-wrap: wrap;">
+          <div class="col col-33" ng-repeat="member in team.members">
+            <div class="mini-avatar-container" style="margin-right:5px;">
+              <img class="mini-avatar" src="http://www.w3schools.com/w3css/img_avatar2.png" alt="pic">
+            </div>
+            <div class="item-text-wrap">
+              {{member.info.fullname}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="item item-divider">
+        Tasks
+      </div>
+      <div class="item compact" ng-repeat="task in tasks">
+        <div>
+          <p class="item-type">Task</p>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="">View</a>
+        </div>
+        <div style="clear: both;"></div>
+        <p class="task-leader">{{task.leader_name}}</p>
+        <div style="clear: both;"></div>
+        <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+          <h2 class="item-title">{{task.name}}</h2>
+        </div>
+        <div class="item-text-wrap">
+          <p class="item-summary">{{task.description}}</p>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

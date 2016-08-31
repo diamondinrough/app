@@ -1,2 +1,153 @@
-<ion-view view-title="Index">
+<ion-view view-title="Index" class="has-tabs">
+  <ion-nav-buttons side="left">
+    <button ng-if="authenticated" class="button button-icon icon ion-log-out" ng-click="logout()"></button>
+    <a ng-if="!authenticated" class="button button-icon icon ion-log-in" href="#/title"></a>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <a class="button button-icon ion-ios-search-strong" href="#/app/home/index/search"></a>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-refresher pulling-text="Reload index" on-refresh="reload()"></ion-refresher>
+    <ion-slide-box auto-play="true" show-pager="true" does-continue="true">
+      <ion-slide ng-repeat="slide in slides">
+        <img class="slider-img" ng-src="{{slide}}">
+      </ion-slide>
+    </ion-slide-box>
+    <ion-item-list>
+      <ion-item ng-if="article" class="compact">
+        <div>
+          <p class="item-type">Article</p>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/home/index/article/{{article.id}}">View</a>
+        </div>
+        <div style="clear: both;"></div>
+        <ul>
+          <li class="tag" ng-repeat="tag in article.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+        <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+          <h2 class="item-title" ng-bind-html="article.title"></h2>
+        </div>
+        <div>
+          <p class="item-date">{{article.dt_created}}</p>
+          <p class="item-views icon ion-eye">{{article.views}}</p>
+        </div>
+        <div style="clear: both;"></div>
+        <div class="item-img-container">
+          <img class="item-img" ng-src="{{article.image}}">
+        </div>
+        <div class="item-text-wrap">
+          <p class="item-summary" ng-bind-html="article.summary"></p>
+        </div>
+      </ion-item>
+      <ion-item ng-if="video" class="compact">
+        <div>
+          <p class="item-type">Video</p>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/home/index/video/{{video.id}}">View
+          </a>
+        </div>
+        <div style="clear: both;"></div>
+        <ul>
+          <li class="tag" ng-repeat="tag in video.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+        <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+          <h2 class="item-title" ng-bind-html="video.title"></h2>
+        </div>
+        <div>
+          <p class="item-date">{{video.dt_created}}</p>
+          <p class="item-views icon ion-eye">{{video.views}}</p>
+        </div>
+        <div style="clear: both;"></div>
+        <div class="item-img-container">
+          <img class="item-img" ng-src="https://img.youtube.com/vi/{{video.videoid}}/0.jpg" alt="thumbnail">
+        </div>
+        <div class="item-text-wrap">
+          <p class="item-summary" ng-bind-html="video.summary"></p>
+        </div>
+      </ion-item>
+      <ion-item ng-if="resource" class="compact">
+        <div>
+          <p class="item-type">Resource</p>
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/home/index/resource/{{resource.id}}">View</a>
+        </div>
+        <div style="clear: both;"></div>
+        <ul>
+          <li class="tag" ng-repeat="tag in resource.tags" style="background-color: {{tag.color}}">
+            {{tag.name}}
+          </li>
+        </ul>
+        <div class="resource-container">
+          <div class="resource-type">
+            {{resource.filetype}}
+          </div>
+          <div class="resource-content">
+            <div class="item-text-wrap" style="margin-top: 7px; margin-bottom: 5px;">
+              <h2 class="item-title" ng-bind-html="resource.title"></h2>
+            </div>
+            <div class="item-text-wrap">
+              <p class="item-summary" ng-bind-html="resource.summary"></p>
+            </div>
+          </div>
+        </div>
+        <div style="clear: both;"></div>
+        <div>
+          <p class="item-date">{{resource.dt_created}}</p>
+          <p class="item-downloads icon ion-arrow-down-a">{{resource.downloads}}</p>
+          <p class="item-views icon ion-eye">{{resource.views}}</p>
+        </div>
+        <div style="clear: both;"></div>
+      </ion-item>
+      <!--
+      <ion-item>
+        <div class="row">
+          <div class="col">Unknown Tag List</div>
+          <div class="col"style="text-align:right">Test Text
+            <i class="icon ion-ios-chevron-right"></i>
+          </div>
+        </div>
+        <div class="row">Information Text Here</div>
+        <div class="row">
+          <div class="col"><p>2016-5-24</p></div>
+          <div class="col"style="text-align:right">
+            <ion-icon name="ios-eye"></ion-icon>38923
+          </div>
+        </div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="row">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan nunc ut pharetra gravida. Sed lacinia sagittis hendrerit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+          </p>
+        </div>
+      </ion-item>
+      </ion-item>
+      <ion-item>
+        <div class="row">
+          <div class="col">Unknown Tag List</div>
+          <div class="col"style="text-align:right">Test Text
+            <i class="icon ion-ios-chevron-right"></i>
+          </div>
+        </div>
+        <div class="row">Information Text Here</div>
+        <div class="row">
+          <div class="col"><p>2016-5-24</p></div>
+          <div class="col"style="text-align:right">
+            <ion-icon name="ios-eye"></ion-icon>38923
+          </div>
+        </div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/C0DPdy98e4c" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="row">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan nunc ut pharetra gravida. Sed lacinia sagittis hendrerit. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+          </p>
+        </div>
+      </ion-item>
+      -->
+    </ion-item-list>
+  </ion-content>
 </ion-view>

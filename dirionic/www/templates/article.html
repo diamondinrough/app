@@ -1,7 +1,76 @@
-<ion-view>
+<ion-view class="has-tabs">
   <ion-nav-title>{{article.title}}</ion-nav-title>
-  <ion-content class="padding">
-    <img ng-src="{{article.image}}">
-    <p class="item">{{article.content}}</p>
+  <ion-content>
+    <ion-list>
+      <div class="articlepage">
+        <div class="tags">
+          <ul>
+            <li class="tag" style="background-color: {{tag.color}}; "ng-repeat="tag in article.tags">
+              {{tag.name}}
+            </li>
+          </ul>
+        </div>
+        <div class="item-text-wrap">
+          <h1 class="title article-title" ng-bind-html="article.title"></h1>
+        </div>
+        <div>
+          <p class="item-date">{{article.dt_created}}</p>
+          <p class="item-views icon ion-eye">{{article.views}}</p>
+        </div>
+        <div style="clear: both;"></div>
+        <div class="article-img-container">
+          <img class="article-img" ng-src="{{article.image}}">
+        </div>
+        <div>
+          <p class="article-content" ng-bind-html="article.content"></p>
+        </div>
+        <div>
+          <p class="item-copyright">Copyright</p>
+          <p class="item-author">{{article.poster}}</p>
+        </div>
+        <div style="clear: both;"></div>
+      </div>
+      <div class="item item-divider">Comments</div>
+      <button ng-if="authenticated" type="submit" ng-click="addcomment()" class="button button-block button-positive">
+        New Comment
+      </button>
+      <div ng-repeat="comment in article.comments">
+        <ion-item class="">
+          <p class="comment">{{comment.text}}</p>
+          <p class="item-date">{{comment.dt_created}}</p>
+          <p class="item-author">{{comment.poster}}</p>
+          <div style="clear: both; margin-bottom:8px;"></div>
+          <ion-option-button class="button-positive" ng-click="comment.collapse=!comment.collapse;hideOptions();">
+            <i ng-class="collapseclass(comment.collapse)" class="button button-icon icon collapse-icon"></i>
+          </ion-option-button>
+          <div ng-if="authenticated">
+           <ion-option-button class="button-energized" ng-click="addreply(comment.id)">
+              Reply
+            </ion-option-button>
+            <div ng-if="comment.poster_username == currentuser">
+              <ion-option-button class="button-assertive" ng-click="removecomment(comment.id)">
+                Delete
+              </ion-option-button>
+            </div>
+         </div>
+        </ion-item>
+        <ion-item ng-if="!comment.collapse" class="childcomment" ng-repeat="childcomment in comment.childcomments">
+          <p class="comment">{{childcomment.text}}</p>
+          <p class="item-date">{{childcomment.dt_created}}</p>
+          <p class="item-author">{{childcomment.poster}}</p>
+          <div style="clear: both;"></div>
+          <div ng-if="authenticated">
+            <div ng-if="childcomment.poster_username == currentuser">
+              <ion-option-button class="button-assertive" ng-click="removereply(childcomment.id)">
+                Delete
+              </ion-option-button>
+            </div>
+            <ion-option-button class="button-energized" ng-click="addreply(comment.id)">
+              Reply
+            </ion-option-button>
+          </div>
+        </ion-item>
+      </div>
+    </ion-list>
   </ion-content>
 </ion-view>

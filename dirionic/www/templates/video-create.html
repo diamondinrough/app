@@ -1,0 +1,48 @@
+<ion-view title="New Video" class="has-tabs">
+  <style>
+    .item-checkbox-right .checkbox input, .item-checkbox-right .checkbox-icon {
+        float: right;
+    }
+    .item-checkbox.item-checkbox-right {
+        padding: 15px;
+    }
+  </style>
+  <ion-content>
+    <form ng-submit="submit()">
+    <div class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Title</span>
+        <input ng-model="video.title" type="text">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Video Link</span>
+        <input ng-model="video.videolink" type="text">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Summary</span>
+        <input ng-model="video.summary" type="text">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Speaker</span>
+        <input ng-model="video.speaker" type="text">
+      </label>
+      <label class="item item-stacked-label" style="padding:5px 16px;">
+        <span class="input-label" style="margin-bottom:5px;">Tags</span>
+        <div class="row" style="flex-wrap: wrap;">
+          <div class="col col-50" ng-repeat="tag in taglist">
+            <ion-checkbox ng-model="tag.checked" ng-checked="tag.checked"
+            class="item-checkbox-right">
+              <p style="color: {{tag.color}};">{{tag.name}}</p>
+            </ion-checkbox>
+          </div>
+        </div>
+      </label>
+      <label class="item">
+        <button class="button button-block button-positive" type="submit">
+          Submit Video
+        </button>
+      </label>
+    </div>
+    </form>
+  </ion-content>
+</ion-view>

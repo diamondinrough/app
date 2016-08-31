@@ -1,0 +1,30 @@
+<ion-view title="Team Dashboard">
+  <ion-nav-buttons side="left">
+    <a class="button button-icon ion-plus" ng-click="newTeam()"></a>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="list">
+      <div class="item compact">
+        <div class="row">
+          <div class="col col-50">
+            <h2 class="item-title" style="margin-top: 12px;">Hot Teams</h2>
+          </div>
+          <div class="col col-50">
+            <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="#/app/team-list">All Teams</a>
+          </div>
+        </div>
+        <div class="row hot-group-row item-text-wrap">
+          <div ng-repeat="team in hotteams" class="col col-25">
+            <div class="hot-group-letter-container">
+              <a class="hot-group-letter" style="text-decoration:none;background-color:{{team.color}};" href="#/app/team/{{team.id}}">{{team.name[0]}}</a>
+            </div>
+            <p class="hot-group-name">{{team.name}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="item item-divider">
+        New Tasks
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

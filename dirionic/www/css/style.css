@@ -1,1 +1,307 @@
-/* Empty. Add your own CSS if you like */
+.login {
+  background-color: #387EF5;
+}
+
+.login-title {
+  color: white;
+  text-align: center;
+  font-size: 28px;
+  margin-top: 100px;
+  line-height: 28px;
+}
+
+.login-link {
+  color: white;
+  text-align: center;
+  font-size: 16px;
+}
+
+.compact {
+  padding: 5px 10px;
+}
+
+p.item-type {
+  float: left;
+  padding-top: 12px;
+  font-size: 14px;
+  font-family: "apple-system","Helvetica Neue","Roboto","Segoe UI",sans-serif;
+}
+a.item-view {
+  float: right;
+  font-size: 14px;
+}
+p.item-date {
+  float: left;
+  font-size: 14px;
+  color: #666666;
+}
+p.item-copyright {
+  float: left;
+  font-size: 14px;
+  color: #666666;
+}
+p.item-views {
+  float: right;
+  top: auto;
+  right: auto;
+  position: static;
+  font-size: 14px;
+  color: #666666;
+}
+p.item-author {
+  float: right;
+  top: auto;
+  right: auto;
+  position: static;
+  font-size: 14px;
+  color: #666666;
+}
+p.item-downloads {
+  float: right;
+  top: auto;
+  right: auto;
+  position: static;
+  font-size: 14px;
+  margin-left: 10px;
+}
+p.item-summary {
+  font-size: 14px;
+}
+h2.item-title {
+  font-size: 18px;
+}
+li.tag {
+  display: inline;
+  color: white;
+  padding: 1px 10px 1px 3px;
+  margin: 0 2px;
+  font-size: 14px;
+  background: url('../img/tagborder.png');
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+.item-img-container {
+  display: block;
+  float: left;
+  margin-top: 5px;
+  margin-right: 8px;
+  max-height: 150px;
+  max-width: 50%;
+  overflow: hidden;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.item-img {
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+.resource-container {
+  overflow: auto;
+  margin: 5px 0px;
+}
+.resource-type {
+  float: left;
+  color: white;
+  background-color: #3366ff;
+  padding: 15px 15px;
+  border-radius: .4em;
+}
+.resource-content {
+  margin-left: 75px;
+}
+.slider {
+  width: 100%;
+  height: 200px;
+}
+
+
+
+
+.articlepage {
+  margin: 10px 15px;
+}
+h1.title {
+  margin: 10px 0px;
+  font-size: 24px;
+}
+.article-img-container {
+  display: block;
+  max-height: 200;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 5px;
+}
+.article-img {
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+.article-content {
+  font-size: 14px;
+}
+
+
+.video-container {
+  position: relative;
+  padding: 120px;
+}
+.video-container iframe {
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+}
+img.slider-img {
+  width: 100%;
+  height: 100%;
+}
+.video-tabs {
+  top: 240px;
+}
+a.video-tab {
+}
+.video-detail {
+  margin-top: 60px;
+}
+.video-title {
+  color: black;
+  margin: 15px 10px;
+  font-size: 24px;
+}
+
+
+
+
+
+
+
+.error {
+  padding: 4px 16px;
+}
+
+.error p {
+  color: red;
+}
+.item-input input {
+  font-size: 16px;
+  background-color: transparent !important;
+  padding: 0px 0px;
+  color: #444444;
+}
+
+
+.avatar-container {
+  float: left;
+  display: block;
+  height: 150px;
+  width: 150px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.avatar {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+.profile-name {
+  padding-left: 25px;
+  font-size: 20px !important;
+}
+.profile-contact {
+  padding-left: 25px;
+  margin-top: 10px;
+  font-size: 16px !important;
+}
+
+
+.mini-avatar-container {
+  float: left;
+  display: block;
+  height: 40px;
+  width: 40px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.mini-avatar {
+  position: absolute;
+  width: 40px;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+
+.hot-group-row {
+  height: 180px;
+}
+.hot-group-letter-container {
+  transform: translate(10%, 0);
+}
+.hot-group-letter {
+  position: relative;
+  display: inline-block;
+  width: 80%;
+  height: 0;
+  padding: 40% 0;
+  border-radius: 50%;
+  color: white !important;
+  font-size: 24px !important;
+  line-height: 0;
+  text-align: center;
+}
+.hot-group-name {
+  text-align: center;
+  margin-top: 10px;
+}
+
+
+.team-letter {
+  float: left;
+  margin: 10px 40px 10px 5px;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  padding-top: 20px;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+}
+.team-name {
+  color: white;
+}
+.team-info {
+  display: inline;
+  color: white;
+  font-size: 14px;
+}
+
+
+
+.task-leader {
+  float: left;
+  top: auto;
+  right: auto;
+  position: static;
+  font-size: 14px;
+  color: #666666;
+}
+
+
+.comment {
+  color: black !important;
+  font-size: 15px;
+  margin-bottom: 4px !important;
+}
+.childcomment {
+  margin-left: 30px;
+}
+.collapse-icon {
+    color: white;
+}

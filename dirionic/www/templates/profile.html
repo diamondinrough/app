@@ -1,0 +1,36 @@
+<ion-view title="Profile">
+  <ion-nav-buttons side="right">
+    <a ng-if="authenticated" class="button button-clear" href="#/app/profile/info">My Info</a>
+  </ion-nav-buttons>
+  <ion-content>
+    <div ng-if="authenticated">
+      <div class="list">
+        <div class="item">
+          <div class="avatar-container">
+            <img class="avatar" src="http://www.w3schools.com/w3css/img_avatar2.png" alt="pic">
+          </div>
+          <h2 class="profile-name">{{user.info.fullname}}</h2>
+          <p class="profile-contact">Email: {{user.info.email}}</p>
+          <p ng-if="user.info.wechat" class="profile-contact">Wechat: {{user.info.wechat}}</p>
+        </div>
+        <div class="item item-divider">
+          My Groups
+        </div>
+        <div class="item">
+          <a class="item-view button icon-right ion-chevron-right button-clear button-dark" href="">View</a>
+          <h2 class="item-title">Group Title</h2>
+          <div class="item-text-wrap">
+            <p class="item-summary">Group Summary</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-if="!authenticated">
+      <div class="list">
+        <div class="item" style="text-align: center;">
+          You are not logged in!
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
