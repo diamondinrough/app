@@ -16,6 +16,16 @@ function get_name(poster) {
 
 angular.module('starter.controllers', [])
 
+.controller("HomeCtrl", function($rootScope, $scope, $state) {
+    $scope.hiddenViews = ["app.home.index-article", "app.home.index-video", "app.home.index-search", "app.home.article", "app.home.article-search", "app.home.article-create", "app.home.video", "app.home.video-create", "app.home.video-search"];
+    $rootScope.$on("$ionicView.beforeEnter", function() {
+        $rootScope.hideTabs = false;
+        if ($scope.hiddenViews.indexOf($state.current.name) != -1) {
+            $rootScope.hideTabs = true;
+        }
+    })
+})
+
 .controller("IndexCtrl", function($rootScope, $scope, $state, $ionicPopup, AuthSvc, $ionicLoading, AuthSvc, IndexSlideSvc, IndexArticleSvc, IndexVideoSvc, IndexResourceSvc, $ionicSlideBoxDelegate, $sce) {
     $scope.authenticated = AuthSvc.authenticated();
     $rootScope.$on("authorize-success", function() {
