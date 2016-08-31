@@ -745,7 +745,7 @@ angular.module('starter.controllers', [])
     ArticleListSvc.loadArticles($scope.taglist, null, null, "article-list");
 })
 
-.controller("ArticleCtrl", function($scope, $rootScope, AuthSvc, $stateParams, $ionicListDelegate, $ionicPopup, $ionicLoading, ArticleSvc, ViewCountSvc, CommentPopupSvc, $sce) {
+.controller("ArticleCtrl", function($scope, $ionicHistory, $rootScope, $state, ItemPopupSvc, AuthSvc, $stateParams, $ionicListDelegate, $ionicPopup, $ionicLoading, ArticleSvc, ViewCountSvc, CommentPopupSvc, $sce) {
     $scope.authenticated = AuthSvc.authenticated();
     $scope.currentuser = AuthSvc.currentuser();
     $rootScope.$on("authorize-success", function() {
@@ -765,7 +765,8 @@ angular.module('starter.controllers', [])
             content: $sce.trustAsHtml(data.content),
             summary: data.summary,
             image: data.image,
-            poster: get_name(data.poster),
+            poster: data.poster,
+            poster_name: get_name(data.poster),
             views: data.views,
             tags: data.tags,
             dt_created: data.dt_created,
@@ -824,6 +825,23 @@ angular.module('starter.controllers', [])
             });
         });
     })
+    
+    $scope.optionsPopup = null;
+    $scope.articleOptions = function() {
+        $scope.optionsPopup = $ionicPopup.show(ItemPopupSvc.itemOptions($scope));
+    }
+    $scope.editItem = function() {
+        $scope.optionsPopup.close();
+        $state.go("app.home.article-edit", { id:$stateParams.id });
+    }
+    $scope.deleteItem = function() {
+        $scope.optionsPopup.close();
+        var popup = $ionicPopup.show(ItemPopupSvc.deleteItem($stateParams.id, 'article'));
+    }
+
+    $scope.$on("article-delete-success", function() {
+        $ionicHistory.goBack();
+    });
 
     $scope.hideOptions = function() {
         $ionicListDelegate.closeOptionButtons();
@@ -956,9 +974,26 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("ArticleCreateCtrl", function($scope, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, ArticleSvc, TagListSvc) {
+.controller("ArticleCreateCtrl", function($scope, $ionicModal, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, ArticleSvc, TagListSvc) {
     $scope.article = {title:"", content:"", summary:"", tags:[]};
     $scope.taglist = [];
+
+    $ionicModal.fromTemplateUrl("templates/article-preview.html", {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function(modal) {
+        $scope.modal = modal;
+    })
+
+    $scope.openModal = function() {
+        $scope.modal.show();
+    }
+    $scope.closeModal = function() {
+        $scope.modal.hide();
+    }
+    $scope.$on("$destroy", function() {
+        $scope.modal.remove();
+    })
 
     $scope.submit = function() {
         ArticleSvc.newArticle($scope.article, $scope.taglist);
@@ -984,14 +1019,6 @@ angular.module('starter.controllers', [])
             });
         }
     });
-
-    $scope.preview = function() {
-        var previewalert = $ionicPopup.alert({
-            title: 'Article Preview',
-            template: '<p ng-bind-html="article.content"></p>',
-            scope: $scope
-        });
-    };
 
     TagListSvc.loadTags();
 })

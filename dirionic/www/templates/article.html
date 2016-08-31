@@ -1,5 +1,8 @@
 <ion-view class="has-tabs">
-  <ion-nav-title>{{article.title}}</ion-nav-title>
+  <ion-nav-title>Article</ion-nav-title>
+  <ion-nav-buttons side="right">
+    <a class="button button-icon ion-gear-a" ng-if="authenticated && article.poster.username == currentuser" ng-click="articleOptions()"></a>
+  </ion-nav-buttons>
   <ion-content>
     <ion-list>
       <div class="articlepage">
@@ -26,7 +29,7 @@
         </div>
         <div>
           <p class="item-copyright">Copyright</p>
-          <p class="item-author">{{article.poster}}</p>
+          <p class="item-author">{{article.poster_name}}</p>
         </div>
         <div style="clear: both;"></div>
       </div>

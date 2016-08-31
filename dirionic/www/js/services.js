@@ -348,7 +348,55 @@ angular.module('starter.services', [])
             ]
         };
     }
+})
 
+.service("ItemPopupSvc", function(ArticleSvc, VideoSvc) {
+    this.itemOptions = function($scope) {
+        return {
+            title: 'Item Options',
+            template:
+                '<div class="list"> \
+                <button class="button button-block button-energized" ng-click="editItem()"> \
+                Edit Item \
+                </button> \
+                <button class="button button-block button-assertive" ng-click="deleteItem()"> \
+                Delete Item \
+                </button>'
+            ,
+            scope: $scope,
+            buttons: [
+                {
+                    text: 'Close',
+                    type: 'button-stable'
+                }
+            ]
+        }
+    }
+
+    this.deleteItem = function(id, type) {
+        return {
+            title: 'Are you sure?',
+            buttons: [
+                {
+                    text: 'Cancel',
+                    type: 'button-stable'
+                },
+                {
+                    text: 'Yes',
+                    type: 'button-assertive',
+                    onTap: function(e) {
+                        if (type == 'article') {
+                            ArticleSvc.deleteArticle(id);
+                        } else if (type == 'video') {
+                            VideoSvc.deleteVideo(id);
+                        } else {
+                            console.error('Unknown type: ' + type);
+                        }
+                    }
+                }
+            ]
+        }
+    }
 })
 
 .service("AuthSvc", function($http, $rootScope) {
@@ -700,6 +748,17 @@ angular.module('starter.services', [])
         });
     }
 
+    this.deleteArticle = function(id) {
+        $http.delete(site + "api/app/article/" + id + "/delete/")
+        .success(function() {
+            $rootScope.$broadcast("article-delete-success");
+            $ionicLoading.show({template: "Article deleted!", duration: 1000});
+        })
+        .error(function() {
+            $ionicLoading.show({template: "Failed to delete article.", duration: 1000});
+        })
+    }
+
     this.submitComment = function(id, text) {
         $http.post(site + "api/app/article/" + id + "/comment/create/", {text: text, object_id: id})
         .success(function(data) {
@@ -817,6 +876,16 @@ angular.module('starter.services', [])
         });
     }
 
+    this.deleteVideo = function(id) {
+        $http.delete(site + "api/app/video/" + id + "/delete/")
+        .success(function() {
+            $rootScope.$broadcast("video-delete-success");
+            $ionicLoading.show({template: "Video deleted!", duration: 1000});
+        })
+        .error(function() {
+            $ionicLoading.show({template: "Failed to delete video.", duration: 1000});
+        })
+    }
 
     this.submitComment = function(id, text) {
         $http.post(site + "api/app/video/" + id + "/comment/create/", {text: text, object_id: id})
