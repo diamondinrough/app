@@ -1,20 +1,21 @@
 <ion-view title="Feedback">
   <ion-content>
-    <div class="list">
-      <label class="item item-input">
-        <textarea ng-model="feedback.comments" rows="18" placeholder="Comments"></textarea>
-      </label>
-      <label class="item item-input item-stacked-label">
+    <div style="background-color:#F8F8F8;padding:2%; ">
+      
+        <textarea ng-model="feedback.comments" rows="18" placeholder="Comments"style="border-radius: 10px; resize:none;width:100%;padding:2%;"></textarea>
+      
+      
         <span class="input-label">Contact Info</span>
-        <input ng-model="feedback.contactinfo" type="text">
-      </label>
-      <label class="item item-input item-stacked-label">
+        <input ng-model="feedback.contactinfo" type="text"style="border-radius: 5px;width:100%;padding-left:1%;">
+      
+      
         <span class="input-label">Full Name</span>
-        <input ng-model="feedback.name" type="text">
-      </label>
-    </div>
-    <button class="button button-block button-positive" ng-click="submit()">
+        <input ng-model="feedback.name" type="text"style="border-radius: 5px;width:100%;padding-left:1%;">
+<br></br>
+      <button class="button button-block button-positive" ng-click="submit()">
       Submit
     </button>
+    </div>
+    
   </ion-content>
 </ion-view>
