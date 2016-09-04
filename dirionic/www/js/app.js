@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers', 'starter.services', 'starter.directives'])
+angular.module('starter', ['ionic', 'ionic-color-picker', 'ionic-native-transitions', 'starter.controllers', 'starter.services', 'starter.directives'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -24,7 +24,7 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers',
 })
 
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $sceDelegateProvider) {
+.config(function($ionicNativeTransitionsProvider, $stateProvider, $urlRouterProvider, $ionicConfigProvider, $sceDelegateProvider) {
 
   $stateProvider
 
@@ -100,12 +100,16 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers',
     views: {
       'home': {
         templateUrl: 'templates/home.html',
+        controller: 'HomeCtrl'
       }
     }
   })
 
   .state('app.home.index', {
     url: '/index',
+    nativeTransitions: {
+      type: "fade"
+    },
     views: {
       'home.index': {
         templateUrl: 'templates/index.html',
@@ -146,6 +150,9 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers',
 
   .state('app.home.article-list', {
     url: '/articles',
+    nativeTransitions: {
+      type: "fade"
+    },
     views: {
       'home.articles': {
         templateUrl: 'templates/article-list.html',
@@ -186,6 +193,9 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers',
 
   .state('app.home.video-list', {
     url: '/videos',
+    nativeTransitions: {
+      type: "fade"
+    },
     views: {
       'home.videos': {
         templateUrl: 'templates/video-list.html',
@@ -226,6 +236,9 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers',
 
   .state('app.team-dash', {
     url: '/team-dash',
+    nativeTransitions: {
+      type: "fade"
+    },
     views: {
       'teams': {
         templateUrl: 'templates/team-dash.html',
@@ -276,6 +289,9 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers',
 
   .state('app.profile', {
     url: '/profile',
+    nativeTransitions: {
+      type: "fade"
+    },
     views: {
       'profile': {
         templateUrl: 'templates/profile.html',
@@ -314,6 +330,9 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'starter.controllers',
 
   .state('app.help', {
     url: '/help',
+    nativeTransitions: {
+      type: "fade"
+    },
     views: {
       'help': {
         templateUrl: 'templates/help.html',
