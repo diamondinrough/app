@@ -1394,7 +1394,7 @@ angular.module('starter.controllers', [])
     });
 
     TagListSvc.loadTags();
-})
+});
 
 .controller("VideoReccomendationCtrl", function($scope, AuthSvc, $ionicLoading, VideoListSvc, $state, TagListSvc, $ionicPopup, TagPopupSvc) {
   	$scope.reccomendations = [];
