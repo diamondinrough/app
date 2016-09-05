@@ -1208,6 +1208,16 @@ angular.module('starter.controllers', [])
         	tags: data.tags,
             dt_created: data.dt_created,
     	};
+    	
+    	 $scope.taglist = [];
+       data.tags.forEach(function(tag) {
+         $scope.taglist.push({
+            name: tag.name
+            color: tag.color
+            checked: true
+          });
+        });
+    	
         $scope.video.comments = [];
         data.comments.forEach(function(comment) {
             childcomments = [];
@@ -1276,18 +1286,7 @@ angular.module('starter.controllers', [])
         });
     });
     
-    $scope.taglist = [{"name":"Entertainment", "color":"#FF3BFF", "checked":true}];
-/*        $scope.$on("taglist", function(_, data) {
-           if ($scope.taglist.length == 0) {
-                data.forEach(function(tag) {
-                    $scope.taglist.push({
-                        name: tag.name,
-                        color: tag.color,
-                        checked: false
-                });
-            });
-        }
-    });*/
+
     
     $scope.reccomendations = [];
     $scope.$on("rvideo-list", function(_, data) {
