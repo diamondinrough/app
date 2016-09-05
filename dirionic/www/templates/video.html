@@ -15,7 +15,7 @@
     
     <div class="tabs video-tabs">
       <a class="tab-item video-tab" ng-class="tabs[0].ngclass" ng-click="infotab()">Info</a>
-      <a class="tab-item video-tab" ng-class="tabs[1].ngclass" ng-click="recommendtab()" ng-controller="VideoReccomendationCtrl">Recommended</a>
+      <a class="tab-item video-tab" ng-class="tabs[1].ngclass" ng-click="recommendtab()">Recommended</a>
     </div>
 
     <div ng-if="tabs[0].selected">
@@ -90,7 +90,7 @@ here
 <div class= "col col-67">
 <div class="row"style="display:block;overflow:auto;">
 <p style="height:100%;white-space:normal;">
-{{reccomendation.title}}
+title
 </p>
 </div>
 <br></br>
@@ -98,7 +98,7 @@ here
 
 <p class="item-views icon ion-eye"style="float:left;width:40%">1000</p>
 <p class="item-views icon ion-ios-pricetag" style="float:right;width:60%;text-align: right;">
-{{reccomendation.tags}}
+tags
 </p>
 </div>
 </div>
