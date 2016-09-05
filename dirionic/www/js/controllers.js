@@ -1397,7 +1397,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller("VideoReccomendationCtrl", function($scope, AuthSvc, $ionicLoading, VideoListSvc, $state, TagListSvc, $ionicPopup, TagPopupSvc) {
-  	$scope.reccomendations = [{"title":"testing"}];
+  	$scope.reccomendations = [];
     $scope.taglist = [];
     $scope.count = 0;
     $scope.moreitems = false;
