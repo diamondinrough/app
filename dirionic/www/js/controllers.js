@@ -1246,8 +1246,8 @@ angular.module('starter.controllers', [])
             }
        });
 
-        $scope.video.reccomendations = [];
-        data.reccomendations.forEach(function(reccomendation) {
+        $scope.video.reccomendations = [{"title":"testing"}];
+/*        data.reccomendations.forEach(function(reccomendation) {
             $scope.video.reccomendations.push({
                 id: data.id,
                 title: data.title,
@@ -1260,7 +1260,7 @@ angular.module('starter.controllers', [])
                 tags: data.tags,
                 dt_created: data.dt_created,
             });
-        });
+        });*/
         
         ViewCountSvc.viewed("Video", data.id);
 	});
@@ -1293,8 +1293,8 @@ angular.module('starter.controllers', [])
     });
     
     $scope.$on("reccomendations", function(_, data) {
-      $scope.video.reccomendations = [];
-      data.reccomendations.forEach(function(reccomendation) {
+      $scope.video.reccomendations = [{"title":"testing"}];
+/*      data.reccomendations.forEach(function(reccomendation) {
         $scope.video.reccomendations.push({
           id: data.id,
           title: data.title,
@@ -1307,7 +1307,7 @@ angular.module('starter.controllers', [])
           tags: data.tags,
           dt_created: data.dt_created,
         });
-      });
+      });*/
     });
     
     $scope.hideOptions = function() {
