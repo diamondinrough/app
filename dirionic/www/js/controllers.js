@@ -1276,7 +1276,7 @@ angular.module('starter.controllers', [])
         });
     });
     
-//    $scope.video.taglist = [{"name":"Entertainment"}];
+//    $scope.taglist = ;
 /*        $scope.$on("taglist", function(_, data) {
            if ($scope.taglist.length == 0) {
                 data.forEach(function(tag) {
@@ -1370,9 +1370,9 @@ angular.module('starter.controllers', [])
         var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, "video"));
     };
     
-//    TagListSvc.loadTags();
-    VideoListSvc.loadVideos(null, null, null, "rvideo-list");
-	VideoSvc.loadVideo($stateParams.id, "video");
+  	VideoSvc.loadVideo($stateParams.id, "video");
+    VideoListSvc.loadVideos($scope.video.tags, null, null, "rvideo-list");
+
 })
 
 .controller("VideoCreateCtrl", function($scope, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, VideoSvc, TagListSvc) {
