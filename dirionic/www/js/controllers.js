@@ -1357,7 +1357,7 @@ angular.module('starter.controllers', [])
     };
     
   	VideoSvc.loadVideo($stateParams.id, "video");
-    VideoListSvc.loadVideos($scope.taglist, null, null, "rvideo-list");
+    VideoListSvc.loadVideos(null, null, null, "rvideo-list");
 
 })
 
