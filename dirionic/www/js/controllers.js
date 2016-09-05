@@ -1276,7 +1276,7 @@ angular.module('starter.controllers', [])
         });
     });
     
-    $scope.video.taglist = [];
+/*    $scope.video.taglist = [];
         $scope.$on("taglist", function(_, data) {
            if ($scope.taglist.length == 0) {
                 data.forEach(function(tag) {
@@ -1305,7 +1305,7 @@ angular.module('starter.controllers', [])
               dt_created: video.dt_created,
             });
         });
-    });
+    });*/
     
     $scope.hideOptions = function() {
         $ionicListDelegate.closeOptionButtons();
@@ -1371,8 +1371,8 @@ angular.module('starter.controllers', [])
         var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, "video"));
     };
     
-    TagListSvc.loadTags();
-    VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
+//    TagListSvc.loadTags();
+//    VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
 
