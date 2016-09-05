@@ -1232,6 +1232,19 @@ angular.module('starter.controllers', [])
                 collapse: false
             });
         });
+        
+        $scope.video.taglist = [];
+        $scope.$on("taglist", function(_, data) {
+           if ($scope.taglist.length == 0) {
+              data.forEach(function(tag) {
+                 $scope.taglist.push({
+                     name: tag.name,
+                     color: tag.color,
+                     checked: false
+                 });
+               });
+            }
+       });
 
         $scope.video.reccomendations = [];
         data.reccomendations.forEach(function(reccomendation) {
@@ -1296,7 +1309,19 @@ angular.module('starter.controllers', [])
         });
       });
     });
-
+   $scope.video.taglist = [];
+   $scope.$on("taglist", function(_, data)
+      if ($scope.taglist.length == 0) {
+        data.forEach(function(tag) {
+           $scope.taglist.push({
+             name: tag.name,
+             color: tag.color,
+             checked: false
+            });
+         });
+       }
+    });
+    
     $scope.hideOptions = function() {
         $ionicListDelegate.closeOptionButtons();
     }
@@ -1360,7 +1385,9 @@ angular.module('starter.controllers', [])
         $ionicListDelegate.closeOptionButtons();
         var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, "video"));
     };
-
+  
+  TagListSvc.loadTags();
+  VideoListSvc.loadVideos($scope.video.taglist, null, null, "reccomendation-list");
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
 
