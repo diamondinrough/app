@@ -1287,10 +1287,10 @@ angular.module('starter.controllers', [])
                 });
             });
         }
-    });
+    });*/
     
-    $scope.reccomendations = [];
-    $scope.$on("video-list", function(_, data) {
+    $scope.reccomendations = [{"title":"test"}];
+/*    $scope.$on("video-list", function(_, data) {
         data.results.forEach(function(video) {
             $scope.video.reccomendations.push({
               id: video.id,
