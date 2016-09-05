@@ -1237,13 +1237,12 @@ angular.module('starter.controllers', [])
         
          $scope.taglist = [];
          $scope.video.tags.forEach(function(tag) {
-           if (tag.name == "Entertainment") {
              $scope.taglist.push({
                 name: tag.name,
                 color: tag.color,
                 checked: true
               });
-           }
+           
          });
         VideoListSvc.loadVideos($scope.taglist, null, null, "rvideo-list");
         
