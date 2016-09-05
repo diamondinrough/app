@@ -1386,8 +1386,7 @@ angular.module('starter.controllers', [])
         var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, "video"));
     };
   
-  TagListSvc.loadTags();
-  VideoListSvc.loadVideos($scope.video.taglist, null, null, "reccomendation-list");
+
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
 
