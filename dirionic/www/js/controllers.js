@@ -1292,7 +1292,7 @@ angular.module('starter.controllers', [])
     $scope.reccomendations = [];
     $scope.$on("video-list", function(_, data) {
         data.results.forEach(function(video) {
-            $scope.video.reccomendations.push({
+            $scope.reccomendations.push({
 //              id: video.id,
               title: video.title,
 //              videolink: video.videolink,
