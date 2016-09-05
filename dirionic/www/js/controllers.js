@@ -1289,7 +1289,7 @@ angular.module('starter.controllers', [])
         }
     });*/
     
-    $scope.reccomendations = [{"title":"test"}];
+    $scope.reccomendations = [{"title":"test"}, {"title":"test2"}];
 /*    $scope.$on("video-list", function(_, data) {
         data.results.forEach(function(video) {
             $scope.video.reccomendations.push({
