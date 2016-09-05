@@ -1282,15 +1282,15 @@ angular.module('starter.controllers', [])
     $scope.$on("rvideo-list", function(_, data) {
         data.results.forEach(function(video) {
             $scope.reccomendations.push({
-//              id: video.id,
+              id: video.id,
               title: video.title,
-//              videolink: video.videolink,
-//              videoid: video.videolink.split('=')[1],
-//              embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + video.videolink.split('=')[1]),
-//              speaker: video.speaker,
-//              views: video.views,
-//              tags: video.tags,
-//              dt_created: video.dt_created,
+              videolink: video.videolink,
+              videoid: video.videolink.split('=')[1],
+              embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + video.videolink.split('=')[1]),
+              speaker: video.speaker,
+              views: video.views,
+              tags: video.tags,
+              dt_created: video.dt_created,
             });
         });
     });
