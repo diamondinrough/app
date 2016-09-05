@@ -77,7 +77,7 @@
     </div>
 
     <div ng-if="tabs[1].selected">
-      <div class="video-detail" style="background-color:#F8F8F8; ">
+      <div class="video-detail" style="background-color:#F8F8F8; " ng-repeat="video in reccomendations">
 <ul class="list" style="padding-top: 1%;">
 <li class="item" style="margin: 0 0 1% 0; border-color: #FFFFFF !important;">
 <div class="row">
@@ -90,7 +90,7 @@ here
 <div class= "col col-67">
 <div class="row"style="display:block;overflow:auto;">
 <p style="height:100%;white-space:normal;">
-{{video.reccomendations.title}}
+{{video.title}}
 </p>
 </div>
 <br></br>
