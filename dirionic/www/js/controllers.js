@@ -1290,7 +1290,7 @@ angular.module('starter.controllers', [])
     });*/
     
     $scope.reccomendations = [];
-    $scope.$on("video-list", function(_, data) {
+    $scope.$on("rvideo-list", function(_, data) {
         data.results.forEach(function(video) {
             $scope.reccomendations.push({
 //              id: video.id,
@@ -1371,7 +1371,7 @@ angular.module('starter.controllers', [])
     };
     
 //    TagListSvc.loadTags();
-    VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
+    VideoListSvc.loadVideos($scope.taglist, null, null, "rvideo-list");
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
 
