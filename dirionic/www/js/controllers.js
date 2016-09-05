@@ -1357,6 +1357,7 @@ angular.module('starter.controllers', [])
     };
     
   	VideoSvc.loadVideo($stateParams.id, "video");
+  	$scope.taglist = [{"name":"Entertainment", "color":"#FF3BFF", "checked":true}]
     VideoListSvc.loadVideos($scope.taglist, null, null, "rvideo-list");
 
 })
