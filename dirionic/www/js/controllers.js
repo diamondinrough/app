@@ -1276,7 +1276,7 @@ angular.module('starter.controllers', [])
         });
     });
     
-    $scope.video.taglist = [{"name":"Entertainment"}];
+//    $scope.video.taglist = [{"name":"Entertainment"}];
 /*        $scope.$on("taglist", function(_, data) {
            if ($scope.taglist.length == 0) {
                 data.forEach(function(tag) {
@@ -1371,7 +1371,7 @@ angular.module('starter.controllers', [])
     };
     
 //    TagListSvc.loadTags();
-    VideoListSvc.loadVideos($scope.taglist, null, null, "rvideo-list");
+    VideoListSvc.loadVideos(null, null, null, "rvideo-list");
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
 
