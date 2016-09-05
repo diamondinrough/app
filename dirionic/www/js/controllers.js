@@ -1398,7 +1398,7 @@ angular.module('starter.controllers', [])
 
 .controller("VideoReccomendationCtrl", function($scope, AuthSvc, $ionicLoading, VideoListSvc, $state, TagListSvc, $ionicPopup, TagPopupSvc) {
   	$scope.reccomendations = [{"title":"testing"}];
-    /*$scope.taglist = [];
+    $scope.taglist = [];
     $scope.count = 0;
     $scope.moreitems = false;
     $scope.next = null;
@@ -1455,7 +1455,7 @@ angular.module('starter.controllers', [])
 
     TagListSvc.loadTags();
     VideoListSvc.loadVideos($scope.taglist, null, null, "reccomendation-list");
-});*/
+});
 
 .controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
     $ionicLoading.show({template: "Loading videos..."});
