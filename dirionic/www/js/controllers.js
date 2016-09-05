@@ -1194,7 +1194,8 @@ angular.module('starter.controllers', [])
     });
 
     $scope.video = null;
-
+  $scope.taglist = [];
+  
 	$scope.$on("video", function(_, data) {
     	$scope.video = {
           	id: data.id,
