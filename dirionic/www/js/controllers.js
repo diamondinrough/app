@@ -1276,7 +1276,7 @@ angular.module('starter.controllers', [])
         });
     });
     
-//    $scope.taglist = ;
+    $scope.taglist = [{"name":"Entertainment", "color":"#FF3BFF", "checked":true}];
 /*        $scope.$on("taglist", function(_, data) {
            if ($scope.taglist.length == 0) {
                 data.forEach(function(tag) {
@@ -1371,7 +1371,7 @@ angular.module('starter.controllers', [])
     };
     
   	VideoSvc.loadVideo($stateParams.id, "video");
-    VideoListSvc.loadVideos($scope.video.tags, null, null, "rvideo-list");
+    VideoListSvc.loadVideos($scope.taglist, null, null, "rvideo-list");
 
 })
 
