@@ -95,8 +95,8 @@
 <div class="row"style="">
 
 <p class="item-views icon ion-eye"style="float:left;width:40%">1000</p>
-<p class="item-views icon ion-ios-pricetag" style="float:right;width:60%;text-align: right;">
-{{video.tags.name}}
+<p class="item-views icon ion-ios-pricetag" style="float:right;width:60%;text-align: right;" ng-repeat="tag in video.tags">
+{{tag.name}}
 </p>
 </div>
 </div>
