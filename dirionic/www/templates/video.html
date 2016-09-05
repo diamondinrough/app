@@ -15,7 +15,7 @@
     
     <div class="tabs video-tabs">
       <a class="tab-item video-tab" ng-class="tabs[0].ngclass" ng-click="infotab()">Info</a>
-      <a class="tab-item video-tab" ng-class="tabs[1].ngclass" ng-click="recommendtab()">Recommended</a>
+      <a class="tab-item video-tab" ng-class="tabs[1].ngclass" ng-click="recommendtab()" ng-controller="VideoReccomendationCtrl">Recommended</a>
     </div>
 
     <div ng-if="tabs[0].selected">
