@@ -1210,7 +1210,7 @@ angular.module('starter.controllers', [])
     	};
     	
     	 $scope.taglist = [];
-       data.tags.forEach(function(tag) {
+       $scope.video.tags.forEach(function(tag) {
          $scope.taglist.push({
             name: tag.name,
             color: tag.color,
