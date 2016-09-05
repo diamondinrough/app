@@ -1181,7 +1181,7 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("VideoCtrl", function($scope, AuthSvc, $ionicLoading, $ionicListDelegate, CommentPopupSvc, $ionicPopup, $rootScope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate, ViewCountSvc) {
+.controller("VideoCtrl", function($scope, AuthSvc, $ionicLoading, $ionicListDelegate, CommentPopupSvc, $ionicPopup, $rootScope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate, ViewCountSvc, VideoListSvc, TagListSvc) {
 	$scope.authenticated = AuthSvc.authenticated();
     $scope.currentuser = AuthSvc.currentuser();
     $rootScope.$on("authorize-success", function() {
@@ -1246,22 +1246,6 @@ angular.module('starter.controllers', [])
             }
        });
 
-        $scope.video.reccomendations = [{"title":"testing"}];
-/*        data.reccomendations.forEach(function(reccomendation) {
-            $scope.video.reccomendations.push({
-                id: data.id,
-                title: data.title,
-                summary:data.summary,
-                videolink: data.videolink,
-                videoid: data.videolink.split('=')[1],
-                embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + data.videolink.split('=')[1]),
-                speaker: data.speaker,
-                views: data.views,
-                tags: data.tags,
-                dt_created: data.dt_created,
-            });
-        });*/
-        
         ViewCountSvc.viewed("Video", data.id);
 	});
 
@@ -1292,22 +1276,35 @@ angular.module('starter.controllers', [])
         });
     });
     
-    $scope.$on("reccomendations", function(_, data) {
-      $scope.video.reccomendations = [{"title":"testing"}];
-/*      data.reccomendations.forEach(function(reccomendation) {
-        $scope.video.reccomendations.push({
-          id: data.id,
-          title: data.title,
-          summary:data.summary,
-          videolink: data.videolink,
-          videoid: data.videolink.split('=')[1],
-          embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + data.videolink.split('=')[1]),
-          speaker: data.speaker,
-          views: data.views,
-          tags: data.tags,
-          dt_created: data.dt_created,
+    $scope.video.taglist = [];
+        $scope.$on("taglist", function(_, data) {
+           if ($scope.taglist.length == 0) {
+                data.forEach(function(tag) {
+                    $scope.taglist.push({
+                        name: tag.name,
+                        color: tag.color,
+                        checked: false
+                });
+            });
+        }
+    });
+    
+    $scope.reccomendations = [];
+    $scope.$on("video-list", function(_, data) {
+        data.results.forEach(function(video) {
+            $scope.video.reccomendations.push({
+              id: video.id,
+              title: video.title,
+              summary: video.summary,
+              videolink: video.videolink,
+              videoid: video.videolink.split('=')[1],
+              embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + video.videolink.split('=')[1]),
+              speaker: video.speaker,
+              views: video.views,
+              tags: video.tags,
+              dt_created: video.dt_created,
+            });
         });
-      });*/
     });
     
     $scope.hideOptions = function() {
@@ -1373,7 +1370,9 @@ angular.module('starter.controllers', [])
         $ionicListDelegate.closeOptionButtons();
         var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, "video"));
     };
-  
+    
+    TagListSvc.loadTags();
+    VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
 
