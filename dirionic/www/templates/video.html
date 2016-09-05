@@ -82,11 +82,9 @@
 <li class="item" style="margin: 0 0 1% 0; border-color: #FFFFFF !important;">
 <div class="row" ng-repeat="video in reccomendations">
 <div class="col col-33 "style ="background-color:blue;">
+  
+<img class="item-img" ng-src="https://img.youtube.com/vi/{{video.videoid}}/0.jpg" alt="thumbnail">
 
-Video Thumbnail<br></br>
-here
-
-</div>
 <div class= "col col-67">
 <div class="row"style="display:block;overflow:auto;">
 <p style="height:100%;white-space:normal;">
@@ -98,7 +96,7 @@ here
 
 <p class="item-views icon ion-eye"style="float:left;width:40%">1000</p>
 <p class="item-views icon ion-ios-pricetag" style="float:right;width:60%;text-align: right;">
-tags
+{{video.tags}}
 </p>
 </div>
 </div>
