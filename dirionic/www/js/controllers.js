@@ -1242,19 +1242,6 @@ angular.module('starter.controllers', [])
                 collapse: false
             });
         });
-        
-        $scope.video.taglist = [];
-        $scope.$on("taglist", function(_, data) {
-           if ($scope.taglist.length == 0) {
-              data.forEach(function(tag) {
-                 $scope.taglist.push({
-                     name: tag.name,
-                     color: tag.color,
-                     checked: false
-                 });
-               });
-            }
-       });
 
         ViewCountSvc.viewed("Video", data.id);
 	});
