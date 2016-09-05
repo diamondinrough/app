@@ -1277,7 +1277,25 @@ angular.module('starter.controllers', [])
                 collapse: false
             });
         });
-    })
+    });
+    
+    $scope.$on("reccomendations", function(_, data) {
+      $scope.video.reccomendations = [];
+      data.reccomendations.forEach(function(reccomendation) {
+        $scope.video.reccomendations.push({
+          id: data.id,
+          title: data.title,
+          summary:data.summary,
+          videolink: data.videolink,
+          videoid: data.videolink.split('=')[1],
+          embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + data.videolink.split('=')[1]),
+          speaker: data.speaker,
+          views: data.views,
+          tags: data.tags,
+          dt_created: data.dt_created,
+        });
+      });
+    });
 
     $scope.hideOptions = function() {
         $ionicListDelegate.closeOptionButtons();
