@@ -1394,68 +1394,7 @@ angular.module('starter.controllers', [])
     });
 
     TagListSvc.loadTags();
-});
-
-.controller("VideoReccomendationCtrl", function($scope, AuthSvc, $ionicLoading, VideoListSvc, $state, TagListSvc, $ionicPopup, TagPopupSvc) {
-  	$scope.reccomendations = [];
-    $scope.taglist = [];
-    $scope.count = 0;
-    $scope.moreitems = false;
-    $scope.next = null;
-
-    $scope.$on("taglist", function(_, data) {
-        if ($scope.taglist.length == 0) {
-            data.forEach(function(tag) {
-                $scope.taglist.push({
-                    name: tag.name,
-                    color: tag.color,
-                    checked: false
-                });
-            });
-        }
-    });
-
-	$scope.$on("reccomendation-list", function(_, data) {
-    	data.results.forEach(function(video) {
-        	$scope.reccomendations.push({
-            	id: reccomendation.id,
-            	title: reccomendation.title,
-            	summary: reccomendation.summary,
-            	videolink: reccomendation.videolink,
-                videoid: reccomendation.videolink.split("=")[1],
-            	speaker: reccomendation.speaker,
-            	views: reccomendation.views,
-            	tags: reccomendation.tags,
-                dt_created: reccomendation.dt_created,
-        	});
-
-            $scope.count = data.count;
-            $scope.next = data.next;
-            if ($scope.next != null) $scope.moreitems = true;
-            else $scope.moreitems = false;
-
-            $scope.$broadcast("scroll.refreshComplete")
-            $scope.$broadcast("scroll.infiniteScrollComplete");
-            $ionicLoading.hide();
-    	});
-        
-        $scope.$broadcast("scroll.refreshComplete");
-    	$ionicLoading.hide();
-	});
-    
-    $scope.loadMore = function() {
-        VideoListSvc.loadVideos(null, null, $scope.next, "reccomendation-list");
-    }
-
-    $scope.reload = function() {
-        $scope.reccomendations = [];
-        $scope.moreitems = false;
-        VideoListSvc.loadVideos($scope.taglist, null, null, "reccomendation-list");
-    }
-
-    TagListSvc.loadTags();
-    VideoListSvc.loadVideos($scope.taglist, null, null, "reccomendation-list");
-});
+})
 
 .controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
     $ionicLoading.show({template: "Loading videos..."});
