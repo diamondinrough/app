@@ -1276,8 +1276,8 @@ angular.module('starter.controllers', [])
         });
     });
     
-/*    $scope.video.taglist = [];
-        $scope.$on("taglist", function(_, data) {
+    $scope.video.taglist = [{"name":"Entertainment"}];
+/*        $scope.$on("taglist", function(_, data) {
            if ($scope.taglist.length == 0) {
                 data.forEach(function(tag) {
                     $scope.taglist.push({
@@ -1289,23 +1289,22 @@ angular.module('starter.controllers', [])
         }
     });*/
     
-    $scope.reccomendations = [{"title":"test"}, {"title":"test2"}];
-/*    $scope.$on("video-list", function(_, data) {
+    $scope.reccomendations = [];
+    $scope.$on("video-list", function(_, data) {
         data.results.forEach(function(video) {
             $scope.video.reccomendations.push({
-              id: video.id,
+//              id: video.id,
               title: video.title,
-              summary: video.summary,
-              videolink: video.videolink,
-              videoid: video.videolink.split('=')[1],
-              embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + video.videolink.split('=')[1]),
-              speaker: video.speaker,
-              views: video.views,
-              tags: video.tags,
-              dt_created: video.dt_created,
+//              videolink: video.videolink,
+//              videoid: video.videolink.split('=')[1],
+//              embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + video.videolink.split('=')[1]),
+//              speaker: video.speaker,
+//              views: video.views,
+//              tags: video.tags,
+//              dt_created: video.dt_created,
             });
         });
-    });*/
+    });
     
     $scope.hideOptions = function() {
         $ionicListDelegate.closeOptionButtons();
@@ -1372,7 +1371,7 @@ angular.module('starter.controllers', [])
     };
     
 //    TagListSvc.loadTags();
-//    VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
+    VideoListSvc.loadVideos($scope.taglist, null, null, "video-list");
 	VideoSvc.loadVideo($stateParams.id, "video");
 })
 
