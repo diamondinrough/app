@@ -77,10 +77,10 @@
     </div>
 
     <div ng-if="tabs[1].selected">
-      <div class="video-detail" style="background-color:#F8F8F8; " ng-repeat="video in reccomendations">
+      <div class="video-detail" style="background-color:#F8F8F8; ">
 <ul class="list" style="padding-top: 1%;">
 <li class="item" style="margin: 0 0 1% 0; border-color: #FFFFFF !important;">
-<div class="row">
+<div class="row" ng-repeat="video in reccomendations">
 <div class="col col-33 "style ="background-color:blue;">
 
 Video Thumbnail<br></br>
