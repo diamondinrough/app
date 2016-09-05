@@ -1209,14 +1209,14 @@ angular.module('starter.controllers', [])
             dt_created: data.dt_created,
     	};
     	
-    	 $scope.taglist = [];
+/*    	 $scope.taglist = [];
        data.tags.forEach(function(tag) {
          $scope.taglist.push({
             name: tag.name
             color: tag.color
             checked: true
           });
-        });
+        });*/
     	
         $scope.video.comments = [];
         data.comments.forEach(function(comment) {
