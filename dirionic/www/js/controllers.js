@@ -1181,7 +1181,7 @@ angular.module('starter.controllers', [])
     $scope.loadSearches();
 }])
 
-.controller("VideoCtrl", function($scope, AuthSvc, $ionicLoading, $ionicListDelegate, CommentPopupSvc, $ionicPopup, $rootScope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate, ViewCountSvc) {
+.controller("VideoCtrl", function($scope, AuthSvc, $ionicLoading, $ionicListDelegate, CommentPopupSvc, $ionicPopup, $rootScope, $stateParams, VideoSvc, $sce, $ionicTabsDelegate, ViewCountSvc, VideoListSvc, TagListSvc) {
 	$scope.authenticated = AuthSvc.authenticated();
     $scope.currentuser = AuthSvc.currentuser();
     $rootScope.$on("authorize-success", function() {
@@ -1194,7 +1194,8 @@ angular.module('starter.controllers', [])
     });
 
     $scope.video = null;
-
+  $scope.taglist = [];
+  
 	$scope.$on("video", function(_, data) {
     	$scope.video = {
           	id: data.id,
@@ -1208,6 +1209,7 @@ angular.module('starter.controllers', [])
         	tags: data.tags,
             dt_created: data.dt_created,
     	};
+    	
         $scope.video.comments = [];
         data.comments.forEach(function(comment) {
             childcomments = [];
@@ -1232,7 +1234,18 @@ angular.module('starter.controllers', [])
                 collapse: false
             });
         });
-
+        
+         $scope.taglist = [];
+         $scope.video.tags.forEach(function(tag) {
+             $scope.taglist.push({
+                name: tag.name,
+                color: tag.color,
+                checked: true
+              });
+           
+         });
+        VideoListSvc.loadVideos($scope.taglist, null, null, "rvideo-list");
+        
         ViewCountSvc.viewed("Video", data.id);
 	});
 
@@ -1261,8 +1274,27 @@ angular.module('starter.controllers', [])
                 collapse: false
             });
         });
-    })
+    });
+    
 
+    
+    $scope.reccomendations = [];
+    $scope.$on("rvideo-list", function(_, data) {
+        data.results.forEach(function(video) {
+            $scope.reccomendations.push({
+              id: video.id,
+              title: video.title,
+              videolink: video.videolink,
+              videoid: video.videolink.split('=')[1],
+              embed: $sce.getTrustedResourceUrl("https://youtube.com/embed/" + video.videolink.split('=')[1]),
+              speaker: video.speaker,
+              views: video.views,
+              tags: video.tags,
+              dt_created: video.dt_created,
+            });
+        });
+    });
+    
     $scope.hideOptions = function() {
         $ionicListDelegate.closeOptionButtons();
     }
@@ -1326,8 +1358,11 @@ angular.module('starter.controllers', [])
         $ionicListDelegate.closeOptionButtons();
         var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, "video"));
     };
+    
+  	VideoSvc.loadVideo($stateParams.id, "video");
+//  	$scope.taglist = [{"name":"Entertainment", "color":"#FF3BFF", "checked":true}]
+  	 
 
-	VideoSvc.loadVideo($stateParams.id, "video");
 })
 
 .controller("VideoCreateCtrl", function($scope, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, VideoSvc, TagListSvc) {
@@ -1361,7 +1396,6 @@ angular.module('starter.controllers', [])
 
     TagListSvc.loadTags();
 })
-
 
 .controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
     $ionicLoading.show({template: "Loading videos..."});
