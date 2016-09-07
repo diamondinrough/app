@@ -44,7 +44,7 @@ angular.module('starter.services', [])
     }
 }])
 
-.service("CommentPopupSvc", function(ArticleSvc, VideoSvc) {
+.service("CommentPopupSvc", function(ArticleSvc, VideoSvc,ResourceSvc) {
     this.commentcreate = function($scope, id, type) {
         return {
             template: '<textarea type=text rows="5" ng-model="input.text">',
@@ -64,6 +64,7 @@ angular.module('starter.services', [])
                     onTap: function(e) {
                         if (type == 'article') ArticleSvc.submitComment(id, $scope.input.text);
                         else if (type == 'video') VideoSvc.submitComment(id, $scope.input.text);
+                        else if (type == 'resource') ResourceSvc.submitComment(id, $scope.input.text);
                         else console.error('Unknown type: ' + type);
                         $scope.input.text = "";
                     }
@@ -90,6 +91,7 @@ angular.module('starter.services', [])
                     onTap: function(e) {
                         if (type == 'article') ArticleSvc.submitReply(id, $scope.input.text, parent);
                         else if (type == 'video') VideoSvc.submitReply(id, $scope.input.text, parent);
+                        else if (type == 'resource') ResourceSvc.submitReply(id, $scope.input.text, parent);
                         else console.error('Unknown type: ' + type);
                         $scope.input.text = "";
                     }
@@ -113,6 +115,7 @@ angular.module('starter.services', [])
                     onTap: function(e) {
                         if (type == 'article') ArticleSvc.deleteComment(id, comment_id);
                         else if (type == 'video') VideoSvc.deleteComment(id, comment_id);
+                        else if (type == 'resource') ResourceSvc.submitReply(id, $scope.input.text, parent);
                         else console.error('Unknown type: ' + type);
                     }
                 }
@@ -135,6 +138,7 @@ angular.module('starter.services', [])
                     onTap: function(e) {
                         if (type == 'article') ArticleSvc.deleteReply(id, comment_id);
                         else if (type == 'video') VideoSvc.deleteReply(id, comment_id);
+                        else if (type == 'resource') ResourceSvc.submitReply(id, $scope.input.text, parent);
                         else console.error('Unknown type: ' + type);
                     }
                 }
@@ -936,29 +940,164 @@ angular.module('starter.services', [])
     }
 })
 
-.service("ResourceListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
-    this.loadResources = function() {
-        $http.get(site + "api/app/resources/?format=json")
-        .success(function(data) {
-            $rootScope.$broadcast("resourcelist", data);
-        })
-        .error(function() {
-            $ionicLoading.hide();
-        });
-    }
+// .service("ResourceListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
+//     this.loadResources = function(taglist,searches,next,bcast) {
+//         $http.get(site + "api/app/resources/?format=json")
+//         .success(function(data) {
+//             $rootScope.$broadcast("resourcelist", data);
+//         })
+//         .error(function() {
+//             $ionicLoading.hide();
+//         });
+//     }
 
 
     
-}])
+// }])
 
-.service("ResourceSvc", ["$http", "$rootScope", function($http, $rootScope) {
-    this.loadResource = function(id) {
-        $http.get(site + "api/app/resources/" + id + "/?format=json")
-        .success(function(data) {
-            $rootScope.$broadcast("resource", data);
-        });
+.service("ResourceListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
+    this.loadResources = function(taglist, searches, next, bcast) {
+        if (next == null) {
+            params = { format: "json" };
+            activetags = "";
+            if (taglist != null) {
+                for (i = 0; i < taglist.length; i++) {
+                    if (taglist[i].checked) {
+                        activetags = activetags.concat(taglist[i].name + ",");
+                    }
+                }
+            }
+            if (activetags != "") {
+                activetags = activetags.substr(0, activetags.length-1);
+                console.log(activetags);
+                params['tags'] = activetags;
+            }
+            if (searches != null) {
+                search = searches.split(" ").join([separator = ","]);
+                params['search'] = search;
+            }
+            $http.get(site + "api/app/articles/", { params: params })
+            .success(function(data) {
+                $rootScope.$broadcast(bcast, data);
+                console.log(data);
+            })
+            .error(function() {
+                console.log(data);
+                $ionicLoading.hide();
+            });
+        } else {
+            $http.get(next)
+            .success(function(data) {
+                console.log(data);
+                $rootScope.$broadcast(bcast, data);
+            })
+            .error(function() {
+                console.error("Failed to load resource list from " + next);
+                $ionicLoading.hide();
+            });
+        }
     }
 }])
+
+
+// .service("ResourceSvc", ["$http", "$rootScope", function($http, $rootScope) {
+//     this.loadResource = function(id) {
+//         // $http.get(site + "api/app/resources/" + id + "/?format=json")
+//         $http.get(site + "api/app/articles/" + id + "/?format=json")
+//         .success(function(data) {
+//             $rootScope.$broadcast("resource", data);
+//         });
+//     }
+// }])
+
+.service("ResourceSvc", function($http, $rootScope, $ionicLoading) {
+    this.loadResource = function(id, bcast) {
+        $http.get(site + "api/app/article/" + id + "/?format=json")
+        .success(function(data) {
+            $rootScope.$broadcast(bcast, data);
+            console.log("success received data" + data);
+        });
+    }
+
+    this.newResource = function(resource, taglist) {
+        tags = [];
+        if (taglist != null) {
+            for (i = 0; i < taglist.length; i++) {
+                if (taglist[i].checked) {
+                    tags.push(taglist[i].name);
+                }
+            }
+        }
+        resource["tags"] = tags;
+        $http.post(site + "api/app/articles/create/", resource)
+        .success(function() {
+            $rootScope.$broadcast("resource-submit-success");
+        })
+        .error(function(data) {
+            $rootScope.$broadcast("resource-submit-error", data);
+        });
+    }
+
+    this.deleteResource = function(id) {
+        $http.delete(site + "api/app/article/" + id + "/delete/")
+        .success(function() {
+            $rootScope.$broadcast("resource-delete-success");
+            $ionicLoading.show({template: "Resource deleted!", duration: 1000});
+        })
+        .error(function() {
+            $ionicLoading.show({template: "Failed to delete resource.", duration: 1000});
+        })
+    }
+
+    this.submitComment = function(id, text) {
+        $http.post(site + "api/app/article/" + id + "/comment/create/", {text: text, object_id: id})
+        .success(function(data) {
+            $rootScope.$broadcast("resource-comment-create-success", data);
+            $ionicLoading.show({template:"Comment success!", duration:1000});
+        })
+        .error(function() {
+            $rootScope.$broadcast("resource-comment-create-error");
+            $ionicLoading.show({template:"Comment failed.", duration:1000});
+        })
+    }
+
+    this.submitReply = function(id, text, parent) {
+        $http.post(site + "api/app/article/" + id + "/reply/create/", {text: text, object_id: id, parent: parent})
+        .success(function(data) {
+            $rootScope.$broadcast("resource-reply-create-success", data);
+            $ionicLoading.show({template:"Comment success!", duration:1000});
+        })
+        .error(function() {
+            $rootScope.$broadcast("resource-reply-create-error");
+            $ionicLoading.show({template:"Comment failed.", duration:1000});
+        })
+    }
+
+    this.deleteComment = function(id, comment_id) {
+        $http.delete(site + "api/app/article/" + id + "/comment/delete/" + comment_id + "/")
+        .success(function() {
+            $rootScope.$broadcast("resource-comment-delete-success");
+            $ionicLoading.show({template:"Comment removed!", duration:1000});
+        })
+        .error(function() {
+            $rootScope.$broadcast("resource-comment-delete-error");
+            $ionicLoading.show({template:"Failed to remove comment.", duration:1000});
+        })
+    }
+
+    this.deleteReply = function(id, reply_id) {
+        $http.delete(site + "api/app/article/" + id + "/comment/delete/" + reply_id + "/")
+        .success(function() {
+            $rootScope.$broadcast("resource-reply-delete-success");
+            $ionicLoading.show({template:"Comment removed!", duration:1000});
+        })
+        .error(function() {
+            $rootScope.$broadcast("resource-reply-delete-error");
+            $ionicLoading.show({template:"Failed to remove comment.", duration:1000});
+        })
+    }
+})
+
 
 .service("UserListSvc", ["$http", "$rootScope", "$ionicLoading", function($http, $rootScope, $ionicLoading) {
     this.loadUsers = function(bcast) {

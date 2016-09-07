@@ -1,4 +1,4 @@
-<ion-view view-title="Resources" ng-controller="resourceListCtrl as vm">
+<ion-view view-title="Resources" >
 <div class="tabs-top tabs-background-stable tabs-color-calm">
     <div class="tabs tabs-icon-left">
         <a class="tab-item" href="#">
@@ -28,16 +28,16 @@
     </div>
     <ion-content class="scroll-content ionic-scroll  has-header has-tabs-top has-tabs">
       <div class="list">
-        <a class="item item-thumbnail-left" ng-repeat="resource in vm.resources"
-          ng-click="vm.selectResource(resource.id)">
+        <a class="item item-thumbnail-left" ng-repeat="resource in resources"
+         href="#/app/home/resource/{{resource.id}}"> 
             <!-- <p>id: {{resource.id}}</p> -->
             <h2>title:{{resource.title}}</h2>
            <!--  <img ng-src="{{resource.resourcefile}}"> -->
             <img ng-src="https://pixabay.com/en/bridge-golden-light-mystical-19513/">
             <p>summary: {{resource.summary}}</p>
-              <p>poster: {{resource.poster}}</p>
-             <p>tsgd: {{resource.tags}}</p>
-             <p>download: {{resource.downloads}}</p>
+              <p>views: {{resource.views}}</p>
+             <!-- <p>tsgd: {{resource.tags}}</p> -->
+             <p>content: {{resource.content}}</p>
             <i class="icon ion-chevron-right icon-access"></i>
           </a>  
     </ion-content>

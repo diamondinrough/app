@@ -1397,34 +1397,251 @@ angular.module('starter.controllers', [])
     TagListSvc.loadTags();
 })
 
-.controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
-    $ionicLoading.show({template: "Loading videos..."});
+// .controller("ResourceListCtrl", ["$scope", "$ionicLoading", "ResourceListSvc", function($scope, $ionicLoading, ResourceListSvc) {
+//     $ionicLoading.show({template: "Loading videos..."});
 
+//     $scope.resources = [];
+//     $scope.$on("resourcelist", function(_, data) {
+
+//         data.forEach(function(resource) {
+//             $scope.resources.push({
+//                 //json data
+//             });
+//         });
+        
+//         $ionicLoading.hide();
+//     });
+    
+//     ResourceListSvc.loadResources();
+// }])
+
+.controller("ResourceListCtrl", function($scope, $state, $ionicLoading, AuthSvc, ResourceListSvc, TagListSvc, $ionicPopup, TagPopupSvc) {
     $scope.resources = [];
-    $scope.$on("resourcelist", function(_, data) {
+    $scope.taglist = [];
+    $scope.count = 0;
+    $scope.moreitems = false;
+    $scope.next = null;
 
-        data.forEach(function(resource) {
+    $scope.$on("taglist", function(_, data) {
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
+            });
+        }
+    });
+
+    $scope.$on("resource-list", function(_, data) {
+        data.results.forEach(function(resource) {
             $scope.resources.push({
-                //json data
+                id: resource.id,
+                title: resource.title,
+                content: resource.content,
+                summary: resource.summary,
+                image: resource.image,
+                poster: get_name(resource.poster),
+                views: resource.views,
+                tags: resource.tags,
+                dt_created: resource.dt_created,
+                dt_updated: resource.dt_updated
             });
         });
-        
-        $ionicLoading.hide();
-    });
-    
-    ResourceListSvc.loadResources();
-}])
+        $scope.count = data.count;
+        $scope.next = data.next;
+        if ($scope.next != null) $scope.moreitems = true;
+        else $scope.moreitems = false;
 
-.controller("ResourceCtrl", ["$scope", "$stateParams", "ResourceSvc", function($scope, $stateParams, ResourceSvc) {
+        $scope.$broadcast("scroll.refreshComplete");
+        $scope.$broadcast("scroll.infiniteScrollComplete");
+    });
+
+    $scope.newResource = function() {
+        if (AuthSvc.authenticated()) {
+            $state.go('app.home.resource-create');
+        } else {
+            $ionicLoading.show({template: "You are not logged in!", duration: 1000});
+        }
+    }
+    
+    $scope.showTags = function() {
+        var tags = $ionicPopup.show(TagPopupSvc.tagPopup($scope));
+    }
+
+    $scope.loadMore = function() {
+        ResourceListSvc.loadResources(null, null, $scope.next, "resource-list");
+    }
+
+    $scope.reload = function() {
+        $scope.articles = [];
+        $scope.moreitems = false;
+        ResourceListSvc.loadResources($scope.taglist, null, null, "resource-list");
+    }
+
+    TagListSvc.loadTags();
+    ResourceListSvc.loadResources($scope.taglist, null, null, "resource-list");
+})
+
+
+// .controller("ResourceCtrl", ["$scope", "$stateParams", "ResourceSvc", function($scope, $stateParams, ResourceSvc) {
+//     $scope.resource = null;
+//     $scope.$on("resource", function(_, data) {
+//         $scope.resource = {
+//             //json data
+//         };
+//     });
+    
+//     ResourceSvc.loadResource($stateParams.id);
+// }])
+
+.controller("ResourceCtrl", function($scope, $ionicHistory, $rootScope, $state, ItemPopupSvc, AuthSvc, $stateParams, $ionicListDelegate, $ionicPopup, $ionicLoading, ResourceSvc, ViewCountSvc, CommentPopupSvc, $sce) {
+    $scope.authenticated = AuthSvc.authenticated();
+    $scope.currentuser = AuthSvc.currentuser();
+    $rootScope.$on("authorize-success", function() {
+        $scope.authenticated = true;
+        $scope.currentuser = AuthSvc.currentuser();
+    });
+    $rootScope.$on("unauthorize-success", function() {
+        $scope.authenticated = false;
+        $scope.currentuser = null;
+    });
+
     $scope.resource = null;
     $scope.$on("resource", function(_, data) {
         $scope.resource = {
-            //json data
+            id: data.id,
+            title: $sce.trustAsHtml(data.title),
+            content: $sce.trustAsHtml(data.content),
+            summary: data.summary,
+            image: data.image,
+            poster: data.poster,
+            poster_name: get_name(data.poster),
+            views: data.views,
+            tags: data.tags,
+            dt_created: data.dt_created,
+            dt_updated: data.dt_updated
         };
+        $scope.resource.comments = [];
+        data.comments.forEach(function(comment) {
+            childcomments = [];
+            comment.childcomment_set.forEach(function(childcomment) {
+                childcomments.push({
+                    id: childcomment.id,
+                    text: childcomment.text,
+                    poster: get_name(childcomment.poster),
+                    poster_username: childcomment.poster.username,
+                    edited: childcomment.edited,
+                    dt_created: childcomment.dt_created
+                });
+            });
+            $scope.resource.comments.push({
+                id: comment.id,
+                text: comment.text,
+                poster: get_name(comment.poster),
+                poster_username: comment.poster.username,
+                edited: comment.edited,
+                dt_created: comment.dt_created,
+                childcomments: childcomments,
+                collapse: false
+            });
+        });
+        ViewCountSvc.viewed("Resource", data.id);
     });
+
+    $scope.$on("resource-comments", function(_, data) {
+        $scope.resource.comments = [];
+        data.comments.forEach(function(comment) {
+            childcomments = [];
+            comment.childcomment_set.forEach(function(childcomment) {
+                childcomments.push({
+                    id: childcomment.id,
+                    text: childcomment.text,
+                    poster: get_name(childcomment.poster),
+                    poster_username: childcomment.poster.username,
+                    edited: childcomment.edited,
+                    dt_created: childcomment.dt_created
+                });
+            });
+            $scope.resource.comments.push({
+                id: comment.id,
+                text: comment.text,
+                poster: get_name(comment.poster),
+                poster_username: comment.poster.username,
+                edited: comment.edited,
+                dt_created: comment.dt_created,
+                childcomments: childcomments,
+                collapse: false
+            });
+        });
+    })
     
-    ResourceSvc.loadResource($stateParams.id);
-}])
+    $scope.optionsPopup = null;
+    $scope.resourceOptions = function() {
+        $scope.optionsPopup = $ionicPopup.show(ItemPopupSvc.itemOptions($scope));
+    }
+    $scope.editItem = function() {
+        $scope.optionsPopup.close();
+        $state.go("app.home.resource-edit", { id:$stateParams.id });
+    }
+    $scope.deleteItem = function() {
+        $scope.optionsPopup.close();
+        var popup = $ionicPopup.show(ItemPopupSvc.deleteItem($stateParams.id, 'article'));
+    }
+
+    $scope.$on("resource-delete-success", function() {
+        $ionicHistory.goBack();
+    });
+
+    $scope.hideOptions = function() {
+        $ionicListDelegate.closeOptionButtons();
+    }
+    $scope.collapseclass = function(collapse) {
+        if (collapse) return "ion-chevron-down";
+        else return "ion-chevron-up";
+    }
+
+    $scope.input = {};
+
+    $scope.$on("resource-comment-create-success", function(data) {
+        ResourceSvc.loadResource($stateParams.id, "resource-comments");
+    });
+
+    $scope.$on("resource-reply-create-success", function(data) {
+        ResourceSvc.loadResource($stateParams.id, "resource-comments");
+    });
+
+    $scope.addcomment = function() {
+        $ionicListDelegate.closeOptionButtons();
+        var popup = $ionicPopup.show(CommentPopupSvc.commentcreate($scope, $stateParams.id, 'resource'));
+    };
+
+    $scope.addreply = function(parent) {
+        $ionicListDelegate.closeOptionButtons();
+        var popup = $ionicPopup.show(CommentPopupSvc.replycreate($scope, parent, $stateParams.id, 'resource'));
+    };
+
+    $scope.$on("resource-comment-delete-success", function(data) {
+        ResourceSvc.loadResource($stateParams.id, "resource-comments");
+    });
+
+    $scope.$on("resource-reply-delete-success", function(data) {
+        ResourceSvc.loadResource($stateParams.id, "resource-comments");
+    });
+
+    $scope.removecomment = function(comment_id) {
+        $ionicListDelegate.closeOptionButtons();
+        var popup = $ionicPopup.show(CommentPopupSvc.commentdelete($scope, comment_id, $stateParams.id, 'resource'));
+    };
+
+    $scope.removereply = function(reply_id) {
+        $ionicListDelegate.closeOptionButtons();
+        var popup = $ionicPopup.show(CommentPopupSvc.replydelete($scope, reply_id, $stateParams.id, 'resource'));
+    };
+    
+    ResourceSvc.loadResource($stateParams.id, "resource");
+})
 
 .controller("HOICtrl", ["$scope", "$ionicLoading", "UserListSvc", function($scope, $ionicLoading, UserListSvc) {
     $ionicLoading.show({template: "Loading contacts..."});

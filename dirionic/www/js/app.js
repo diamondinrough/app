@@ -310,23 +310,48 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'ionic-native-transiti
     }
   })
 
-  .state('app.resourcelist', {
+  .state('app.home.resourcelist', {
     url: '/resources',
     views: {
-      'resources': {
-        templateUrl: 'templates/resourcelist.html'
+      'home.resources': {
+        templateUrl: 'templates/resourcelist.html',
+        controller: 'ResourceListCtrl'
       }
     }
   })
 
-  .state('app.resource', {
-    url: '/resources/:id',
+  // .state('app.home.video-list', {
+  //   url: '/videos',
+  //   nativeTransitions: {
+  //     type: "fade"
+  //   },
+  //   views: {
+  //     'home.videos': {
+  //       templateUrl: 'templates/video-list.html',
+  //       controller: 'VideoListCtrl'
+  //     }
+  //   }
+  // })
+
+  .state('app.home.resource', {
+    url: '/resource/:id',
     views: {
-      'resources': {
-        templateUrl: 'templates/resource.html'
+      'home.resources': {
+        templateUrl: 'templates/resource.html',
+        controller: 'ResourceCtrl'
       }
     }
   })
+
+  //  .state('app.home.article', {
+  //   url: '/article/:id',
+  //   views: {
+  //     'home.articles': {
+  //       templateUrl: 'templates/article.html',
+  //       controller: 'ArticleCtrl'
+  //     }
+  //   }
+  // })
 
   .state('app.help', {
     url: '/help',

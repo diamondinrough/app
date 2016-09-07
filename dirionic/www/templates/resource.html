@@ -1,4 +1,4 @@
-<ion-view view-title="Resource detail" ng-controller="resourceListCtrl as vm">
+<ion-view view-title="Resource detail">
 <div class="tabs-top tabs-background-stable tabs-color-calm">
     <div class="tabs tabs-icon-left">
         <a class="tab-item" href="#">
@@ -27,19 +27,21 @@
         </a>
     </div>
     <ion-content class="scroll-content ionic-scroll  has-header has-tabs-top has-tabs">
+         <p>where is tag?</p>
+         <p>where is tag?</p>
         <ul>
-          <li class="tag" ng-repeat="tag in article.tags" style="background-color: {{tag.color}}">
+          <li class="tag" ng-repeat="tag in resource.tags" style="background-color: {{tag.color}}">
             {{tag.name}}
           </li>
         </ul>
-      <div class="list">
+      <!-- <div class="list">
         <div class="item item-icon-right" ng-repeat="resource in vm.resources"
-          ng-click="vm.selectResource(resource.id)">
+          ng-click="vm.selectResource(resource.id)"> -->
 <!-- 
           <div  ng-repeat="resource in vm.resources"> -->
             <p>id: {{resource.id}}</p>
             <p>title:{{resource.title}}</p>
-            <img ng-src="{{resource.resourcefile}}">
+        <!--     <img ng-src="{{resource.resourcefile}}"> -->
             <p>summary: {{resource.summary}}</p>
              <p>tsgd: {{resource.tags}}</p>
               <ul>
@@ -48,15 +50,63 @@
           </li>
         </ul>
              <p>poster username: {{resource.poster.username}}</p> 
-              <p>poster dt_created : {{resource.poster.dt_created}}</p> 
-               <img ng-src="{{resource.poster.imgage}}">
+              <p>poster info: {{resource.poster.info}}</p> 
+            <!--   <p>poster dt_created : {{resource.poster.dt_created}}</p>  -->
+              <!--  <img ng-src="{{resource.poster.image}}"> -->
                <div class="item-img-container">
-                   <img class="item-img" ng-src="{{resource.poster.image}}">
+                   <img class="item-img" ng-src="{{resource.image}}">
                 </div>
                
  
-             <p>download: {{resource.downloads}}</p>
+       <!--       <p>download: {{resource.downloads}}</p> -->
+             <p>views: {{resource.views}}</p>
             <i class="icon ion-chevron-right icon-access"></i>
-          </div>  
-    </ion-content>
-  </ion-view>
+
+
+             <div class="item item-divider">Comments</div>
+      <button ng-if="authenticated" type="submit" ng-click="addcomment()" class="button button-block button-positive">
+        New Comment
+      </button>
+      <div ng-repeat="comment in article.comments">
+        <ion-item class="">
+          <p class="comment">{{comment.text}}</p>
+          <p class="item-date">{{comment.dt_created}}</p>
+          <p class="item-author">{{comment.poster}}</p>
+          <div style="clear: both; margin-bottom:8px;"></div>
+          <ion-option-button class="button-positive" ng-click="comment.collapse=!comment.collapse;hideOptions();">
+            <i ng-class="collapseclass(comment.collapse)" class="button button-icon icon collapse-icon"></i>
+          </ion-option-button>
+          <div ng-if="authenticated">
+           <ion-option-button class="button-energized" ng-click="addreply(comment.id)">
+              Reply
+            </ion-option-button>
+            <div ng-if="comment.poster_username == currentuser">
+              <ion-option-button class="button-assertive" ng-click="removecomment(comment.id)">
+                Delete
+              </ion-option-button>
+            </div>
+         </div>
+        </ion-item>
+        <ion-item ng-if="!comment.collapse" class="childcomment" ng-repeat="childcomment in comment.childcomments">
+          <p class="comment">{{childcomment.text}}</p>
+          <p class="item-date">{{childcomment.dt_created}}</p>
+          <p class="item-author">{{childcomment.poster}}</p>
+          <div style="clear: both;"></div>
+          <div ng-if="authenticated">
+            <div ng-if="childcomment.poster_username == currentuser">
+              <ion-option-button class="button-assertive" ng-click="removereply(childcomment.id)">
+                Delete
+              </ion-option-button>
+            </div>
+            <ion-option-button class="button-energized" ng-click="addreply(comment.id)">
+              Reply
+            </ion-option-button>
+          </div>
+        </ion-item>
+      </div>
+   <!--  </ion-list> -->
+  </ion-content>
+</ion-view>
+
+
+           
