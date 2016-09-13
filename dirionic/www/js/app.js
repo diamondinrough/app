@@ -343,6 +343,18 @@ angular.module('starter', ['ionic', 'ionic-color-picker', 'ionic-native-transiti
     }
   })
 
+   .state('app.home.resource-create', {
+    url: '/resources/create',
+    views: {
+      'home.resources': {
+        templateUrl: 'templates/resource-create.html',
+        controller: 'ResourceCreateCtrl'
+      }
+    }
+  })
+
+    
+
   //  .state('app.home.article', {
   //   url: '/article/:id',
   //   views: {

@@ -1,4 +1,11 @@
-<ion-view view-title="Resources" >
+<ion-view view-title="Resources  {{count}} of {{resources.length}}" >
+    <ion-nav-buttons side="left">
+    <a class="button button-icon ion-plus" ng-click="newResource()"></a>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon icon ion-ios-pricetag" ng-click="showTags()"></button>
+    <a class="button button-icon ion-ios-search-strong" href="#/app/home/resources/search"></a>
+  </ion-nav-buttons>
 <div class="tabs-top tabs-background-stable tabs-color-calm">
     <div class="tabs tabs-icon-left">
         <a class="tab-item" href="#">
@@ -30,15 +37,30 @@
       <div class="list">
         <a class="item item-thumbnail-left" ng-repeat="resource in resources"
          href="#/app/home/resource/{{resource.id}}"> 
+          <div class="avatar-container">
+           <!--  <img class="avatar" src="http://www.w3schools.com/w3css/img_avatar2.png" alt="pic"> -->
+            <img class="avatar" src="{{resource.image}}" alt="pic">
+          </div>
+         <!--  <h2 class="profile-name">{{user.info.fullname}}</h2>
+          <p class="profile-contact">Email: {{user.info.email}}</p>
+          <p ng-if="user.info.wechat" class="profile-contact">Wechat: {{user.info.wechat}}</p>
+        </div> -->
             <!-- <p>id: {{resource.id}}</p> -->
-            <h2>title:{{resource.title}}</h2>
+            <!--  <p>tag: {{resource.tags}}</p> -->
+              <ul>
+               <li class="tag" ng-repeat="tag in resource.tags" style="background-color: {{tag.color}}">
+            {{tag.name}} View All
+               </li>
+        </ul>
+            <h2 class="profile-name">title:{{resource.title}}</h2>
            <!--  <img ng-src="{{resource.resourcefile}}"> -->
-            <img ng-src="https://pixabay.com/en/bridge-golden-light-mystical-19513/">
-            <p>summary: {{resource.summary}}</p>
-              <p>views: {{resource.views}}</p>
+           <!--  <img ng-src="https://pixabay.com/en/bridge-golden-light-mystical-19513/"> -->
+            <p class="profile-contact">summary: {{resource.summary}}</p>
+              <p class="profile-contact">views: {{resource.views}}</p>
              <!-- <p>tsgd: {{resource.tags}}</p> -->
-             <p>content: {{resource.content}}</p>
+             <p class="profile-contact">content: {{resource.content}}</p>
             <i class="icon ion-chevron-right icon-access"></i>
           </a>  
+          </div>
     </ion-content>
   </ion-view>

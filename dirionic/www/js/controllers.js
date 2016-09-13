@@ -1547,7 +1547,7 @@ angular.module('starter.controllers', [])
                 collapse: false
             });
         });
-        ViewCountSvc.viewed("Resource", data.id);
+        ViewCountSvc.viewed("Article", data.id);
     });
 
     $scope.$on("resource-comments", function(_, data) {
@@ -1642,6 +1642,57 @@ angular.module('starter.controllers', [])
     
     ResourceSvc.loadResource($stateParams.id, "resource");
 })
+
+
+.controller("ResourceCreateCtrl", function($scope, $ionicModal, $ionicPopup, $ionicLoading, $ionicHistory, AuthSvc, ArticleSvc, TagListSvc,ResourceSvc) {
+    $scope.resource = {title:"", content:"", summary:"", tags:[]};
+    $scope.taglist = [];
+
+    // $ionicModal.fromTemplateUrl("templates/resource-preview.html", {
+    //     scope: $scope,
+    //     animation: 'slide-in-up'
+    // }).then(function(modal) {
+    //     $scope.modal = modal;
+    // })
+
+    // $scope.openModal = function() {
+    //     $scope.modal.show();
+    // }
+    // $scope.closeModal = function() {
+    //     $scope.modal.hide();
+    // }
+    // $scope.$on("$destroy", function() {
+    //     $scope.modal.remove();
+    // })
+
+    $scope.submit = function() {
+        ResourceSvc.newResource($scope.resource, $scope.taglist);
+        $ionicHistory.goBack();
+    }
+
+    $scope.$on("resource-submit-success", function(_, __) {
+        $ionicLoading.show({template: "Resource submitted!", duration: 1000});
+    });
+
+    $scope.$on("resource-submit-error", function(_, data) {
+        $ionicLoading.show({template: "Failed to submit resource.", duration: 1000});
+    });
+
+    $scope.$on("taglist", function(_, data) {
+        if ($scope.taglist.length == 0) {
+            data.forEach(function(tag) {
+                $scope.taglist.push({
+                    name: tag.name,
+                    color: tag.color,
+                    checked: false
+                });
+            });
+        }
+    });
+
+    TagListSvc.loadTags();
+})
+
 
 .controller("HOICtrl", ["$scope", "$ionicLoading", "UserListSvc", function($scope, $ionicLoading, UserListSvc) {
     $ionicLoading.show({template: "Loading contacts..."});

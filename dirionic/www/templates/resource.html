@@ -27,8 +27,7 @@
         </a>
     </div>
     <ion-content class="scroll-content ionic-scroll  has-header has-tabs-top has-tabs">
-         <p>where is tag?</p>
-         <p>where is tag?</p>
+        
         <ul>
           <li class="tag" ng-repeat="tag in resource.tags" style="background-color: {{tag.color}}">
             {{tag.name}}
@@ -43,7 +42,7 @@
             <p>title:{{resource.title}}</p>
         <!--     <img ng-src="{{resource.resourcefile}}"> -->
             <p>summary: {{resource.summary}}</p>
-             <p>tsgd: {{resource.tags}}</p>
+             <p>tag: {{resource.tags}}</p>
               <ul>
                <li class="tag" ng-repeat="tag in resource.tags" style="background-color: {{tag.color}}">
             {{tag.name}}
@@ -66,8 +65,8 @@
              <div class="item item-divider">Comments</div>
       <button ng-if="authenticated" type="submit" ng-click="addcomment()" class="button button-block button-positive">
         New Comment
-      </button>
-      <div ng-repeat="comment in article.comments">
+      </button> 
+      <div ng-repeat="comment in resource.comments">
         <ion-item class="">
           <p class="comment">{{comment.text}}</p>
           <p class="item-date">{{comment.dt_created}}</p>
